@@ -1,13 +1,19 @@
 {
-    "cSpell.words": [
-        "chrono",
-        "ilike",
-        "Insertable",
-        "jsonwebtoken",
-        "leavable",
-        "menta",
-        "repositiory",
-        "serv",
-        "VARCHAR"
-    ]
+  "cSpell.words": [
+    "chrono",
+    "ilike",
+    "Insertable",
+    "jsonwebtoken",
+    "leavable",
+    "menta",
+    "repositiory",
+    "serv",
+    "VARCHAR"
+  ],
+  "rest-client.environmentVariables": {
+    "$shared": {
+      "base_url": "http://127.0.0.1:8000/api",
+      "menta_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3IiwiZXhwIjoxNzY2Mzc5MTkxLCJpYXQiOjE3NjYxMTk5OTF9.ADbRs0XNixZQqUA2qNe1TVV7d44UIDy8l9UF_KSPmac"
+    }
+  }
 }
