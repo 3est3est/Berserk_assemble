@@ -1,15 +1,28 @@
 use std::sync::Arc;
 
 use axum::{
-    Extension, Router, extract::{Path, State}, http::StatusCode, middleware, response::IntoResponse, routing::{delete, post}
+    Extension, Router,
+    extract::{Path, State},
+    http::StatusCode,
+    middleware,
+    response::IntoResponse,
+    routing::{delete, post},
 };
 
 use crate::{
     application::use_cases::crew_operation::CrewOperationUseCase,
     domain::repositories::{
-            crew_operation::CrewOperationRepository,
-            mission_viewing::MissionViewingRepository,
-        }, infrastructure::{database::{postgresql_connection::PgPoolSquad, repositories::{crew_operation::CrewOperationPostgres, mission_viewing::MissionViewingPostgres}}, http::middlewares::auth::auth},
+        crew_operation::CrewOperationRepository, mission_viewing::MissionViewingRepository,
+    },
+    infrastructure::{
+        database::{
+            postgresql_connection::PgPoolSquad,
+            repositories::{
+                crew_operation::CrewOperationPostgres, mission_viewing::MissionViewingPostgres,
+            },
+        },
+        http::middlewares::auth::auth,
+    },
 };
 
 pub async fn join<T1, T2>(
@@ -55,8 +68,10 @@ where
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     let crew_operation_repository = CrewOperationPostgres::new(Arc::clone(&db_pool));
     let viewing_repositiory = MissionViewingPostgres::new(Arc::clone(&db_pool));
-    let user_case =
-        CrewOperationUseCase::new(Arc::new(crew_operation_repository), Arc::new(viewing_repositiory));
+    let user_case = CrewOperationUseCase::new(
+        Arc::new(crew_operation_repository),
+        Arc::new(viewing_repositiory),
+    );
 
     Router::new()
         .route("/join/{mission_id}", post(join))
