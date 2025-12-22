@@ -13,7 +13,7 @@
   "rest-client.environmentVariables": {
     "$shared": {
       "base_url": "http://127.0.0.1:8000/api",
-      "menta_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI3IiwiZXhwIjoxNzY2NDIzMjc1LCJpYXQiOjE3NjYxNjQwNzV9.etKPyrsZY__Jopg2saXQMQjF_fbYHI5M4foQBg3w_0A"
+      "menta_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzY2NjUyODg1LCJpYXQiOjE3NjYzOTM2ODV9.G6C2RRn5Gp-Fyrbmz69oP1eIoD6imc_pOsuFwrgu16g"
     }
   }
 }
