@@ -6,6 +6,7 @@ use crate::domain::entities::brawlers::RegisterBrawlerEntity;
 pub struct RegisterBrawlerModel {
     pub username: String,
     pub password: String,
+    pub display_name: String,
 }
 
 impl RegisterBrawlerModel {
@@ -13,6 +14,7 @@ impl RegisterBrawlerModel {
         RegisterBrawlerEntity {
             username: self.username.clone(),
             password: self.password.clone(),
+            display_name: self.username.clone(),
         }
     }
 }

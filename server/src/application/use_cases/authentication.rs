@@ -41,14 +41,14 @@ where
             return Err(anyhow::anyhow!("Invalid Password !!"));
         }
 
-        let claims = Claims {
-            sub: user.id.to_string(),
-            exp: (Utc::now() + Duration::days(3)).timestamp() as usize,
-            iat: Utc::now().timestamp() as usize,
-        };
+        // let claims = Claims {
+        //     sub: user.id.to_string(),
+        //     exp: (Utc::now() + Duration::days(30)).timestamp() as usize,
+        //     iat: Utc::now().timestamp() as usize,
+        // };
 
-        let token = generate_token(secret, &claims)?;
-
-        Ok(Passport { token })
+        // let token = generate_token(secret, &claims)?;
+        let passport = Passport::new(user.id)?;
+        Ok(passport)
     }
 }

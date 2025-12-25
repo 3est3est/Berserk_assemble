@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Ok, Result};
 use async_trait::async_trait;
 use diesel::{
     ExpressionMethods, RunQueryDsl, SelectableHelper, insert_into,
@@ -10,8 +10,12 @@ use crate::{
     domain::{
         entities::brawlers::{BrawlerEntity, RegisterBrawlerEntity},
         repositories::brawlers::BrawlerRepository,
+        value_objects::{base64_img::Base64Img, uploaded_img::{self, UploadedImg}},
     },
-    infrastructure::database::{postgresql_connection::PgPoolSquad, schema::brawlers},
+    infrastructure::{
+        cloudinary::{self, UploadImageOptions},
+        database::{postgresql_connection::PgPoolSquad, schema::brawlers},
+    },
 };
 
 pub struct BrawlerPostgres {
@@ -47,4 +51,26 @@ impl BrawlerRepository for BrawlerPostgres {
 
         Ok(result)
     }
+
+    async fn upload_base64img(
+        &self,
+        user_id: i32,
+        base64img: Base64Img,
+        opt: UploadImageOptions,
+    ) -> Result<UploadedImg> {
+        let uploaded_img = cloudinary::upload(base64img, opt).await?;
+
+        let mut conn  = Arc::clone(&self.db_pool).get()?;
+
+        diesel::update(brawlers::table)
+            .filter(brawlers::id.eq(user_id))
+            .set((
+                brawlers::avatar_url.eq(uploaded_img.url.clone()),
+                brawlers::avatar_public_id.eq(uploaded_img.public_id.clone()),
+            ))
+            .execute(&mut conn)?;
+
+        Ok(uploaded_img)
+    }
+
 }

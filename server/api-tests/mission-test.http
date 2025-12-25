@@ -32,3 +32,52 @@ Authorization: Bearer {{menta_token}}
 DELETE {{base_url}}/mission-management/{{mission_id}}
 Content-Type: application/json
 Authorization: Bearer {{menta_token}}
+
+
+
+
+### set mission to in-progress
+# @prompt mission_id Mission ID to Set In-Progress
+PATCH  {{base_url}}/mission/in-progress/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{menta_token}}
+
+
+### set mission to completed
+# @prompt mission_id Mission ID to Set Completed
+PATCH  {{base_url}}/mission/to-completed/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{menta_token}}
+
+
+### set mission to failed
+# @prompt mission_id Mission ID to Set Failed
+PATCH  {{base_url}}/mission/to-failed/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{menta_token}}
+
+
+
+
+### get mission by id
+# @prompt mission_id Mission ID
+GET  {{base_url}}/view/{{mission_id}}
+Content-Type: application/json
+Authorization: Bearer {{menta_token}}
+
+
+
+
+### get missions with name
+# @prompt name Name to Search
+GET  {{base_url}}/view/gets?name={{name}}
+Content-Type: application/json
+Authorization: Bearer {{menta_token}}
+
+
+### get missions with name and status
+# @prompt name Name to Search
+# @prompt status Status to Search
+GET  {{base_url}}/view/gets?name={{name}}&status={{status}}
+Content-Type: application/json
+Authorization: Bearer {{menta_token}}

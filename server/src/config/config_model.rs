@@ -11,9 +11,25 @@ pub struct Database {
 }
 
 #[derive(Debug, Clone)]
+pub struct JwtEnv {
+    pub ttl: i64,
+    pub secret: String,
+}
+
+
+#[derive(Debug, Clone)]
 pub struct DotEnvyConfig {
     pub server: Server,
     pub database: Database,
     pub secret: String,
     // pub max_crew_per_mission: u32,
 }
+#[derive(Debug, Clone)]
+pub struct CloudinaryEnv {
+    pub cloud_name: String,
+    pub api_key: String,
+    pub secret: String,
+    pub api_secret: String,
+}
+
+
