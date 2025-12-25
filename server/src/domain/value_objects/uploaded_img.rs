@@ -1,9 +1,7 @@
-#[derive(Debug, Clone)]
-
+#[derive(Debug, Clone, serde::Deserialize)]
 pub struct UploadedImg {
     pub url: String,
     pub public_id: String,
-
 }
 
 impl UploadedImg {
@@ -12,10 +10,6 @@ impl UploadedImg {
     }
 }
 
-
 pub struct UploadBase64Img {
     pub base64_string: String,
-    
-
 }
-

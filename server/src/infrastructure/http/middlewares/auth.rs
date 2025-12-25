@@ -5,7 +5,7 @@ use axum::{
     response::Response,
 };
 
-use crate::{config::config_loader::get_user_secret, infrastructure::jwt::verify_token};
+use crate::{config::config_loader::get_jwt_env, infrastructure::jwt::verify_token};
 
 pub async fn auth(mut req: Request, next: Next) -> Result<Response, StatusCode> {
     let header = req
@@ -19,7 +19,8 @@ pub async fn auth(mut req: Request, next: Next) -> Result<Response, StatusCode> 
         .ok_or(StatusCode::UNAUTHORIZED)?
         .to_string();
 
-    let secret = get_user_secret().map_err(|_| StatusCode::UNAUTHORIZED)?;
+    let jwt_env = get_jwt_env().unwrap();
+    let secret = jwt_env.secret;
 
     let claims = verify_token(secret, token).map_err(|_| StatusCode::UNAUTHORIZED)?;
 

@@ -1,8 +1,8 @@
 use std::sync::Arc;
 
 use axum::{
-    Router,
-    extract::{Extension, Path, State},
+    Extension, Router,
+    extract::{Path, State},
     http::StatusCode,
     middleware,
     response::IntoResponse,
@@ -11,12 +11,8 @@ use axum::{
 
 use crate::{
     application::use_cases::mission_operation::MissionOperationUseCase,
-    domain::{
-        repositories::{
-            mission_operation::MissionOperationRepository,
-            mission_viewing::MissionViewingRepository,
-        },
-        value_objects::mission_statuses::MissionStatuses,
+    domain::repositories::{
+        mission_operation::MissionOperationRepository, mission_viewing::MissionViewingRepository,
     },
     infrastructure::{
         database::{
@@ -31,95 +27,63 @@ use crate::{
 };
 
 pub async fn in_progress<T1, T2>(
-    State(mission_operation_use_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
-    Extension(chief_id): Extension<i32>,
+    State(user_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
+    Extension(user_id): Extension<i32>,
     Path(mission_id): Path<i32>,
 ) -> impl IntoResponse
 where
     T1: MissionOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
 {
-    match mission_operation_use_case
-        .in_progress(mission_id, chief_id)
-        .await
-    {
-        Ok(mission_id) => (
-            StatusCode::OK,
-            format!(
-                "Mission({}) is now {:?}:",
-                mission_id,
-                MissionStatuses::InProgress
-            ),
-        )
-            .into_response(),
+    match user_case.in_progress(mission_id, user_id).await {
+        Ok(mission_id) => (StatusCode::OK, mission_id.to_string()).into_response(),
+
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
 
 pub async fn to_completed<T1, T2>(
-    State(mission_operation_use_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
-    Extension(chief_id): Extension<i32>,
+    State(user_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
+    Extension(user_id): Extension<i32>,
     Path(mission_id): Path<i32>,
 ) -> impl IntoResponse
 where
     T1: MissionOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
 {
-    match mission_operation_use_case
-        .to_completed(mission_id, chief_id)
-        .await
-    {
-        Ok(mission_id) => (
-            StatusCode::OK,
-            format!(
-                "Mission({}) is now {:?}:",
-                mission_id,
-                MissionStatuses::Completed
-            ),
-        )
-            .into_response(),
+    match user_case.to_completed(mission_id, user_id).await {
+        Ok(mission_id) => (StatusCode::OK, mission_id.to_string()).into_response(),
+
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
 
 pub async fn to_failed<T1, T2>(
-    State(mission_operation_use_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
-    Extension(chief_id): Extension<i32>,
+    State(user_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
+    Extension(user_id): Extension<i32>,
     Path(mission_id): Path<i32>,
 ) -> impl IntoResponse
 where
     T1: MissionOperationRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
 {
-    match mission_operation_use_case
-        .to_failed(mission_id, chief_id)
-        .await
-    {
-        Ok(mission_id) => (
-            StatusCode::OK,
-            format!(
-                "Mission({}) is now {:?}:",
-                mission_id,
-                MissionStatuses::Failed
-            ),
-        )
-            .into_response(),
+    match user_case.to_failed(mission_id, user_id).await {
+        Ok(mission_id) => (StatusCode::OK, mission_id.to_string()).into_response(),
+
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
 
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
-    let mission_operation_repository = MissionOperationPostgres::new(Arc::clone(&db_pool));
-    let mission_viewing_repository = MissionViewingPostgres::new(Arc::clone(&db_pool));
-    let use_case = MissionOperationUseCase::new(
-        Arc::new(mission_operation_repository),
-        Arc::new(mission_viewing_repository),
-    );
+    let mission_repository = MissionOperationPostgres::new(Arc::clone(&db_pool));
+    let viewing_repositiory = MissionViewingPostgres::new(Arc::clone(&db_pool));
+    let user_case =
+        MissionOperationUseCase::new(Arc::new(mission_repository), Arc::new(viewing_repositiory));
 
     Router::new()
         .route("/in-progress/{mission_id}", patch(in_progress))
         .route("/to-completed/{mission_id}", patch(to_completed))
         .route("/to-failed/{mission_id}", patch(to_failed))
         .route_layer(middleware::from_fn(auth))
-        .with_state(Arc::new(use_case))
+        .with_state(Arc::new(user_case))
 }

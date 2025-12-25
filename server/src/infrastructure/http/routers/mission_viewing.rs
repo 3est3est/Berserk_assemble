@@ -1,60 +1,59 @@
-// use anyhow::Result;
-// use std::sync::Arc;
+use std::sync::Arc;
 
-// use crate::domain::{
-//     repositories::mission_viewing::MissionViewingRepository,
-//     value_objects::{mission_filter::MissionFilter, mission_model::MissionModel},
-// };
+use axum::{
+    Json, Router,
+    extract::{Path, Query, State},
+    http::StatusCode,
+    response::IntoResponse,
+    routing::get,
+};
 
-// pub struct MissionViewingUseCase<T>
-// where
-//     T: MissionViewingRepository + Send + Sync,
-// {
-//     mission_viewing_repository: Arc<T>,
-// }
+use crate::{
+    application::use_cases::mission_viewing::MissionViewingUseCase,
+    domain::{
+        repositories::mission_viewing::MissionViewingRepository,
+        value_objects::mission_filter::MissionFilter,
+    },
+    infrastructure::database::{
+        postgresql_connection::PgPoolSquad, repositories::mission_viewing::MissionViewingPostgres,
+    },
+};
 
-// impl<T> MissionViewingUseCase<T>
-// where
-//     T: MissionViewingRepository + Send + Sync,
-// {
-//     pub fn new(mission_viewing_repository: Arc<T>) -> Self {
-//         Self {
-//             mission_viewing_repository,
-//         }
-//     }
+pub async fn get_one<T>(
+    State(user_case): State<Arc<MissionViewingUseCase<T>>>,
+    Path(mission_id): Path<i32>,
+) -> impl IntoResponse
+where
+    T: MissionViewingRepository + Send + Sync,
+{
+    match user_case.get_one(mission_id).await {
+        Ok(model) => (StatusCode::OK, Json(model)).into_response(),
 
-//     pub async fn view_detail(&self, mission_id: i32) -> Result<MissionModel> {
-//         let crew_count = self
-//             .mission_viewing_repository
-//             .crew_counting(mission_id)
-//             .await?;
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
 
-//         let model = self
-//             .mission_viewing_repository
-//             .get_one(mission_id)
-//             .await?;
+pub async fn get_all<T>(
+    State(user_case): State<Arc<MissionViewingUseCase<T>>>,
+    filter: Query<MissionFilter>,
+) -> impl IntoResponse
+where
+    T: MissionViewingRepository + Send + Sync,
+{
+    match user_case.get_all(&filter).await {
+        Ok(model) => (StatusCode::OK, Json(model)).into_response(),
 
-//         let result = model.to_model(crew_count.into());
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
 
-//         Ok(result)
-//     }
+pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
+    let viewing_repositiory = MissionViewingPostgres::new(Arc::clone(&db_pool));
+    let user_case = MissionViewingUseCase::new(Arc::new(viewing_repositiory));
 
-//     pub async fn get_all(&self, filter: &MissionFilter) -> Result<Vec<MissionModel>> {
-//         let models = self.mission_viewing_repository.get(filter).await?;
-
-//         let mut result = Vec::new();
-
-//         for model in models.into_iter() {
-//             let crew_count = self
-//                 .mission_viewing_repository
-//                 .crew_counting(model.id)
-//                 .await
-//                 .unwrap_or(0);
-
-//             result.push(model.to_model(crew_count.into()));
-//         }
-
-//         Ok(result)
-//     }
-// }
-
+    Router::new()
+        .route("/{mission_id}", get(get_one))
+        .route("/filter", get(get_all))
+        // .route_layer(middleware::from_fn(auth))
+        .with_state(Arc::new(user_case))
+}

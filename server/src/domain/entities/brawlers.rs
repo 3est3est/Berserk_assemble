@@ -11,7 +11,8 @@ pub struct BrawlerEntity {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub display_name: String,
-    pub avatar_url: String,
+    pub avatar_url: Option<String>,
+    pub avatar_public_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Insertable)]

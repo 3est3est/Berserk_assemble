@@ -36,6 +36,12 @@ where
 
         let mission = self.mission_viewing_repository.get_one(mission_id).await?;
 
+        if mission.chief_id == brawler_id {
+            return Err(anyhow::anyhow!(
+                "The Chief can not join in his own mission as a crew member!!"
+            ));
+        }
+
         let crew_count = self
             .mission_viewing_repository
             .crew_counting(mission_id)

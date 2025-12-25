@@ -10,7 +10,7 @@ use crate::{
     domain::{
         entities::brawlers::{BrawlerEntity, RegisterBrawlerEntity},
         repositories::brawlers::BrawlerRepository,
-        value_objects::{base64_img::Base64Img, uploaded_img::{self, UploadedImg}},
+        value_objects::{base64_img::Base64Img, uploaded_img::UploadedImg},
     },
     infrastructure::{
         cloudinary::{self, UploadImageOptions},
@@ -60,7 +60,7 @@ impl BrawlerRepository for BrawlerPostgres {
     ) -> Result<UploadedImg> {
         let uploaded_img = cloudinary::upload(base64img, opt).await?;
 
-        let mut conn  = Arc::clone(&self.db_pool).get()?;
+        let mut conn = Arc::clone(&self.db_pool).get()?;
 
         diesel::update(brawlers::table)
             .filter(brawlers::id.eq(user_id))
@@ -72,5 +72,4 @@ impl BrawlerRepository for BrawlerPostgres {
 
         Ok(uploaded_img)
     }
-
 }

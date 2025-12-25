@@ -14,7 +14,7 @@ impl RegisterBrawlerModel {
         RegisterBrawlerEntity {
             username: self.username.clone(),
             password: self.password.clone(),
-            display_name: self.username.clone(),
+            display_name: self.display_name.clone(),
         }
     }
 }

@@ -3,7 +3,7 @@ use crate::{
         repositories::brawlers::BrawlerRepository,
         value_objects::brawler_model::RegisterBrawlerModel,
     },
-    infrastructure::argon2::hash,
+    infrastructure::{argon2::hash, jwt::jwt_model::Passport},
 };
 use anyhow::Result;
 use std::sync::Arc;
@@ -23,7 +23,10 @@ where
         Self { brawler_repository }
     }
 
-    pub async fn register(&self, mut register_brawler_model: RegisterBrawlerModel) -> Result<i32> {
+    pub async fn register(
+        &self,
+        mut register_brawler_model: RegisterBrawlerModel,
+    ) -> Result<Passport> {
         let hashed_password = hash(register_brawler_model.password.clone())?;
 
         register_brawler_model.password = hashed_password;
@@ -32,6 +35,12 @@ where
 
         let id = self.brawler_repository.register(register_entity).await?;
 
-        Ok(id)
+        let passport = Passport::new(id)?;
+        Ok(passport)
+    }
+
+    //TODO: slide p.26
+    pub async fn upload_base64img() {
+        //implement this
     }
 }

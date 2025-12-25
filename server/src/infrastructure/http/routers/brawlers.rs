@@ -30,7 +30,7 @@ where
     T: BrawlerRepository + Send + Sync,
 {
     match user_case.register(model).await {
-        Ok(user_id) => (StatusCode::CREATED, user_id.to_string()).into_response(),
+        Ok(passport) => (StatusCode::CREATED, Json(passport)).into_response(),
 
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }

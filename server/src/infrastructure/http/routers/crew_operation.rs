@@ -18,8 +18,7 @@ use crate::{
         database::{
             postgresql_connection::PgPoolSquad,
             repositories::{
-                crew_operation::CrewOperationPostgres,
-                mission_viewing::MissionViewingPostgres,
+                crew_operation::CrewOperationPostgres, mission_viewing::MissionViewingPostgres,
             },
         },
         http::middlewares::auth::auth,
@@ -42,20 +41,7 @@ where
         )
             .into_response(),
 
-        Err(e) => {
-            let error_message = e.to_string();
-            if error_message.contains("Mission not found") {
-                (StatusCode::NOT_FOUND, error_message).into_response()
-            } else if error_message.contains("Unique violation") {
-                (StatusCode::CONFLICT, "Already joined this mission").into_response()
-            } else if error_message.contains("Mission is full")
-                || error_message.contains("Mission is not joinable")
-            {
-                (StatusCode::BAD_REQUEST, error_message).into_response()
-            } else {
-                (StatusCode::INTERNAL_SERVER_ERROR, error_message).into_response()
-            }
-        }
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
 
@@ -75,16 +61,7 @@ where
         )
             .into_response(),
 
-        Err(e) => {
-            let error_message = e.to_string();
-            if error_message.contains("Mission not found") {
-                (StatusCode::NOT_FOUND, error_message).into_response()
-            } else if error_message.contains("Mission is not leavable") {
-                (StatusCode::BAD_REQUEST, error_message).into_response()
-            } else {
-                (StatusCode::INTERNAL_SERVER_ERROR, error_message).into_response()
-            }
-        }
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }
 

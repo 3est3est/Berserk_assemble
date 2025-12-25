@@ -1,18 +1,12 @@
 use std::sync::Arc;
 
 use anyhow::Result;
-use chrono::{Duration, Utc};
 
 use crate::{
-    config::config_loader::get_user_secret,
     domain::repositories::brawlers::BrawlerRepository,
     infrastructure::{
         argon2,
-        jwt::{
-            authentication_model::LoginModel,
-            generate_token,
-            jwt_model::{Claims, Passport},
-        },
+        jwt::{authentication_model::LoginModel, jwt_model::Passport},
     },
 };
 pub struct AuthenticationUseCase<T>
@@ -30,7 +24,6 @@ where
     }
 
     pub async fn login(&self, login_model: LoginModel) -> Result<Passport> {
-        let secret = get_user_secret()?;
         let username = login_model.username.clone();
 
         //find this user in database
@@ -41,13 +34,6 @@ where
             return Err(anyhow::anyhow!("Invalid Password !!"));
         }
 
-        // let claims = Claims {
-        //     sub: user.id.to_string(),
-        //     exp: (Utc::now() + Duration::days(30)).timestamp() as usize,
-        //     iat: Utc::now().timestamp() as usize,
-        // };
-
-        // let token = generate_token(secret, &claims)?;
         let passport = Passport::new(user.id)?;
         Ok(passport)
     }
