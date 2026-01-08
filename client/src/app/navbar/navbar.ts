@@ -6,7 +6,7 @@ import {MatButtonModule} from '@angular/material/button';
   selector: 'app-navbar',
   imports: [MatToolbarModule, MatButtonModule],
   templateUrl: './navbar.html',
-  styleUrl: './navbar.css',
+  styleUrl: './navbar.scss',
 })
 export class Navbar {
   

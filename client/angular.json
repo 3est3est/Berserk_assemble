@@ -6,6 +6,11 @@
     "analytics": "1813bdce-b1ef-4156-9c7a-fcf6c458b832"
   },
   "newProjectRoot": "projects",
+  "schematics": {
+    "@schematics/angular:component": {
+      "style": "scss"
+    }
+  },
   "projects": {
     "client": {
       "projectType": "application",
@@ -27,7 +32,7 @@
             ],
             "styles": [
               "src/material-theme.scss",
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "server": "src/main.server.ts",
             "outputMode": "server",
