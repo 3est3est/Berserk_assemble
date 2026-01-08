@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './server-error.scss',
 })
 export class ServerError {
-
+  
 }
