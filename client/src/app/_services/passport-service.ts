@@ -40,7 +40,7 @@ export class PassportService {
 
   async get(login: LoginModel): Promise<null | string> {
     try {
-      const api_url = this._base_url + '/auth/login';
+      const api_url = this._base_url + '/authentication/login';
       await this.fetchPassport(api_url, login);
     } catch (error) {
       return `${error}`;
@@ -49,7 +49,7 @@ export class PassportService {
   }
 
   async register(register: RegisterModel): Promise<null | string> {
-    const api_url = this._base_url + '/brawlers/register';
+    const api_url = this._base_url + '/brawler/register';
     try {
       await this.fetchPassport(api_url, register);
     } catch (error) {
@@ -62,7 +62,7 @@ export class PassportService {
   }
 
   private async fetchPassport(api_url: string, model: LoginModel | RegisterModel) {
-    const response = await this._http.post<Passport>(api_url, model);
+    const response = this._http.post<Passport>(api_url, model);
     const passport = await firstValueFrom(response);
     this.data.set(passport);
     this.savePassportToLocalStorage();

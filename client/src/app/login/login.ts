@@ -9,16 +9,10 @@ import {
 import { passwordMatchValidator, PasswordValidator } from '../_helpers/password-validator';
 import { MatFormField } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {
-  MatCard,
-  MatCardActions,
-  MatCardContent,
-  MatCardHeader,
-  MatCardSubtitle,
-  MatCardTitle,
-} from '@angular/material/card';
+import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { PassportService } from '../_services/passport-service';
+import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-login',
   imports: [
@@ -26,12 +20,8 @@ import { PassportService } from '../_services/passport-service';
     ReactiveFormsModule,
     MatFormField,
     MatInputModule,
-    MatCardActions,
-    MatCardContent,
-    MatCardSubtitle,
-    MatCardTitle,
-    MatCardHeader,
-    MatCard,
+    MatCardModule,
+    MatButtonModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
@@ -46,14 +36,16 @@ export class Login {
   mode: 'login' | 'register' = 'login';
   form: FormGroup;
   errorMsg = {
-    username: signal<string | null>(''),
-    password: signal<string | null>(''),
-    display_name: signal<string | null>(''),
-    cf_password: signal<string | null>(''),
+    username: signal(''),
+    password: signal(''),
+    display_name: signal(''),
+    cf_password: signal(''),
   };
 
   private _router = inject(Router);
   private _passport = inject(PassportService);
+
+  private matchValidator = passwordMatchValidator('password', 'cf_password');
 
   constructor() {
     this.form = new FormGroup({
@@ -74,12 +66,12 @@ export class Login {
   }
   updateForm() {
     if (this.mode === 'login') {
-      this.form.removeControl('cf_name');
-      this.form.removeValidators(passwordMatchValidator('password', 'cf_password'));
+      this.form.removeControl('cf_password');
+      this.form.removeValidators(this.matchValidator);
       this.form.removeControl('display_name');
     } else {
       this.form.addControl('cf_password', new FormControl(null, [Validators.required]));
-      this.form.addValidators(passwordMatchValidator('password', 'cf_password'));
+      this.form.addValidators(this.matchValidator);
       this.form.addControl(
         'display_name',
         new FormControl(null, [
