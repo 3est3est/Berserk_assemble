@@ -13,7 +13,7 @@
           formControlName="username"
           (input)="updateErrorMsg('username')"
           matInput
-          placeholder="username"
+          placeholder="type your username"
         />
         @if(form.controls['username'].invalid){
         <mat-error>
@@ -29,7 +29,7 @@
           formControlName="password"
           (input)="updateErrorMsg('password')"
           matInput
-          placeholder="password"
+          placeholder="type your password"
         />
         @if(form.controls['password'].invalid){
         <mat-error>
@@ -63,7 +63,7 @@
           formControlName="display_name"
           (input)="updateErrorMsg('display_name')"
           matInput
-          placeholder="display name"
+          placeholder="type your display name"
         />
         @if(form.controls['display_name'].invalid){
         <mat-error>
@@ -75,7 +75,7 @@
 
       <button
         (click)="onSubmit()"
-        [disabled]="form.valid"
+        [disabled]="form.invalid"
         mat-raised-button
         color="primary"
         class="login-btn"

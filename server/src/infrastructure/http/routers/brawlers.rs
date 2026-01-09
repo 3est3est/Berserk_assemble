@@ -1,9 +1,8 @@
-use std::sync::Arc;
 use axum::{
-    Extension, Json, Router, extract::State, http::StatusCode as AxumStatusCode, response::IntoResponse,
-    routing::post,
+    Extension, Json, Router, extract::State, http::StatusCode as AxumStatusCode,
+    response::IntoResponse, routing::post,
 };
-
+use std::sync::Arc;
 
 use crate::{
     application::use_cases::brawlers::BrawlersUseCase,
@@ -13,7 +12,7 @@ use crate::{
     },
     infrastructure::{
         database::{postgresql_connection::PgPoolSquad, repositories::brawlers::BrawlerPostgres},
-        http::middlewares::auth::{auth},
+        http::middlewares::auth::auth,
     },
 };
 
@@ -41,7 +40,10 @@ where
     match user_case.register(model).await {
         Ok(passport) => (AxumStatusCode::CREATED, Json(passport)).into_response(),
 
-        Err(e) => (AxumStatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+        Err(e) => {
+            tracing::error!("Register error: {:?}", e);
+            (AxumStatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response()
+        }
     }
 }
 
