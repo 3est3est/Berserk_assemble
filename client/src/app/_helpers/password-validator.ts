@@ -22,6 +22,6 @@ export const passwordMatchValidator = (ctrl_pw_name: string, ctrl_cf_pw_name: st
     const isMatch = ctrlPw.value == ctrlCfPw.value;
     if (!isMatch) ctrlCfPw.setErrors({ mismatch: true });
     else ctrlCfPw.setErrors(null);
-    return { passwordMatch: true };
+    return null;
   };
 };

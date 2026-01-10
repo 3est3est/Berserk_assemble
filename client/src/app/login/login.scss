@@ -9,6 +9,10 @@
     padding: 0;
     margin-bottom: 1em;
   }
+
+  h4 {
+    text-align: center;
+  }
   .error {
     color: #bb303b;
     font-size: small;
@@ -43,6 +47,17 @@
     cursor: not-allowed;
     opacity: 0.6;
   }
+
+  .login-btn {
+    display: block;
+    margin: 0 auto;
+  }
+
+  p {
+    text-align: center;
+    margin: 10px 0;
+  }
+
   .toggle {
     color: #a2abb4;
     width: 100%;
