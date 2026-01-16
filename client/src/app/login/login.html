@@ -6,6 +6,8 @@
       } @if(mode !== 'login'){
       <h4>Register</h4>
       }
+
+      <!-- username -->
       <mat-form-field class="example-full-width">
         <mat-label>username</mat-label>
         <input
@@ -22,6 +24,7 @@
         }
       </mat-form-field>
 
+      <!-- password -->
       <mat-form-field class="example-full-width">
         <mat-label>password</mat-label>
         <input
@@ -39,6 +42,7 @@
       </mat-form-field>
 
       <!-- register -->
+      <!-- confirm password -->
       @if(mode !== 'login'){
       <mat-form-field class="example-full-width">
         <mat-label>confirm password</mat-label>
@@ -55,6 +59,7 @@
         </mat-error>
         }
       </mat-form-field>
+
       <!-- display name -->
       <mat-form-field class="example-full-width">
         <mat-label>Display Name</mat-label>
@@ -75,13 +80,16 @@
 
       <button
         (click)="onSubmit()"
-        [disabled]="form.invalid"
+        [disabled]="!form.valid"
         mat-raised-button
         color="primary"
         class="login-btn"
       >
         @if(mode === 'login'){ Login } @if(mode !== 'login'){ Register }
       </button>
+      @if (errorMsg.server() !== '') {
+      <span> class="server-error">{{ errorMsg.server() }}</span>
+      }
       <p>or</p>
       @if(mode === 'login'){
       <div class="toggle">

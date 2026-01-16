@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { LoginModel, Passport, RegisterModel } from '../_models/passport';
 import { firstValueFrom } from 'rxjs';
+import { MatCardLgImage } from '@angular/material/card';
 // import { environment } from '../../environments/environment.development';
 @Injectable({
   providedIn: 'root',
@@ -38,6 +39,11 @@ export class PassportService {
     this.loadPassportFromLocalStorage();
   }
 
+  destroy() {
+    this.data.set(undefined);
+    localStorage.removeItem(this._key);
+  }
+
   async get(login: LoginModel): Promise<null | string> {
     try {
       const api_url = this._base_url + '/authentication/login';
@@ -61,10 +67,19 @@ export class PassportService {
     return null;
   }
 
-  private async fetchPassport(api_url: string, model: LoginModel | RegisterModel) {
-    const response = this._http.post<Passport>(api_url, model);
-    const passport = await firstValueFrom(response);
-    this.data.set(passport);
-    this.savePassportToLocalStorage();
+  private async fetchPassport(
+    api_url: string,
+    model: LoginModel | RegisterModel
+  ): Promise<string | null> {
+    try {
+      const result = this._http.post<Passport>(api_url, model);
+      const passport = await firstValueFrom(result);
+      this.data.set(passport);
+      this.savePassportToLocalStorage();
+      return null;
+    } catch (error: any) {
+      console.log(error.error);
+      return error.error;
+    }
   }
 }

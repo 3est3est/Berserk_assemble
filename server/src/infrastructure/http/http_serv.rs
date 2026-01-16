@@ -19,7 +19,10 @@ use tracing::info;
 
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::{database::postgresql_connection::PgPoolSquad, http::routers},
+    infrastructure::{
+        database::postgresql_connection::PgPoolSquad,
+        http::routers::{self},
+    },
 };
 
 fn static_serve() -> Router {
@@ -53,6 +56,7 @@ fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
             "/authentication",
             routers::authentication::routes(Arc::clone(&db_pool)),
         )
+        .nest("/util", routers::default_router::routes())
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 
