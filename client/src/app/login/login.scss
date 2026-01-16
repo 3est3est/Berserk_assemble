@@ -4,53 +4,84 @@
   justify-content: center;
   align-items: center;
 
+  
+
   h3 {
     margin: 0;
     padding: 0;
     margin-bottom: 1em;
+    background-image: linear-gradient(100deg, #cba6f7,#f5c2e7);
+    background-clip: text;
+    color: transparent;
   }
 
-  h4 {
-    text-align: center;
-  }
-  .error {
+  .mat-error {
     color: #bb303b;
     font-size: small;
     text-align: center;
     margin-top: 0.2em;
   }
+  
   mat-card {
     margin-top: 2em;
     padding: 2em;
+    border-radius: 12px; 
+    border: 1px solid transparent;
+    background-image: 
+      linear-gradient(var(--app-bg), var(--app-bg)),
+      linear-gradient(100deg, #f5c2e7, #cba6f7);
+      background-origin: border-box;
+    background-clip: padding-box, border-box;
   }
+
   div.login-spacer,
   form {
     width: 300px;
     min-width: 200px;
     max-width: 400px;
   }
+
   mat-form-field {
-    /* border: 1px solid green; */
-    height: 50px;
+    width: 100%;
     margin-bottom: 1.2em;
     display: block;
+
+  ::ng-deep .mat-mdc-input-element {
+    color: var(--app-text);
   }
-  button.blue {
-    font-size: large;
-    width: 100%;
-    background-color: #209fb5;
-    color: rgb(241, 250, 250);
+  ::ng-deep .mat-mdc-floating-label {
+    color: var(--app-text) ;
   }
-  button.blue:disabled {
-    background-color: #a1a9d6;
-    color: #d4d9e9;
-    cursor: not-allowed;
-    opacity: 0.6;
+  ::ng-deep .mat-mdc-input-element::placeholder {
+    color: #b4befe; 
   }
 
-  .login-btn {
-    display: block;
-    margin: 0 auto;
+  &:hover ::ng-deep {
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: #fab387 !important; 
+    }
+    .mat-mdc-floating-label {
+      color: #fab387 !important;
+    }
+  }
+  
+}
+
+  button.login-btn-color {
+    font-size: large;
+    width: 100%;
+    background-color: #94e2d5;
+    background: linear-gradient(50deg, #94e2d5, #f5c2e7, #fab387);
+    color: #181825;
+  }
+
+  button.login-btn-color:disabled {
+    background-color: rgb(102, 147, 149);
+    color: #11111b;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 
   p {
@@ -59,15 +90,19 @@
   }
 
   .toggle {
-    color: #a2abb4;
+    color: var(--app-text);
     width: 100%;
     text-align: center;
     font-size: small;
   }
   .toggle span {
-    color: #209fb5;
+    color: #89dceb;
     font-weight: 900;
     cursor: pointer;
+    :hover {
+      color: #89dceb;
+      text-decoration: underline;
+    }
   }
 
   div.login-spacer {
@@ -81,7 +116,7 @@
     margin-top: 1em;
     margin-bottom: 1em;
 
-    /* border: 1px solid green; */
+    // border: 1px solid green;
   }
 
   div.login-spacer::after {

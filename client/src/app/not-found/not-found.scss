@@ -42,6 +42,9 @@ a {
 }
 
 .number {
+  background-image: linear-gradient(100deg,#cba6f7, #f5c2e7, #fab387);
+  background-clip: text;
+  color: transparent;
   font-weight: 900;
   font-size: 15rem;
   line-height: 1;
@@ -60,7 +63,7 @@ a {
   width: 12.2rem;
   height: 11.4rem;
   border-radius: 50%;
-  background-color: $blue;
+  background-color: #181825;
 }
 
 .clip {
@@ -179,19 +182,22 @@ a {
 }
 
 .text {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: large;
   margin-top: 5rem;
-  font-weight: 300;
-  color: $blue;
+  font-weight: 800;
+  color: var(--app-text);
 }
 
 .button {
   margin-top: 4rem;
   padding: 1.2rem 3rem;
-  color: $white;
-  background-color: $green;
+  color: #11111b;
+  background-image: linear-gradient(100deg,#94e2d5, #a6e3a1);
+  border-radius: 0.5rem;
 
   &:hover {
-    background-color: $green-dark;
+    background-image: linear-gradient(100deg,#94e2d5, #74c7ec);
   }
 }
 

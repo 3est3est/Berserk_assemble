@@ -1,11 +1,18 @@
 <mat-toolbar class="my-navbar">
-  <span
+  <button
+    type="button"
     class="home-btn"
     routerLink="/"
     routerLinkActive="active"
-    [routerLinkActiveOptions]="{ exact: true }"
-    >Berserk Assemble</span
+    [routerLinkActiveOptions]="{
+      paths: 'exact',
+      queryParams: 'ignored',
+      matrixParams: 'ignored',
+      fragment: 'ignored'
+    }"
   >
+    Berserk Assemble
+  </button>
   <span class="spacer"></span>
   @if (display_name()) {
   <button matButton [matMenuTriggerFor]="menu">

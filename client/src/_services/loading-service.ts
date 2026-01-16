@@ -20,7 +20,7 @@ export class LoadingService {
   loading() {
     this.loadingRequestCount++;
     if (this.loadingRequestCount !== 1) return;
-    if (this._componentRef) {
+    if (!this._componentRef) {
       this._componentRef = createComponent(Spinner, {
         environmentInjector: this._injector,
       });
@@ -28,7 +28,7 @@ export class LoadingService {
 
     document.body.appendChild(this._componentRef!.location.nativeElement);
     this._appRef.attachView(this._componentRef!.hostView);
-    this._componentRef!.instance.show();
+    this._componentRef.instance.show();
   }
 
   idle() {

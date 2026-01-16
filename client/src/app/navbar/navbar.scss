@@ -7,6 +7,7 @@
     justify-content: center;
     align-items: center;
     gap: 5px;
+    background-color: #181825;
 
 
     button {
@@ -16,6 +17,7 @@
         cursor: pointer;
         border: none;
         background: none;
+        color: var(--app-text);
 
 
         mat-icon {
@@ -24,29 +26,54 @@
             padding: 0;
         }
     }
+    
+
 
 
     .home-btn {
         font-size: x-large;
+        font-weight: bold;
+        background-image: linear-gradient(100deg,#94e2d5, #f5c2e7, #fab387);
+        background-clip: text;
+        color: transparent;
+
     }
 
 
     button:not(.home-btn) {
-        font-size: medium;
+        font-size: 0.95rem;
+        font-weight: 500;
         margin-top: 0.5em;
-    }
+        padding: 5px 14px 5px 6px;
+        border-radius: 99px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
 
+        &:hover {
+            background-color: rgba(255, 255, 255, 0.08) !important;
+            color: #94e2d5 !important;
+            border-color: rgba(148, 226, 213, 0.3) !important;
+            transform: translateY(-1px);
+        }
 
-    button.active:not(.home-btn) {
-        border-bottom: 0.15em solid #fd2121;
-    }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #313244;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            margin: 0;
+        }
 
-
-    .avatar {
-        margin-right: 5px;
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        object-fit: cover;
+        &:hover .avatar {
+            transform: scale(1.08);
+            box-shadow: 0 0 12px rgba(148, 226, 213, 0.4), 0 0 0 1px #94e2d5;
+        }
     }
 }
