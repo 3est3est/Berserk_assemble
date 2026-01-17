@@ -80,7 +80,7 @@ export class Login {
         new FormControl(null, [
           Validators.required,
           Validators.minLength(this.displayNameMinLength),
-        ])
+        ]),
       );
     }
   }
@@ -102,17 +102,17 @@ export class Login {
         if (ctrl.hasError('required')) this.errorMsg.password.set('required');
         else if (ctrl.hasError('invalidLength'))
           this.errorMsg.password.set(
-            `must be ${this.passwordMinLength} - ${this.passwordMaxLength} characters`
+            `must be ${this.passwordMinLength} - ${this.passwordMaxLength} characters`,
           );
         else if (ctrl.hasError('invalidLowerCase'))
-          this.errorMsg.password.set(`must contain mimimi, of 1 lower-case letter [a-z]`);
+          this.errorMsg.password.set(`must contain minimum, of 1 lower-case letter [a-z]`);
         else if (ctrl.hasError('invalidUpperCase'))
-          this.errorMsg.password.set(`must contain mimimi, of 1 upper-case letter [A-Z]`);
+          this.errorMsg.password.set(`must contain minimum, of 1 upper-case letter [A-Z]`);
         else if (ctrl.hasError('invalidNumeric'))
-          this.errorMsg.password.set(`must contain mimimi, of 1 numeric [0-9]`);
+          this.errorMsg.password.set(`must contain minimum, of 1 numeric [0-9]`);
         else if (ctrl.hasError('invalidSpecialChar'))
           this.errorMsg.password.set(
-            `must contain mimimi, of 1 special character [!@#$%^&*(),.?":{}|<>]`
+            `must contain minimum, of 1 special character [!@#$%^&*(),.?":{}|<>]`,
           );
         else this.errorMsg.password.set('');
         break;
@@ -120,7 +120,7 @@ export class Login {
         if (ctrl.hasError('required')) this.errorMsg.display_name.set('required');
         else if (ctrl.hasError('minlength'))
           this.errorMsg.display_name.set(
-            `must be at least ${this.displayNameMinLength} characters log`
+            `must be at least ${this.displayNameMinLength} characters log`,
           );
         else this.errorMsg.display_name.set('');
         break;
