@@ -72,13 +72,11 @@
   button.login-btn-color {
     font-size: large;
     width: 100%;
-    background-color: #94e2d5;
     background: linear-gradient(50deg, #94e2d5, #f5c2e7, #fab387);
     color: #181825;
   }
 
   button.login-btn-color:disabled {
-    background-color: rgb(102, 147, 149);
     color: #11111b;
     cursor: not-allowed;
     opacity: 0.6;
@@ -99,8 +97,7 @@
     color: #89dceb;
     font-weight: 900;
     cursor: pointer;
-    :hover {
-      color: #89dceb;
+    &:hover {
       text-decoration: underline;
     }
   }
