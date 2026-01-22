@@ -5,6 +5,7 @@ import { Profile } from './profile/profile';
 import { ServerError } from './server-error/server-error';
 import { NotFound } from './not-found/not-found';
 import { authGuard } from '../_guard/auth-guard';
+import { Missions } from './missions/missions';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -12,6 +13,12 @@ export const routes: Routes = [
   {
     path: 'profile',
     component: Profile,
+    canActivate: [authGuard],
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: 'mission',
+    component: Missions,
     canActivate: [authGuard],
     runGuardsAndResolvers: 'always',
   },

@@ -8,13 +8,14 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { loadingInterceptor } from './_interceptors/loading-interceptor';
-import { errorInterceptor } from './_services/error-interceptor';
+import { errorInterceptor } from './_interceptors/error-interceptor';
+import { jwtInterceptor } from './_interceptors/jwt-interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([loadingInterceptor, errorInterceptor])),
+    provideHttpClient(withInterceptors([loadingInterceptor, errorInterceptor, jwtInterceptor])),
     // importProvidersFrom(NgxSpinnerModule),
   ],
 };
