@@ -27,6 +27,7 @@ impl MissionEntity {
             description: self.description.clone(),
             status: self.status.clone(),
             chief_id: self.chief_id,
+            chief_display_name: "".to_string(), // Entity doesn't have this, used in simple conversions
             crew_count,
             created_at: self.created_at,
             updated_at: self.updated_at,

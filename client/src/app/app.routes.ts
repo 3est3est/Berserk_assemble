@@ -6,6 +6,7 @@ import { ServerError } from './server-error/server-error';
 import { NotFound } from './not-found/not-found';
 import { authGuard } from './_guard/auth-guard';
 import { Missions } from './missions/missions';
+import { MissionManager } from './missions/mission-manager/mission-manager';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -19,6 +20,12 @@ export const routes: Routes = [
   {
     path: 'missions',
     component: Missions,
+    canActivate: [authGuard],
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: 'chief',
+    component: MissionManager,
     canActivate: [authGuard],
     runGuardsAndResolvers: 'always',
   },
