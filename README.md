@@ -1,2 +1,5 @@
 Internet-Programming 
-Angular and Rust-Axum
+### Frontend ###
+Angular 21 
+### Backend ###
+Rust Axum Diesel
