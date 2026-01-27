@@ -1,6 +1,6 @@
 export interface MissionFilter {
   name?: string;
-  status?: string;
+  status?: MissionStatus;
 }
 
 export type MissionStatus = 'Open' | 'InProgress' | 'Completed' | 'Failed';

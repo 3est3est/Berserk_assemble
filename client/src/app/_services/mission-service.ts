@@ -27,10 +27,10 @@ export class MissionService {
     const params: string[] = [];
 
     if (filter.name && filter.name.trim()) {
-      params.push(`name = ${encodeURIComponent(filter.name.trim())}`);
+      params.push(`name=${encodeURIComponent(filter.name.trim())}`);
     }
     if (filter.status) {
-      params.push(`status = ${encodeURIComponent(filter.status)}`);
+      params.push(`status=${encodeURIComponent(filter.status)}`);
     }
 
     return params.join('&');

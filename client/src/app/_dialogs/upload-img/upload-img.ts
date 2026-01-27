@@ -16,7 +16,7 @@ import { fileTypeFromBlob } from 'file-type';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UploadImg {
-  acceptedMimeTypes = ['image/jpeg', 'image/png'];
+  acceptedMimeType = ['image/jpeg', 'image/png'];
   imgFile: File | undefined;
   imgPreview = signal<string | undefined>(undefined);
   errorMsg = signal<string | undefined>(undefined);
@@ -35,7 +35,7 @@ export class UploadImg {
     if (input.files && input.files.length > 0) {
       this.imgFile = input.files[0];
       const fileType = await fileTypeFromBlob(this.imgFile);
-      if (fileType && this.acceptedMimeTypes.includes(fileType.mime)) {
+      if (fileType && this.acceptedMimeType.includes(fileType.mime)) {
         const reader = new FileReader();
         reader.onerror = () => {
           this.imgFile = undefined;

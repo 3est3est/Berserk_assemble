@@ -1,3 +1,6 @@
+@base_url = http://127.0.0.1:8000/api
+@menta_token = eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwiZXhwIjoxNzc0MjU0ODI3LCJpYXQiOjE3NjkwNzA4Mjd9.8_mlRE8B2BVJwPotqvpJz959CYXBSDk-RNWlcf048kk
+
 ### create new mission
 # @prompt mission_name Mission Name
 # @prompt description Mission Description

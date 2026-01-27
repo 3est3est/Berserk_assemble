@@ -6,7 +6,7 @@ import {
   inject,
   Injectable,
 } from '@angular/core';
-import { Spinner } from '../app/_components/spinner/spinner';
+import { Spinner } from '../_components/spinner/spinner';
 
 @Injectable({
   providedIn: 'root',

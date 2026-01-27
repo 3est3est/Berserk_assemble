@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './not-found.scss',
 })
 export class NotFound {
-  
+
 }

@@ -14,12 +14,12 @@ export const PasswordValidator = (min: number, max: number): ValidatorFn => {
   };
 };
 
-export const passwordMatchValidator = (ctrl_pw_name: string, ctrl_cf_pw_name: string) => {
+export const passwordMatchValidator = (ctrl_pw_name: string, ctrl_cf_pw_name: string): ValidatorFn => {
   return (formGroup: AbstractControl) => {
     const ctrlPw = formGroup.get(ctrl_pw_name);
     const ctrlCfPw = formGroup.get(ctrl_cf_pw_name);
     if (!ctrlPw || !ctrlCfPw) return null;
-    const isMatch = ctrlPw.value == ctrlCfPw.value;
+    const isMatch = ctrlPw.value === ctrlCfPw.value;
     if (!isMatch) ctrlCfPw.setErrors({ mismatch: true });
     else ctrlCfPw.setErrors(null);
     return null;

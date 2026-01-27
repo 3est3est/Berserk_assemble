@@ -27,14 +27,14 @@ export class PassportService {
     }
   }
 
-  private loadPassportFromLocalStorage() {
+  private loadPassportFromLocalStorage(): string | null {
     const jsonString = localStorage.getItem(this._key);
-    if (!jsonString) return 'not found passport';
+    if (!jsonString) return 'not found ';
     try {
       const passport = JSON.parse(jsonString) as Passport;
       this.data.set(passport);
       const avatar = getAvatarUrl(passport);
-      this.avatar;
+      this.avatar.set(avatar);
     } catch (error) {
       return `${error}`;
     }
@@ -43,10 +43,9 @@ export class PassportService {
 
   private savePassportToLocalStorage() {
     const passport = this.data();
-    if (!passport) return 'not found passport';
+    if (!passport) return;
     const jsonString = JSON.stringify(passport);
     localStorage.setItem(this._key, jsonString);
-    return null;
   }
 
   constructor() {
@@ -59,27 +58,14 @@ export class PassportService {
     localStorage.removeItem(this._key);
   }
 
-  async get(login: LoginModel): Promise<null | string> {
-    try {
-      const api_url = this._base_url + '/authentication/login';
-      await this.fetchPassport(api_url, login);
-    } catch (error) {
-      return `${error}`;
-    }
-    return null;
+  async get(login: LoginModel): Promise<string | null> {
+    const api_url = this._base_url + '/authentication/login';
+    return await this.fetchPassport(api_url, login);
   }
 
-  async register(register: RegisterModel): Promise<null | string> {
+  async register(register: RegisterModel): Promise<string | null> {
     const api_url = this._base_url + '/brawler/register';
-    try {
-      await this.fetchPassport(api_url, register);
-    } catch (error) {
-      if (error instanceof HttpErrorResponse) {
-        return error.error;
-      }
-      return `${error}`;
-    }
-    return null;
+    return await this.fetchPassport(api_url, register);
   }
 
   private async fetchPassport(
@@ -90,10 +76,12 @@ export class PassportService {
       const result = this._http.post<Passport>(api_url, model);
       const passport = await firstValueFrom(result);
       this.data.set(passport);
+      this.avatar.set(getAvatarUrl(passport)); // เพื่อให้ รูป avatar เปลี่ยนทันที ที่ login ไม่ต้อง รีเฟรชหน้าเว็บ
       this.savePassportToLocalStorage();
       return null;
     } catch (error: any) {
-      console.log(error.error);
+      // console.error(error)
+      // console.log(error.error);
       return error.error;
     }
   }

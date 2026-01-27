@@ -4,7 +4,7 @@ import { Login } from './login/login';
 import { Profile } from './profile/profile';
 import { ServerError } from './server-error/server-error';
 import { NotFound } from './not-found/not-found';
-import { authGuard } from '../_guard/auth-guard';
+import { authGuard } from './_guard/auth-guard';
 import { Missions } from './missions/missions';
 
 export const routes: Routes = [
@@ -17,7 +17,7 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
   },
   {
-    path: 'mission',
+    path: 'missions',
     component: Missions,
     canActivate: [authGuard],
     runGuardsAndResolvers: 'always',

@@ -16,7 +16,7 @@ export class Navbar {
   private _passport = inject(PassportService);
   display_name: Signal<string | undefined>;
   avatar_url: Signal<string | undefined>;
-  router = inject(Router);
+  _router = inject(Router);
 
   constructor() {
     this.display_name = computed(() => this._passport.data()?.display_name);
@@ -25,6 +25,6 @@ export class Navbar {
 
   logout() {
     this._passport.destroy();
-    this.router.navigate(['/login']);
+    this._router.navigate(['/login']);
   }
 }
