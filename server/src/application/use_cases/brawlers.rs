@@ -2,14 +2,11 @@ use crate::{
     domain::{
         repositories::brawlers::BrawlerRepository,
         value_objects::{
-            base64_img::Base64Img, brawler_model::RegisterBrawlerModel, uploaded_img::UploadedImg,
+            base64_img::Base64Img, brawler_model::RegisterBrawlerModel,
+            mission_model::MissionModel, uploaded_img::UploadedImg,
         },
     },
-    infrastructure::{
-        argon2::hash,
-        cloudinary::{UploadImageOptions},
-        jwt::jwt_model::Passport,
-    },
+    infrastructure::{argon2::hash, cloudinary::UploadImageOptions, jwt::jwt_model::Passport},
 };
 use anyhow::Result;
 use std::sync::Arc;
@@ -48,7 +45,6 @@ where
         user_id: i32,
         base64string: String,
     ) -> Result<UploadedImg> {
-
         let opt = UploadImageOptions {
             folder: Some("avatar".to_string()),
             public_id: Some(user_id.to_string()),
@@ -58,10 +54,14 @@ where
         let base64img = Base64Img::new(base64string)?;
 
         let uploaded = self
-        .brawler_repository
-        .upload_base64img(user_id, base64img, opt)
-        .await?;
+            .brawler_repository
+            .upload_base64img(user_id, base64img, opt)
+            .await?;
 
-        Ok(uploaded) 
+        Ok(uploaded)
+    }
+
+    pub async fn get_my_missions(&self, brawler_id: i32) -> Result<Vec<MissionModel>> {
+        self.brawler_repository.get_missions(brawler_id).await
     }
 }

@@ -3,6 +3,7 @@ import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { MissionFilter } from '../_models/mission-filter';
 import { firstValueFrom } from 'rxjs';
+import { AddMission } from '../_models/add-mission';
 import { Mission } from '../_models/mission';
 
 @Injectable({
@@ -34,5 +35,19 @@ export class MissionService {
     }
 
     return params.join('&');
+  }
+
+  async add(mission: AddMission): Promise<number> {
+    const url = this._base_url + '/mission-management';
+    const observable = this._http.post<{ mission_id: number }>(url, mission);
+    const resp = await firstValueFrom(observable);
+    return resp.mission_id;
+  }
+
+  async getMyMissions(): Promise<Mission[]> {
+    const url = this._base_url + '/brawler/my-missions';
+    const observable = this._http.get<Mission[]>(url);
+    const missions = await firstValueFrom(observable);
+    return missions;
   }
 }

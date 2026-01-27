@@ -16,6 +16,7 @@ export class PassportService {
 
   data = signal<undefined | Passport>(undefined);
   avatar = signal<string>('');
+  isSignin = signal<boolean>(false);
 
   saveAvatarImgUrl(url: string) {
     let passport = this.data();
@@ -35,6 +36,7 @@ export class PassportService {
       this.data.set(passport);
       const avatar = getAvatarUrl(passport);
       this.avatar.set(avatar);
+      this.isSignin.set(true);
     } catch (error) {
       return `${error}`;
     }
@@ -46,6 +48,7 @@ export class PassportService {
     if (!passport) return;
     const jsonString = JSON.stringify(passport);
     localStorage.setItem(this._key, jsonString);
+    this.isSignin.set(true);
   }
 
   constructor() {
@@ -55,6 +58,7 @@ export class PassportService {
   destroy() {
     this.data.set(undefined);
     this.avatar.set('');
+    this.isSignin.set(false);
     localStorage.removeItem(this._key);
   }
 
