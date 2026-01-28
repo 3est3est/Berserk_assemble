@@ -12,7 +12,9 @@ import { MatInputModule } from '@angular/material/input';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { PassportService } from '../_services/passport-service';
+import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+
 @Component({
   selector: 'app-login',
   imports: [
@@ -22,6 +24,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatInputModule,
     MatCardModule,
     MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
@@ -128,7 +131,6 @@ export class Login {
         else this.errorMsg.cf_password.set('');
         break;
     }
-
   }
   async onSubmit() {
     this.errorMsg.server.set('');

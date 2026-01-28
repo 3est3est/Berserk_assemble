@@ -1,16 +1,13 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import {
-  MatDialogActions,
-  MatDialogContent,
-  MatDialogRef,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { fileTypeFromBlob } from 'file-type';
+
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-upload-img',
-  imports: [MatDialogActions, MatDialogContent, MatDialogTitle, MatButtonModule],
+  imports: [MatDialogContent, MatDialogTitle, MatButtonModule, MatIconModule],
   templateUrl: './upload-img.html',
   styleUrl: './upload-img.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +17,7 @@ export class UploadImg {
   imgFile: File | undefined;
   imgPreview = signal<string | undefined>(undefined);
   errorMsg = signal<string | undefined>(undefined);
-  private readonly _dialogRef = inject(MatDialogRef<UploadImg>);
+  public readonly _dialogRef = inject(MatDialogRef<UploadImg>);
 
   onSubmit() {
     this._dialogRef.close(this.imgFile);

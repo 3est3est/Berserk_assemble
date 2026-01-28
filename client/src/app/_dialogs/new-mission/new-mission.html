@@ -1,12 +1,35 @@
-<h4 mat-dialog-title>New Mission</h4>
-<mat-dialog-content>
-  <input type="text" [(ngModel)]="addMission.name" placeholder="Mission Name" />
-  <textarea [(ngModel)]="addMission.description" placeholder="Mission Description"></textarea>
+<div class="new-mission-dialog">
+  <h2 mat-dialog-title>Create New Mission</h2>
 
-  <mat-dialog-actions>
-    <button matButton mat-dialog-close>Cancel</button>
-    <button (click)="onSubmit()" mat-stroked-button type="submit" [disabled]="!addMission.name">
-      Create
+  <mat-dialog-content>
+    <div class="form-container">
+      <mat-form-field appearance="outline">
+        <mat-label>Mission Name</mat-label>
+        <input matInput [(ngModel)]="addMission.name" placeholder="Enter mission name" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mission Description</mat-label>
+        <textarea
+          matInput
+          [(ngModel)]="addMission.description"
+          placeholder="What is this mission about?"
+          rows="4"
+        ></textarea>
+      </mat-form-field>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button mat-dialog-close class="cancel-btn">Cancel</button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      [disabled]="!addMission.name"
+      class="create-btn"
+    >
+      Create Mission
     </button>
   </mat-dialog-actions>
-</mat-dialog-content>
+</div>

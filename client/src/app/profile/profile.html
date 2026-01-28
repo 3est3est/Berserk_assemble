@@ -1,7 +1,21 @@
-<p>profile works!</p>
+<div class="profile-page">
+  <div class="profile-card">
+    <div class="avatar-section">
+      <div class="avatar-container">
+        <img [src]="avatar_url()" alt="user-avatar" class="display-avatar" />
+        <div class="avatar-overlay" (click)="openDialog()">
+          <mat-icon>camera_alt</mat-icon>
+          <span>Update</span>
+        </div>
+      </div>
+      <h2 class="display-name">{{ display_name() }}</h2>
+    </div>
 
-<img src="{{ avatar_url() }}" alt="user-avatar" />
-
-<div class="upload-photo">
-  <button (click)="openDialog()">new Avatar</button>
+    <div class="actions">
+      <button class="primary-btn" (click)="openDialog()">
+        <mat-icon>edit_square</mat-icon>
+        Change Avatar
+      </button>
+    </div>
+  </div>
 </div>

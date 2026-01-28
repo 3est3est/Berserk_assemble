@@ -3,12 +3,20 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { PassportService } from '../_services/passport-service';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatIconModule } from '@angular/material/icon';
 import { getAvatarUrl } from '../_helpers/util';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatToolbarModule, MatButtonModule, MatMenuModule, RouterLink, RouterLinkActive],
+  imports: [
+    MatToolbarModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterLink,
+    RouterLinkActive,
+  ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })

@@ -3,35 +3,37 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-
-  
+  min-height: calc(100vh - 64px);
 
   h3 {
     margin: 0;
     padding: 0;
     margin-bottom: 1em;
-    background-image: linear-gradient(100deg, #cba6f7,#f5c2e7);
+    background-image: linear-gradient(100deg, #cba6f7, #f5c2e7);
+    -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    text-align: center;
+    width: 100%;
   }
 
   .mat-error {
-    color: #bb303b;
+    color: var(--ctp-red);
     font-size: small;
     text-align: center;
     margin-top: 0.2em;
   }
-  
+
   mat-card {
     margin-top: 2em;
-    padding: 2em;
-    border-radius: 12px; 
-    border: 1px solid transparent;
-    background-image: 
-      linear-gradient(var(--app-bg), var(--app-bg)),
-      linear-gradient(100deg, #f5c2e7, #cba6f7);
-      background-origin: border-box;
-    background-clip: padding-box, border-box;
+    padding: 2.5em 3em;
+    border-radius: 16px;
+    border: 1px solid #313244;
+    background-color: var(--ctp-mantle) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   div.login-spacer,
@@ -46,38 +48,57 @@
     margin-bottom: 1.2em;
     display: block;
 
-  ::ng-deep .mat-mdc-input-element {
-    color: var(--app-text);
-  }
-  ::ng-deep .mat-mdc-floating-label {
-    color: var(--app-text) ;
-  }
-  ::ng-deep .mat-mdc-input-element::placeholder {
-    color: #b4befe; 
-  }
+    ::ng-deep .mat-mdc-input-element {
+      color: var(--ctp-text);
+    }
+    ::ng-deep .mat-mdc-floating-label {
+      color: var(--ctp-subtext1);
+    }
+    ::ng-deep .mat-mdc-input-element::placeholder {
+      color: #b4befe;
+    }
 
-  &:hover ::ng-deep {
-    .mdc-notched-outline__leading,
-    .mdc-notched-outline__notch,
-    .mdc-notched-outline__trailing {
-      border-color: #fab387 !important; 
+    &:hover ::ng-deep {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #cba6f7 !important;
+      }
+      .mat-mdc-floating-label {
+        color: #cba6f7 !important;
+      }
     }
-    .mat-mdc-floating-label {
-      color: #fab387 !important;
+
+    &.mat-focused ::ng-deep {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: #cba6f7 !important;
+      }
+      .mat-mdc-floating-label {
+        color: #cba6f7 !important;
+      }
     }
   }
-  
-}
 
   button.login-btn-color {
     font-size: large;
     width: 100%;
-    background: linear-gradient(50deg, #94e2d5, #f5c2e7, #fab387);
-    color: #181825;
+    height: 48px;
+    border-radius: 12px;
+    background: var(--ctp-teal) !important;
+    color: var(--ctp-crust) !important;
+    font-weight: 700;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+      filter: brightness(1.1);
+    }
   }
 
   button.login-btn-color:disabled {
-    color: #11111b;
+    color: #6c7086 !important;
+    background: #313244 !important;
     cursor: not-allowed;
     opacity: 0.6;
   }
@@ -88,7 +109,7 @@
   }
 
   .toggle {
-    color: var(--app-text);
+    color: var(--ctp-text);
     width: 100%;
     text-align: center;
     font-size: small;
@@ -112,18 +133,17 @@
     font-family: 300;
     margin-top: 1em;
     margin-bottom: 1em;
-
-    // border: 1px solid green;
+    width: 100%;
   }
 
   div.login-spacer::after {
     margin-left: 12px;
-    border-bottom: 1px solid #a2abb4;
+    border-bottom: 1px solid #313244;
   }
 
   div.login-spacer::before {
     margin-right: 12px;
-    border-bottom: 1px solid #a2abb4;
+    border-bottom: 1px solid #313244;
   }
 
   *::before,

@@ -18,7 +18,7 @@
             placeholder="type your username here"
           />
           @if (form.controls['username'].invalid) {
-          <mat-error>{{ errorMsg.username() }}</mat-error>
+            <mat-error>{{ errorMsg.username() }}</mat-error>
           }
         </mat-form-field>
 
@@ -33,40 +33,40 @@
             placeholder="type your password here"
           />
           @if (form.controls['password'].invalid) {
-          <mat-error>{{ errorMsg.password() }}</mat-error>
+            <mat-error>{{ errorMsg.password() }}</mat-error>
           }
         </mat-form-field>
 
         @if (mode !== 'login') {
-        <!-- Confirm Password -->
-        <mat-form-field appearance="outline">
-          <mat-label>Confirm Password</mat-label>
-          <input
-            matInput
-            type="password"
-            (input)="updateErrorMsg('cf_password')"
-            formControlName="cf_password"
-            placeholder="type your password here"
-          />
-          @if (form.controls['cf_password'].invalid) {
-          <mat-error>{{ errorMsg.cf_password() }}</mat-error>
-          }
-        </mat-form-field>
+          <!-- Confirm Password -->
+          <mat-form-field appearance="outline">
+            <mat-label>Confirm Password</mat-label>
+            <input
+              matInput
+              type="password"
+              (input)="updateErrorMsg('cf_password')"
+              formControlName="cf_password"
+              placeholder="type your password here"
+            />
+            @if (form.controls['cf_password'].invalid) {
+              <mat-error>{{ errorMsg.cf_password() }}</mat-error>
+            }
+          </mat-form-field>
 
-        <!-- Display name -->
-        <mat-form-field appearance="outline">
-          <mat-label>Aka</mat-label>
-          <input
-            matInput
-            type="text"
-            (input)="updateErrorMsg('displayname')"
-            formControlName="display_name"
-            placeholder="type your aka here"
-          />
-          @if (form.controls['display_name'].invalid) {
-          <mat-error>{{ errorMsg.display_name() }}</mat-error>
-          }
-        </mat-form-field>
+          <!-- Display name -->
+          <mat-form-field appearance="outline">
+            <mat-label>Aka</mat-label>
+            <input
+              matInput
+              type="text"
+              (input)="updateErrorMsg('displayname')"
+              formControlName="display_name"
+              placeholder="type your aka here"
+            />
+            @if (form.controls['display_name'].invalid) {
+              <mat-error>{{ errorMsg.display_name() }}</mat-error>
+            }
+          </mat-form-field>
         }
 
         <button
@@ -76,17 +76,25 @@
           matButton="outlined"
           [disabled]="!form.valid"
         >
-          @if(mode==='login'){ Login } @if(mode!=='login'){ Get Start }
+          @if (mode === 'login') {
+            Login
+          }
+          @if (mode !== 'login') {
+            Get Start
+          }
         </button>
         @if (errorMsg.server() !== '') {
-        <span class="error">{{ errorMsg.server() }}</span>
+          <span class="error">{{ errorMsg.server() }}</span>
         }
       </form>
       <div class="login-spacer">or</div>
       @if (mode === 'login') {
-      <div class="toggle">New to Brawler? <span (click)="toggleMode()">Sign Up</span></div>
-      } @if (mode !== 'login') {
-      <div class="toggle">Already have an account? <span (click)="toggleMode()">Sign In</span></div>
+        <div class="toggle">New to Brawler? <span (click)="toggleMode()">Sign Up</span></div>
+      }
+      @if (mode !== 'login') {
+        <div class="toggle">
+          Already have an account? <span (click)="toggleMode()">Sign In</span>
+        </div>
       }
     </mat-card-content>
   </mat-card>

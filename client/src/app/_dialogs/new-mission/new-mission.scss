@@ -1,0 +1,104 @@
+.new-mission-dialog {
+  padding: 1rem;
+  background-color: var(--ctp-mantle);
+  color: var(--ctp-text);
+  border-radius: 20px;
+
+  h2 {
+    margin: 0;
+    padding-bottom: 1.5rem;
+    font-size: 1.8rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--ctp-mauve), var(--ctp-pink));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.05em;
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 350px;
+    margin-top: 0.5rem;
+  }
+
+  mat-form-field {
+    width: 100%;
+
+    ::ng-deep {
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+        border-color: var(--ctp-surface1) !important;
+      }
+
+      .mat-mdc-input-element {
+        color: var(--ctp-text) !important;
+      }
+
+      .mat-mdc-floating-label {
+        color: var(--ctp-subtext1) !important;
+      }
+
+      &:hover .mdc-notched-outline > * {
+        border-color: var(--ctp-mauve) !important;
+      }
+
+      .mdc-text-field--focused {
+        .mdc-notched-outline > * {
+          border-color: var(--ctp-mauve) !important;
+          border-width: 2px !important;
+        }
+        .mat-mdc-floating-label {
+          color: var(--ctp-mauve) !important;
+        }
+      }
+    }
+  }
+
+  mat-dialog-actions {
+    padding-top: 1.5rem;
+    gap: 1rem;
+
+    .cancel-btn {
+      color: var(--ctp-subtext1);
+      font-weight: 600;
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    .create-btn {
+      background-color: var(--ctp-pink) !important;
+      color: var(--ctp-crust) !important;
+      border-radius: 12px !important;
+      font-weight: 700 !important;
+      padding: 0 1.5rem !important;
+      height: 44px !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+
+      &:hover:not(:disabled) {
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+      }
+
+      &:disabled {
+        background-color: var(--ctp-surface1) !important;
+        color: var(--ctp-overlay0) !important;
+        opacity: 0.7;
+      }
+    }
+  }
+}
+
+::ng-deep .cdk-overlay-pane {
+    mat-dialog-container {
+        padding: 0 !important;
+        border-radius: 20px !important;
+        background-color: var(--ctp-mantle) !important;
+        border: 1px solid var(--ctp-surface0) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
+    }
+}

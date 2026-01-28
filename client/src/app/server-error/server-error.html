@@ -1,4 +1,41 @@
-<p>server-error works!</p>
-@if (errorMsg) {
-  <p>{{ errorMsg }}</p>
-}
+<div class="server-error-container">
+  <div class="error-content">
+    <!-- Main Visual -->
+    <div class="glitch-wrapper">
+      <h1 class="error-code" data-text="500">500</h1>
+    </div>
+
+    <h2 class="error-title">Internal Server Error</h2>
+    <p class="error-description">
+      Opps! Something went wrong on our end. <br />
+      Please try again later or contact support if the problem persists.
+    </p>
+
+    <!-- Action Buttons -->
+    <div class="actions">
+      <button class="btn-primary" routerLink="/">Return to Home</button>
+      <button class="btn-secondary" (click)="reloadPage()">Refresh Page</button>
+    </div>
+
+    <!-- Debug Section (Visible only if errorMsg exists) -->
+    @if (errorMsg) {
+      <div class="debug-terminal">
+        <div class="terminal-header mac-style">
+          <div class="header-controls">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="terminal-title">user@berserk-server:~ (error)</span>
+          <div class="spacer"></div>
+        </div>
+        <div class="terminal-body">
+          <code>
+            <span class="prefix">$</span> error_log<br />
+            <span class="error-text">{{ errorMsg }}</span>
+          </code>
+        </div>
+      </div>
+    }
+  </div>
+</div>

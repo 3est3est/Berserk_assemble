@@ -5,19 +5,24 @@ import { MatDialog } from '@angular/material/dialog';
 import { UploadImg } from '../_dialogs/upload-img/upload-img';
 import { UserService } from '../_services/user-service';
 
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+
 @Component({
   selector: 'app-profile',
-  imports: [],
+  imports: [MatIconModule, MatButtonModule],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
 export class Profile {
   avatar_url: Signal<string>;
+  display_name: Signal<string | undefined>;
   private _passport = inject(PassportService);
   private _dialog = inject(MatDialog);
   private _user = inject(UserService);
   constructor() {
     this.avatar_url = computed(() => this._passport.avatar());
+    this.display_name = computed(() => this._passport.data()?.display_name);
   }
 
   openDialog() {

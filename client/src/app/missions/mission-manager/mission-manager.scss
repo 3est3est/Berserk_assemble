@@ -3,25 +3,22 @@
   right: 2.5rem;
   bottom: 2.5rem;
   z-index: 100;
-  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.15);
   border-radius: 50px;
-  background: transparent;
 
   button {
     border-radius: 50px;
-    padding: 0.75rem 1.5rem;
+    padding: 0.75rem 2rem;
     font-size: 1.1rem;
-    font-weight: 500;
-    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.1);
-    background: #1976d2;
-    color: #fff;
-    transition:
-      background 0.2s,
-      box-shadow 0.2s;
+    font-weight: 700;
+    background: var(--ctp-pink);
+    color: var(--ctp-crust);
+    border: none;
+    box-shadow: none;
+    transition: all 0.2s ease;
 
     &:hover {
-      background: #1565c0;
-      box-shadow: 0 6px 20px rgba(25, 118, 210, 0.18);
+      background: var(--ctp-flamingo);
+      transform: translateY(-2px);
     }
   }
 }
@@ -29,57 +26,121 @@
 .mission-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  padding: 0.5rem 0 1rem 0;
-  overflow-x: auto;
+  background: var(--ctp-mantle);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 1px solid var(--ctp-surface0);
 
   .header,
   .contents {
     display: grid;
     grid-template-columns: 1.5fr 2fr 1fr 1fr 1.5fr 1.5fr 1fr;
     align-items: center;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
+    padding: 1.2rem 1.5rem;
+    font-size: 0.95rem;
   }
 
   .header {
-    background: #f5f7fa;
-    font-weight: 500;
-    color: #333;
-    border-bottom: 2px solid #e0e0e0;
-    border-radius: 12px 12px 0 0;
+    background: var(--ctp-base);
+    font-weight: 700;
+    color: var(--ctp-teal); 
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.8rem;
+    border-bottom: 1px solid var(--ctp-surface1);
   }
 
   .contents {
-    background: #fafbfc;
-    border-bottom: 1px solid #ececec;
-    transition: background 0.2s;
+    background: var(--ctp-mantle);
+    border-bottom: 1px solid var(--ctp-surface0);
+    transition: all 0.2s ease;
+    color: var(--ctp-text);
+
+    &:last-child {
+      border-bottom: none;
+    }
 
     &:hover {
-      background: #f0f4f8;
+      background: var(--ctp-surface0);
     }
 
     .action {
       text-align: center;
-      color: #1976d2;
-      font-weight: 400;
-      // cursor: pointer; // สไลด์คอมเมนต์ไว้
+      font-weight: 700;
+      font-size: 0.85rem;
+      
+      .edit-link {
+        color: var(--ctp-sky);
+        cursor: pointer;
+        &:hover { text-decoration: underline; }
+      }
+      
+      .delete-link {
+        color: var(--ctp-red);
+        cursor: pointer;
+        &:hover { text-decoration: underline; }
+      }
+
+      .divider {
+        color: var(--ctp-surface1);
+        margin: 0 8px;
+      }
     }
   }
 
-  .name,
-  .description,
-  .crew_count,
-  .status,
-  .created_at,
-  .updated_at,
-  .action {
+  .status {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 2px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    min-width: 80px;
+
+    &.open { 
+      color: var(--ctp-sapphire); 
+      background: rgba(116, 199, 236, 0.1);
+    }
+    &.inprogress { 
+      color: var(--ctp-peach); 
+      background: rgba(250, 179, 135, 0.1);
+    }
+    &.completed { 
+      color: var(--ctp-green); 
+      background: rgba(166, 227, 161, 0.1);
+    }
+    &.failed { 
+      color: var(--ctp-red); 
+      background: rgba(243, 139, 168, 0.1);
+    }
+  }
+
+  // จัดการ Alignment
+  .crew_count, .status, .action {
+    text-align: center;
+  }
+
+  // ป้องกันข้อความล้น
+  .name, .description, .crew_count, .status, .created_at, .updated_at, .action {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+  }
+
+  .contents {
+    .name {
+      font-weight: 500;
+      color: var(--ctp-text);
+    }
+    .description, .crew_count {
+      color: var(--ctp-subtext1);
+    }
+    .created_at, .updated_at {
+      color: var(--ctp-subtext0);
+      font-size: 0.85rem;
+    }
   }
 }
 
@@ -87,26 +148,19 @@
   .mission-list .header,
   .mission-list .contents {
     grid-template-columns: 1.2fr 1.5fr 0.8fr 0.8fr 1fr 1fr 0.8fr;
-    font-size: 0.95rem;
-    padding: 0.5rem 0.5rem;
+    font-size: 0.85rem;
+    padding: 1rem;
   }
 }
 
 @media (max-width: 600px) {
   .new-mission {
-    right: 1rem;
-    bottom: 1rem;
+    right: 1.5rem;
+    bottom: 1.5rem;
 
     button {
       padding: 0.6rem 1.1rem;
       font-size: 1rem;
     }
-  }
-
-  .mission-list .header,
-  .mission-list .contents {
-    grid-template-columns: 1fr 1.5fr 0.7fr 0.7fr 1fr 1fr 0.7fr;
-    font-size: 0.85rem;
-    padding: 0.3rem 0.2rem;
   }
 }

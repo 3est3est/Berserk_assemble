@@ -1,21 +1,50 @@
 :root {
-  --app-bg: #1e1e2e; 
-  --app-text: #cdd6f4;
+  // Catppuccin Mocha Palette
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-pink: #f5c2e7;
+  --ctp-mauve: #cba6f7;
+  --ctp-red: #f38ba8;
+  --ctp-maroon: #eba0ac;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-teal: #93e1d4;
+  --ctp-sky: #89dceb;
+  --ctp-sapphire: #74c7ec;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+  --ctp-overlay2: #9399b2;
+  --ctp-overlay1: #7f849c;
+  --ctp-overlay0: #6c7086;
+  --ctp-surface2: #585b70;
+  --ctp-surface1: #45475a;
+  --ctp-surface0: #313244;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+
+  --app-bg: var(--ctp-base); 
+  --app-text: var(--ctp-text);
 }
 
 html, body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
-    background-color: var(--app-bg) !important;
-    color: var(--app-text) !important;
-    font-family: 'Roboto', sans-serif;
+    background-color: var(--ctp-base) !important;
+    color: var(--ctp-text) !important;
+    font-family: 'Roboto', 'Inter', sans-serif;
 }
 
 .container {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: var(--ctp-base);
 }
 
 .content {
@@ -23,15 +52,47 @@ html, body {
 }
 
 .mat-mdc-menu-panel {
-    background-color: var(--app-bg) !important;
-    color: var(--app-text) !important;
+    background-color: var(--ctp-mantle) !important;
+    border: 1px solid var(--ctp-surface1) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4) !important;
+    padding: 8px !important;
+    min-width: 180px !important;
 }
 
 .mat-mdc-menu-item {
-    color: var(--app-text) !important;
-}
+    color: var(--ctp-text) !important;
+    border-radius: 8px !important;
+    margin-bottom: 4px !important;
+    padding: 0 16px !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 
-.mat-mdc-menu-item:hover {
-    background-color: #313244 !important;
-    color: #94e2d5 !important;
+    &:last-child { margin-bottom: 0 !important; }
+
+    &:hover {
+        background-color: var(--ctp-surface0) !important;
+        transform: translateX(4px);
+    }
+
+    mat-icon {
+        margin-right: 12px !important;
+        font-size: 20px !important;
+        width: 20px !important;
+        height: 20px !important;
+        color: inherit !important;
+    }
+
+    &.profile-item {
+        color: var(--ctp-teal) !important;
+        &:hover {
+            background-color: rgba(148, 226, 213, 0.1) !important;
+        }
+    }
+
+    &.logout-item {
+        color: var(--ctp-red) !important;
+        &:hover {
+            background-color: rgba(243, 139, 168, 0.1) !important;
+        }
+    }
 }

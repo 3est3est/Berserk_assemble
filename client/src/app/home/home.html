@@ -1,5 +1,26 @@
-<p>home works!</p>
+<div class="home-container">
+  <div class="welcome-section">
+    <h1 class="greeting">
+      Welcome back, <span class="highlight">{{ display_name() }}</span>
+    </h1>
+    <p class="subtitle">Ready to manage your missions today?</p>
+  </div>
 
-<button (click)="MakeError(403)">403</button>
-<button (click)="MakeError(500)">500</button>
-<!-- todo -->
+  <!-- Floating Debug/Testing Zone (มุมขวาล่าง) -->
+  <div class="dev-tools">
+    <div class="tools-trigger">
+      <mat-icon>bug_report</mat-icon>
+      <span class="label">Testing</span>
+    </div>
+    <div class="tools-panel">
+      <button (click)="MakeError(403)" class="tool-btn-403">
+        <mat-icon>lock</mat-icon>
+        <span>Test 403</span>
+      </button>
+      <button (click)="MakeError(500)" class="tool-btn-500">
+        <mat-icon>error</mat-icon>
+        <span>Test 500</span>
+      </button>
+    </div>
+  </div>
+</div>

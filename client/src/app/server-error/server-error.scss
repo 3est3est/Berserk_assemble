@@ -1,0 +1,186 @@
+
+
+@import '../../styles.scss';
+
+.server-error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh; 
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.error-content {
+    text-align: center;
+    max-width: 600px;
+    width: 100%;
+    z-index: 2;
+    animation: fadeIn 0.8s ease-out;
+}
+
+
+.glitch-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.error-code {
+    font-size: 8rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1;
+    color: var(--ctp-red); 
+    position: relative;
+    text-shadow: 2px 2px 0px var(--ctp-maroon);
+    
+    &::before, &::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--ctp-base);
+    }
+}
+
+.error-title {
+    font-size: 2rem;
+    color: var(--ctp-text);
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.error-description {
+    font-size: 1.1rem;
+    color: var(--ctp-subtext0);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 3rem;
+
+    button {
+        padding: 0.8rem 1.6rem;
+        border-radius: 12px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: none;
+        
+        &.btn-primary {
+            background-color: var(--ctp-sky);
+            color: var(--ctp-base);
+            
+            &:hover {
+                background-color: var(--ctp-sapphire);
+                transform: translateY(-2px);
+            }
+        }
+
+        &.btn-secondary {
+            background-color: transparent;
+            color: var(--ctp-text);
+            border: 2px solid var(--ctp-surface2);
+
+            &:hover {
+                border-color: var(--ctp-text);
+                background-color: var(--ctp-surface0);
+            }
+        }
+    }
+}
+
+
+.debug-terminal {
+    text-align: left;
+    background-color: var(--ctp-mantle);
+    border-radius: 12px;
+    border: 1px solid var(--ctp-surface0);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
+    margin-top: 2rem;
+    animation: slideUp 0.5s ease-out;
+
+    .terminal-header {
+        background-color: var(--ctp-surface0);
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 32px; // Classic Title-bar height
+        border-bottom: 1px solid var(--ctp-surface1);
+
+        &.mac-style {
+            .header-controls {
+                display: flex;
+                gap: 8px;
+                width: 60px; // Fixed width to help center the title
+
+                .dot {
+                    width: 12px;
+                    height: 12px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: transform 0.1s;
+
+                    &:hover { transform: scale(1.1); }
+
+                    &.red { background-color: var(--ctp-red); }
+                    &.yellow { background-color: var(--ctp-yellow); }
+                    &.green { background-color: var(--ctp-green); }
+                }
+            }
+
+            .terminal-title {
+                font-family: 'Fira Code', monospace;
+                font-size: 0.8rem;
+                color: var(--ctp-subtext1);
+                opacity: 0.8;
+                letter-spacing: 0.5px;
+            }
+
+            .spacer {
+                width: 60px; // Matches header-controls width to force title visual center
+            }
+        }
+    }
+
+    .terminal-body {
+        padding: 1.5rem;
+        font-family: 'Fira Code', monospace; 
+        font-size: 0.9rem;
+        color: var(--ctp-text);
+        
+        .prefix {
+            color: var(--ctp-green);
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .error-text {
+            color: var(--ctp-red);
+            word-break: break-all;
+            display: block;
+            margin-top: 0.5rem;
+        }
+    }
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}

@@ -1,23 +1,50 @@
-<h2 mat-dialog-title>Upload Image</h2>
-<mat-dialog-content>
-  <div class="content-container">
+<h2 mat-dialog-title class="dialog-title">Change Avatar</h2>
+<mat-dialog-content class="dialog-content">
+  <div class="upload-area" (click)="filePicker.click()" [class.has-image]="imgPreview()">
     @if (imgPreview()) {
       <div class="image-preview">
         <img [src]="imgPreview()" alt="upload image" />
+        <div class="change-hint">
+          <mat-icon>cached</mat-icon>
+          <span>Change image</span>
+        </div>
       </div>
-    }
-    @if (imgFile) {
-      <p>{{ imgFile.name }}</p>
-    }
-    @if (errorMsg()) {
-      <p class="error-msg">{{ errorMsg() }}</p>
+    } @else {
+      <div class="upload-placeholder">
+        <mat-icon>cloud_upload</mat-icon>
+        <p>Click to select an image</p>
+        <span>Supports JPG, PNG</span>
+      </div>
     }
   </div>
 
-  <input type="file" #filePicker (change)="onImgPicked($event)" accept=".jpg, .png" />
+  @if (imgFile) {
+    <div class="file-info">
+      <mat-icon>insert_drive_file</mat-icon>
+      <span class="file-name">{{ imgFile.name }}</span>
+    </div>
+  }
 
-  <mat-dialog-actions>
-    <button matButton (click)="filePicker.click()">Pick Image</button>
-    <button matButton (click)="onSubmit()" [disabled]="!imgFile">Upload</button>
-  </mat-dialog-actions>
+  @if (errorMsg()) {
+    <p class="error-msg">
+      <mat-icon>error_outline</mat-icon>
+      {{ errorMsg() }}
+    </p>
+  }
+
+  <input
+    type="file"
+    #filePicker
+    (change)="onImgPicked($event)"
+    accept=".jpg, .png"
+    style="display: none"
+  />
 </mat-dialog-content>
+
+<div class="dialog-actions">
+  <button class="cancel-btn" (click)="_dialogRef.close()">Cancel</button>
+  <button class="submit-btn" (click)="onSubmit()" [disabled]="!imgFile">
+    <mat-icon>upload</mat-icon>
+    Update Avatar
+  </button>
+</div>
