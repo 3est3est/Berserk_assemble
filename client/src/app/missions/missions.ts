@@ -20,7 +20,7 @@ export class Missions {
   private _missionsSubject = new BehaviorSubject<Mission[]>([]);
   readonly missions$ = this._missionsSubject.asObservable();
 
-  filter: MissionFilter = {};
+  filter: MissionFilter = { status: '' };
   isSignin: Signal<boolean>;
 
   constructor() {
