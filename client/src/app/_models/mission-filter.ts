@@ -3,4 +3,4 @@ export interface MissionFilter {
   status?: MissionStatus;
 }
 
-export type MissionStatus = 'Open' | 'InProgress' | 'Completed' | 'Failed';
+export type MissionStatus = 'Open' | 'InProgress' | 'Completed' | 'Failed' | '';

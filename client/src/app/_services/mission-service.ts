@@ -14,7 +14,7 @@ export class MissionService {
   private _base_url = environment.baseUrl + '/api';
   private _http = inject(HttpClient);
 
-  filter: MissionFilter = {};
+  filter: MissionFilter = { status: '' };
 
   async getByFilter(filter: MissionFilter): Promise<Mission[]> {
     const queryString = this.createQueryString(filter);
