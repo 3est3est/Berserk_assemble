@@ -34,16 +34,18 @@ SELECT m.id,
        m.status,
        m.chief_id,
        COALESCE(b.display_name, '') AS chief_display_name,
+       COALESCE(b.avatar_url, '') AS chief_avatar_url,
        COUNT(cm.brawler_id) AS crew_count,
+       m.max_crew,
        m.created_at,
        m.updated_at
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
 WHERE m.deleted_at IS NULL
-  AND m.id = $1
-GROUP BY m.id, b.display_name, m.name, m.description, m.status,
-         m.chief_id, m.created_at, m.updated_at
+   AND m.id = $1
+GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
+         m.chief_id, m.max_crew, m.created_at, m.updated_at
 LIMIT 1
         "#;
         let mut conn = Arc::clone(&self.db_pool).get()?;
@@ -64,7 +66,9 @@ SELECT m.id,
        m.status,
        m.chief_id,
        COALESCE(b.display_name, '') AS chief_display_name,
+       COALESCE(b.avatar_url, '') AS chief_avatar_url,
        COUNT(cm.brawler_id) AS crew_count,
+       m.max_crew,
        m.created_at,
        m.updated_at
 FROM missions m
@@ -78,8 +82,8 @@ WHERE m.deleted_at IS NULL
       SELECT 1 FROM crew_memberships cm2 
       WHERE cm2.mission_id = m.id AND cm2.brawler_id = $3
   ))
-GROUP BY m.id, b.display_name, m.name, m.description, m.status,
-         m.chief_id, m.created_at, m.updated_at
+GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
+         m.chief_id, m.max_crew, m.created_at, m.updated_at
 ORDER BY m.created_at DESC
         "#;
 
@@ -111,17 +115,17 @@ ORDER BY m.created_at DESC
     }
 
     async fn get_crew(&self, mission_id: i32) -> Result<Vec<BrawlerModel>> {
-        let sql = r#"SELECT b.display_name,
+        let sql = r#"SELECT b.id, b.display_name,
         COALESCE(b.avatar_url, '') AS avatar_url,
-        COALESCE(s.success_count, 0) AS mission_success_count,
-        COALESCE(j.joined_count, 0) AS mission_joined_count
+        COALESCE(s.success_count, 0::bigint) AS mission_success_count,
+        COALESCE(j.joined_count, 0::bigint) AS mission_join_count
 FROM crew_memberships cm
 INNER JOIN brawlers b ON b.id = cm.brawler_id
 LEFT JOIN (
     SELECT cm2.brawler_id, COUNT(*) AS success_count
     FROM crew_memberships cm2
     INNER JOIN missions m2 ON m2.id = cm2.mission_id
-    WHERE m2.status = 'success'
+    WHERE m2.status = 'Completed'
     GROUP BY cm2.brawler_id
 ) s ON s.brawler_id = b.id
 LEFT JOIN (

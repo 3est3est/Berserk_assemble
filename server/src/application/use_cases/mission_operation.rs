@@ -40,13 +40,9 @@ where
         let is_status_open_or_fail = mission.status == MissionStatuses::Open.to_string()
             || mission.status == MissionStatuses::Failed.to_string();
 
-        let max_crew_per_mission = std::env::var("MAX_CREW_PER_MISSION")
-            .expect("missing value")
-            .parse()?;
-
         let update_condition = is_status_open_or_fail
             && crew_count > 0
-            && crew_count < max_crew_per_mission
+            && (crew_count as i32) <= mission.max_crew
             && mission.chief_id == chief_id;
         if !update_condition {
             return Err(anyhow::anyhow!("Invalid condition to change stages!"));
@@ -87,5 +83,25 @@ where
             .await?;
 
         Ok(result)
+    }
+
+    pub async fn kick(&self, mission_id: i32, brawler_id: i32, chief_id: i32) -> Result<()> {
+        let mission = self.mission_viewing_repository.get_one(mission_id).await?;
+
+        if mission.chief_id != chief_id {
+            return Err(anyhow::anyhow!("Only the chief can kick members!"));
+        }
+
+        if mission.status != MissionStatuses::Open.to_string() {
+            return Err(anyhow::anyhow!(
+                "Can only kick members before the mission starts!"
+            ));
+        }
+
+        self.mission_operation_repository
+            .kick(mission_id, brawler_id)
+            .await?;
+
+        Ok(())
     }
 }

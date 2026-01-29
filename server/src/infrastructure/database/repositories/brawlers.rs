@@ -1,11 +1,9 @@
-use anyhow::{Ok, Result};
+use anyhow::Result;
 use async_trait::async_trait;
-use chrono::{Duration, Utc};
 use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, SelectableHelper, insert_into};
 use std::sync::Arc;
 
 use crate::{
-    config::config_loader::get_jwt_env,
     domain::{
         entities::brawlers::{BrawlerEntity, RegisterBrawlerEntity},
         repositories::brawlers::BrawlerRepository,
@@ -19,10 +17,7 @@ use crate::{
             postgresql_connection::PgPoolSquad,
             schema::{brawlers, crew_memberships},
         },
-        jwt::{
-            generate_token,
-            jwt_model::{Claims, Passport},
-        },
+        jwt::jwt_model::Passport,
     },
 };
 
@@ -47,20 +42,7 @@ impl BrawlerRepository for BrawlerPostgres {
             .get_result::<i32>(&mut connection)?;
 
         let display_name = register_brawler_entity.display_name;
-
-        let jwt_env = get_jwt_env()?;
-        let claims = Claims {
-            sub: user_id.to_string(),
-            exp: (Utc::now() + Duration::days(jwt_env.ttl)).timestamp() as usize,
-            iat: Utc::now().timestamp() as usize,
-        };
-        let token = generate_token(jwt_env.secret, &claims)?;
-
-        Ok(Passport {
-            token,
-            display_name,
-            avatar_url: None,
-        })
+        Passport::new(user_id, display_name, None)
     }
 
     async fn find_by_username(&self, username: String) -> Result<BrawlerEntity> {
@@ -116,8 +98,10 @@ SELECT
     missions.description,
     missions.status,
     missions.chief_id,
-    brawlers.display_name AS chief_display_name,
+    COALESCE(brawlers.display_name, '') AS chief_display_name,
+    COALESCE(brawlers.avatar_url, '') AS chief_avatar_url,
     (SELECT COUNT(*) FROM crew_memberships WHERE crew_memberships.mission_id = missions.id) AS crew_count,
+    missions.max_crew,
     missions.created_at,
     missions.updated_at
 FROM missions

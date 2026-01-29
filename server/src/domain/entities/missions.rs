@@ -14,6 +14,7 @@ pub struct MissionEntity {
     pub name: String,
     pub status: String,
     pub description: Option<String>,
+    pub max_crew: i32,
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
     pub deleted_at: Option<NaiveDateTime>,
@@ -28,7 +29,9 @@ impl MissionEntity {
             status: self.status.clone(),
             chief_id: self.chief_id,
             chief_display_name: "".to_string(), // Entity doesn't have this, used in simple conversions
+            chief_avatar_url: "".to_string(),
             crew_count,
+            max_crew: self.max_crew,
             created_at: self.created_at,
             updated_at: self.updated_at,
         }
@@ -42,6 +45,7 @@ pub struct AddMissionEntity {
     pub name: String,
     pub status: String,
     pub description: Option<String>,
+    pub max_crew: i32,
 }
 
 #[derive(Debug, Clone, AsChangeset)]
@@ -50,4 +54,5 @@ pub struct EditMissionEntity {
     pub chief_id: i32,
     pub name: Option<String>,
     pub description: Option<String>,
+    pub max_crew: Option<i32>,
 }

@@ -19,6 +19,7 @@ export class NewMission {
   addMission: AddMission = {
     name: this._data?.name || '',
     description: this._data?.description || '',
+    max_crew: this._data?.max_crew || 5,
   };
 
   onSubmit() {
@@ -30,6 +31,7 @@ export class NewMission {
     return {
       name: addMission.name.trim() || 'untitle',
       description: addMission.description?.trim() || undefined,
+      max_crew: addMission.max_crew && addMission.max_crew > 0 ? addMission.max_crew : 5,
     };
   }
 }

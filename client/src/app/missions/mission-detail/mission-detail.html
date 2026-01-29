@@ -1,0 +1,188 @@
+<div class="mission-room-container">
+  @if (loading) {
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <p>Synchronizing with Mission Room...</p>
+    </div>
+  } @else if (isCountdownActive) {
+    <div class="countdown-overlay">
+      <div class="countdown-box">
+        <span class="prepare">PREPARING TO DEPART</span>
+        <span class="timer">{{ countdownValue }}</span>
+        <span class="warning">GET READY, BRAWLERS!</span>
+      </div>
+    </div>
+  } @else if (mission) {
+    <div class="mission-header">
+      <div class="info">
+        <div class="breadcrumb"><a routerLink="/chief">Missions</a> / {{ mission.name }}</div>
+        <h1>{{ mission.name }}</h1>
+        <p class="desc">{{ mission.description }}</p>
+      </div>
+      <div class="status-badge" [class]="mission.status.toLowerCase()">
+        {{ mission.status }}
+      </div>
+    </div>
+
+    <div class="room-layout">
+      <!-- Left side: Crew -->
+      <div class="crew-section">
+        <div class="section-header">
+          <h3>Crew Members ({{ mission.crew_count }})</h3>
+        </div>
+        <div class="crew-list">
+          <!-- Chief Member -->
+          <div
+            class="member-card chief-highlight"
+            [class.you-highlight]="mission.chief_id === currentUserId"
+          >
+            <img
+              [src]="
+                mission.chief_avatar_url ||
+                'https://ui-avatars.com/api/?name=' + mission.chief_display_name
+              "
+              class="avatar"
+              alt="avatar"
+            />
+            <div class="member-info">
+              <span class="name">{{ mission.chief_display_name }}</span>
+              <span class="role chief-badge">Chief</span>
+              @if (mission.chief_id === currentUserId) {
+                <span class="you-badge">YOU</span>
+              }
+            </div>
+          </div>
+
+          <!-- Crew Members -->
+          @for (member of crew; track member.id) {
+            @if (member.display_name !== mission.chief_display_name) {
+              <div class="member-card" [class.you-highlight]="member.id === currentUserId">
+                <img
+                  [src]="
+                    member.avatar_url || 'https://ui-avatars.com/api/?name=' + member.display_name
+                  "
+                  class="avatar"
+                  alt="avatar"
+                />
+                <div class="member-info">
+                  <span class="name">{{ member.display_name }}</span>
+                  <div class="badges">
+                    <span class="role member-badge">Crew</span>
+                    @if (member.id === currentUserId) {
+                      <span class="you-badge">YOU</span>
+                    }
+                  </div>
+                </div>
+                @if (isChief && mission.status === 'Open') {
+                  <button class="kick-btn" (click)="onKick(member)">
+                    <mat-icon>person_remove</mat-icon>
+                  </button>
+                }
+              </div>
+            }
+          } @empty {
+            @if (crew.length === 0) {
+              <p class="empty-msg">No crew members yet.</p>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Right side: Chat & Actions -->
+      <div class="main-section">
+        <div class="chat-container">
+          <div class="chat-header">
+            <div class="title">
+              <mat-icon>forum</mat-icon>
+              <span>Mission Chat</span>
+            </div>
+            @if (isChief && comments.length > 0) {
+              <button class="clear-btn" (click)="clearChat()" title="Clear Chat">
+                <mat-icon>delete_sweep</mat-icon>
+                <span>Clear</span>
+              </button>
+            }
+          </div>
+          <div class="chat-messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+            @for (comment of comments; track comment.id) {
+              <div class="message" [class.own]="comment.brawler_id === currentUserId">
+                <img
+                  [src]="
+                    comment.brawler_avatar_url ||
+                    'https://ui-avatars.com/api/?name=' + comment.brawler_display_name
+                  "
+                  class="msg-avatar"
+                  alt="avatar"
+                />
+                <div class="msg-content">
+                  <div class="msg-header">
+                    <span class="msg-author">{{ comment.brawler_display_name }}</span>
+                    @if (comment.brawler_id === mission.chief_id) {
+                      <span class="role-badge chief">CHIEF</span>
+                    } @else {
+                      <span class="role-badge">CREW</span>
+                    }
+                    <span class="msg-time">{{ comment.created_at | date: 'shortTime' }}</span>
+                  </div>
+                  <div class="msg-text">{{ comment.content }}</div>
+                </div>
+              </div>
+            } @empty {
+              <div class="system-msg">
+                Welcome to the Mission Room. Be the first to say something!
+              </div>
+            }
+          </div>
+          <div class="chat-input">
+            <input
+              type="text"
+              placeholder="Type a message..."
+              [(ngModel)]="newCommentContent"
+              (keyup.enter)="sendComment()"
+              [disabled]="sendingComment"
+            />
+            <button
+              (click)="sendComment()"
+              [disabled]="sendingComment || !newCommentContent.trim()"
+            >
+              @if (sendingComment) {
+                <mat-icon class="spinning">sync</mat-icon>
+              } @else {
+                <mat-icon>send</mat-icon>
+              }
+            </button>
+          </div>
+        </div>
+
+        @if (isChief) {
+          <div class="chief-actions">
+            <h3>Command Center</h3>
+            <div class="btn-group">
+              @if (mission.status === 'Open') {
+                <button class="start-btn" [disabled]="mission.crew_count === 0" (click)="onStart()">
+                  <mat-icon>play_arrow</mat-icon> Start Mission
+                </button>
+              } @else if (mission.status === 'InProgress') {
+                <button class="complete-btn" (click)="onComplete()">
+                  <mat-icon>check_circle</mat-icon> Complete
+                </button>
+                <button class="fail-btn" (click)="onFail()">
+                  <mat-icon>cancel</mat-icon> Failed
+                </button>
+              } @else {
+                <p class="final-status">This mission has ended.</p>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  } @else {
+    <div class="error-state">
+      <mat-icon>report_problem</mat-icon>
+      <h2>Mission Not Found</h2>
+      <p>We couldn't find the mission you're looking for. It might have been deleted.</p>
+      <button mat-flat-button color="primary" routerLink="/chief">Return to Manager</button>
+    </div>
+  }
+</div>

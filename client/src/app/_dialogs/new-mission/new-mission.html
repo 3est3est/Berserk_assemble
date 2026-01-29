@@ -17,6 +17,19 @@
           rows="4"
         ></textarea>
       </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Max Crew Members</mat-label>
+        <input
+          matInput
+          type="number"
+          [(ngModel)]="addMission.max_crew"
+          placeholder="Limit of crew members"
+          min="1"
+          max="50"
+        />
+        <mat-hint>Recommended: 5</mat-hint>
+      </mat-form-field>
     </div>
   </mat-dialog-content>
 

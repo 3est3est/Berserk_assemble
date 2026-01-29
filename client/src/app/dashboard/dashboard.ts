@@ -1,4 +1,4 @@
-import { Component, inject, computed, Signal } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MissionService } from '../_services/mission-service';
 import { CrewService } from '../_services/crew-service';
@@ -18,9 +18,10 @@ interface MissionStats {
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
-export class Dashboard {
+export class Dashboard implements OnInit {
   private _missionService = inject(MissionService);
   private _crewService = inject(CrewService);
+  private _cdr = inject(ChangeDetectorRef);
 
   stats: MissionStats = {
     open: 0,
@@ -32,19 +33,32 @@ export class Dashboard {
 
   isLoading = true;
 
-  constructor() {
+  ngOnInit() {
     this.loadStats();
   }
 
   async loadStats() {
     this.isLoading = true;
+
+    // Initialize arrays
+    let myMissions: Mission[] = [];
+    let joinedMissions: Mission[] = [];
+
+    // 1. Get missions I own (Chief)
     try {
-      // 1. Get missions I own (Chief)
-      const myMissions = await this._missionService.getMyMissions();
+      myMissions = await this._missionService.getMyMissions();
+    } catch (e) {
+      console.error('Failed to load my missions', e);
+    }
 
-      // 2. Get missions I joined (Crew)
-      const joinedMissions = await this._crewService.getMyJoinedMissions();
+    // 2. Get missions I joined (Crew)
+    try {
+      joinedMissions = await this._crewService.getMyJoinedMissions();
+    } catch (e) {
+      console.error('Failed to load joined missions', e);
+    }
 
+    try {
       // 3. Combine unique missions (just in case)
       const allMissions = [...myMissions, ...joinedMissions];
       // Use Map to remove duplicates by ID
@@ -53,9 +67,11 @@ export class Dashboard {
       );
 
       // 4. Calculate stats
+      console.log('Unique missions:', uniqueMissions);
       this.calculateStats(uniqueMissions);
+      this._cdr.detectChanges(); // Force update to fix NG0100
     } catch (e) {
-      console.error('Failed to load dashboard stats', e);
+      console.error('Failed to calculate stats', e);
     } finally {
       this.isLoading = false;
     }
@@ -71,20 +87,27 @@ export class Dashboard {
     };
 
     missions.forEach((m) => {
-      switch (m.status) {
-        case 'Open':
+      console.log(`Processing mission ${m.id} status: "${m.status}"`);
+      // Use case-insensitive matching
+      const status = m.status.toLowerCase(); // Convert to lower case for comparison
+      switch (status) {
+        case 'open':
           this.stats.open++;
           break;
-        case 'InProgress':
+        case 'inprogress':
+        case 'in-progress': // Handle potential variations
           this.stats.inProgress++;
           break;
-        case 'Completed':
+        case 'completed':
           this.stats.completed++;
           break;
-        case 'Failed':
+        case 'failed':
           this.stats.failed++;
           break;
+        default:
+          console.warn(`Unknown status "${m.status}" for mission:`, m);
       }
     });
+    console.log('Final stats:', this.stats);
   }
 }

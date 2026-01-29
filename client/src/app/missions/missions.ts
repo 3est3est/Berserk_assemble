@@ -8,6 +8,7 @@ import { BehaviorSubject } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CrewService } from '../_services/crew-service';
 import { getUserIdFromToken } from '../_helpers/util';
+import { ToastService } from '../_services/toast-service';
 
 @Component({
   selector: 'app-missions',
@@ -19,6 +20,7 @@ export class Missions {
   private _mission = inject(MissionService);
   private _crewService = inject(CrewService);
   private _passportService = inject(PassportService);
+  private _toast = inject(ToastService);
 
   private _missionsSubject = new BehaviorSubject<Mission[]>([]);
   readonly missions$ = this._missionsSubject.asObservable();
@@ -55,12 +57,12 @@ export class Missions {
 
     try {
       await this._crewService.join(mission.id);
-      alert('Joined mission successfully!');
+      this._toast.success(`Joined mission "${mission.name}"! Welcome to the crew.`);
       // Reload missions to update the list (the joined mission should disappear)
       this.onSubmit();
     } catch (e: any) {
       console.error('Join failed', e);
-      alert('Failed to join mission: ' + (e.error || e.message));
+      this._toast.error('Failed to join mission: ' + (e.error || e.message));
     }
   }
 }

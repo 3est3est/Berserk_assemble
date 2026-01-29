@@ -5,6 +5,7 @@ import { MissionFilter } from '../_models/mission-filter';
 import { firstValueFrom } from 'rxjs';
 import { AddMission } from '../_models/add-mission';
 import { Mission } from '../_models/mission';
+import { MissionComment } from '../_models/mission-comment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ import { Mission } from '../_models/mission';
 export class MissionService {
   //view
   private _base_url = environment.baseUrl + '/api';
+  private _op_base_url = environment.baseUrl + '/api/mission';
   private _http = inject(HttpClient);
 
   filter: MissionFilter = { status: '' };
@@ -21,6 +23,11 @@ export class MissionService {
     const url = this._base_url + '/view/filter?' + queryString;
     const missions = await firstValueFrom(this._http.get<Mission[]>(url));
     return missions;
+  }
+
+  async getById(id: number): Promise<Mission> {
+    const url = `${this._base_url}/view/${id}`;
+    return await firstValueFrom(this._http.get<Mission>(url));
   }
 
   private createQueryString(filter: MissionFilter): string {
@@ -62,6 +69,46 @@ export class MissionService {
 
   async delete(id: number): Promise<void> {
     const url = `${this._base_url}/mission-management/${id}`;
+    await firstValueFrom(this._http.delete(url, { responseType: 'text' }));
+  }
+
+  async startMission(id: number): Promise<void> {
+    const url = `${this._op_base_url}/in-progress/${id}`;
+    await firstValueFrom(this._http.patch(url, {}));
+  }
+
+  async completeMission(id: number): Promise<void> {
+    const url = `${this._op_base_url}/to-completed/${id}`;
+    await firstValueFrom(this._http.patch(url, {}));
+  }
+
+  async failMission(id: number): Promise<void> {
+    const url = `${this._op_base_url}/to-failed/${id}`;
+    await firstValueFrom(this._http.patch(url, {}));
+  }
+
+  async kickMember(missionId: number, brawlerId: number): Promise<void> {
+    const url = `${this._op_base_url}/kick/${missionId}/${brawlerId}`;
+    await firstValueFrom(this._http.patch(url, {}));
+  }
+
+  async getCrew(missionId: number): Promise<any[]> {
+    const url = `${this._base_url}/view/crew/${missionId}`;
+    return await firstValueFrom(this._http.get<any[]>(url));
+  }
+
+  async getComments(missionId: number): Promise<MissionComment[]> {
+    const url = `${this._base_url}/comment/${missionId}`;
+    return await firstValueFrom(this._http.get<MissionComment[]>(url));
+  }
+
+  async addComment(missionId: number, content: string): Promise<void> {
+    const url = `${this._base_url}/comment/${missionId}`;
+    await firstValueFrom(this._http.post(url, { content }, { responseType: 'text' }));
+  }
+
+  async clearComments(missionId: number): Promise<void> {
+    const url = `${this._base_url}/comment/${missionId}`;
     await firstValueFrom(this._http.delete(url, { responseType: 'text' }));
   }
 }

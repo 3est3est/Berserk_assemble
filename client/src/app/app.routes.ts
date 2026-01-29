@@ -38,6 +38,12 @@ export const routes: Routes = [
     runGuardsAndResolvers: 'always',
   },
   {
+    path: 'missions/:id',
+    loadComponent: () =>
+      import('./missions/mission-detail/mission-detail').then((m) => m.MissionDetail),
+    canActivate: [authGuard],
+  },
+  {
     path: 'dashboard',
     component: Dashboard,
     canActivate: [authGuard],

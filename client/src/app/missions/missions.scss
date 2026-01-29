@@ -85,7 +85,7 @@
   .header {
     background: var(--ctp-base);
     font-weight: 700;
-    color: var(--ctp-sky); 
+    color: var(--ctp-sky);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-size: 0.75rem;
@@ -202,4 +202,24 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.3) !important;
   }
+
+  &.full {
+    background-color: var(--ctp-surface1) !important;
+    color: var(--ctp-overlay0) !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.closed-msg {
+  display: inline-block;
+  padding: 0.4rem 1rem;
+  background: var(--ctp-surface1);
+  color: var(--ctp-subtext0);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  opacity: 0.8;
 }

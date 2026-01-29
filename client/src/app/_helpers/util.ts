@@ -5,6 +5,9 @@ const _default_avatar = '/assets/avatar-profile.jpg';
 
 export function getAvatarUrl(passport: Passport | undefined): string {
   if (passport && passport.avatar_url) return passport.avatar_url;
+  if (passport && passport.display_name) {
+    return `https://ui-avatars.com/api/?name=${encodeURIComponent(passport.display_name)}&background=random`;
+  }
   return _default_avatar;
 }
 

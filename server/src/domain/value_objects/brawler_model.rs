@@ -1,4 +1,4 @@
-use diesel::{prelude::QueryableByName, sql_types::{Integer, VarChar}};
+use diesel::prelude::QueryableByName;
 use serde::{Deserialize, Serialize};
 
 use crate::domain::entities::brawlers::RegisterBrawlerEntity;
@@ -22,12 +22,14 @@ impl RegisterBrawlerModel {
 
 #[derive(Debug, Clone, Serialize, Deserialize, QueryableByName)]
 pub struct BrawlerModel {
-    #[diesel(sql_type=VarChar)]
+    #[diesel(sql_type = diesel::sql_types::Int4)]
+    pub id: i32,
+    #[diesel(sql_type = diesel::sql_types::VarChar)]
     pub display_name: String,
-    #[diesel(sql_type=VarChar)]
+    #[diesel(sql_type = diesel::sql_types::VarChar)]
     pub avatar_url: String,
-    #[diesel(sql_type=Integer)]
-    pub mission_success_count: i32,
-    #[diesel(sql_type=Integer)]
-    pub mission_join_count: i32,
+    #[diesel(sql_type = diesel::sql_types::BigInt)]
+    pub mission_success_count: i64,
+    #[diesel(sql_type = diesel::sql_types::BigInt)]
+    pub mission_join_count: i64,
 }

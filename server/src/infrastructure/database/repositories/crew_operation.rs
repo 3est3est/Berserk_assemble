@@ -49,7 +49,9 @@ SELECT m.id,
        m.status,
        m.chief_id,
        COALESCE(b.display_name, '') AS chief_display_name,
+       COALESCE(b.avatar_url, '') AS chief_avatar_url,
        (SELECT COUNT(*) FROM crew_memberships WHERE mission_id = m.id) AS crew_count,
+       m.max_crew,
        m.created_at,
        m.updated_at
 FROM missions m

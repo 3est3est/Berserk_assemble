@@ -30,7 +30,7 @@
   .header,
   .contents {
     display: grid;
-    grid-template-columns: 1.5fr 2fr 1fr 1fr 1fr 1.5fr 1fr;
+    grid-template-columns: 1.2fr 1.8fr 1fr 0.8fr 1fr 1.5fr 1.5fr;
     align-items: center;
     padding: 1.2rem 1.5rem;
     font-size: 0.95rem;
@@ -39,7 +39,7 @@
   .header {
     background: var(--ctp-base);
     font-weight: 700;
-    color: var(--ctp-sky); 
+    color: var(--ctp-pink);
     text-transform: uppercase;
     letter-spacing: 0.1em;
     font-size: 0.75rem;
@@ -52,12 +52,15 @@
     transition: all 0.2s ease;
     color: var(--ctp-text);
 
-    &:last-child {
-      border-bottom: none;
+    &.clickable {
+      cursor: pointer;
+      &:hover {
+        background: var(--ctp-surface0);
+      }
     }
 
-    &:hover {
-      background: var(--ctp-surface0);
+    &:last-child {
+      border-bottom: none;
     }
   }
 
@@ -99,31 +102,52 @@
     padding: 0 0.5rem;
   }
   
-  .name {
-    font-weight: 500;
-    color: var(--ctp-text);
-  }
-  
-  .description, .chief, .crew_count {
-    color: var(--ctp-subtext1);
-  }
-  
-  .created_at {
-    color: var(--ctp-subtext0); 
-    font-size: 0.85rem;
+  .contents {
+    .name {
+      font-weight: 500;
+      color: var(--ctp-text);
+    }
+    
+    .description, .chief, .crew_count {
+      color: var(--ctp-subtext1);
+    }
+    
+    .created_at {
+      color: var(--ctp-subtext0); 
+      font-size: 0.85rem;
+    }
   }
 
   .action {
     display: flex;
     justify-content: center;
+    gap: 0.5rem;
+  }
+
+  .manage-btn {
+    padding: 0.4rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    background-color: var(--ctp-teal);
+    color: var(--ctp-crust);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: var(--ctp-green);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
   }
 
   .leave-btn {
     padding: 0.4rem 1.2rem;
     border: none;
     border-radius: 6px;
-    background: var(--ctp-red); /* Using theme variable if available, otherwise fallback */
-    background-color: #ef5350; /* Fallback */
+    background-color: var(--ctp-red);
     color: #fff;
     font-size: 0.9rem;
     font-weight: 500;
@@ -135,10 +159,6 @@
       background-color: #d32f2f;
       transform: translateY(-1px);
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-    }
-
-    &:active {
-      transform: translateY(0);
     }
   }
 }

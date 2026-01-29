@@ -30,10 +30,6 @@ where
     }
 
     pub async fn join(&self, mission_id: i32, brawler_id: i32) -> Result<()> {
-        let max_crew_per_mission = std::env::var("MAX_CREW_PER_MISSION")
-            .expect("missing value")
-            .parse()?;
-
         let mission = self.mission_viewing_repository.get_one(mission_id).await?;
 
         if mission.chief_id == brawler_id {
@@ -47,12 +43,11 @@ where
             .crew_counting(mission_id)
             .await?;
 
-        let mission_status_condition = mission.status == MissionStatuses::Open.to_string()
-            || mission.status == MissionStatuses::Failed.to_string();
+        let mission_status_condition = mission.status == MissionStatuses::Open.to_string();
         if !mission_status_condition {
-            return Err(anyhow::anyhow!("Mission is not joinable"));
+            return Err(anyhow::anyhow!("Mission is not joinable in current status"));
         }
-        let crew_count_condition = crew_count < max_crew_per_mission;
+        let crew_count_condition = (crew_count as i32) < mission.max_crew;
         if !crew_count_condition {
             return Err(anyhow::anyhow!("Mission is full"));
         }

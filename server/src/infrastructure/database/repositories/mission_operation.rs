@@ -71,4 +71,26 @@ impl MissionOperationRepository for MissionOperationPostgres {
 
         Ok(result)
     }
+
+    async fn kick(&self, mission_id: i32, brawler_id: i32) -> Result<()> {
+        use crate::infrastructure::database::schema::crew_memberships;
+        use diesel::ExpressionMethods;
+        use diesel::dsl::delete;
+
+        let db_pool = Arc::clone(&self.db_pool);
+        tokio::task::spawn_blocking(move || -> Result<()> {
+            let mut conn = db_pool.get().context("Failed to get DB connection")?;
+
+            delete(crew_memberships::table)
+                .filter(crew_memberships::mission_id.eq(mission_id))
+                .filter(crew_memberships::brawler_id.eq(brawler_id))
+                .execute(&mut conn)
+                .context("Failed to kick brawler from mission")?;
+
+            Ok(())
+        })
+        .await??;
+
+        Ok(())
+    }
 }

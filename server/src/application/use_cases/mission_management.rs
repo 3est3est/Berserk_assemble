@@ -89,13 +89,15 @@ where
     }
 
     pub async fn remove(&self, mission_id: i32, chief_id: i32) -> Result<()> {
-        let crew_count = self
-            .mission_viewing_repository
-            .crew_counting(mission_id)
-            .await?;
-        if crew_count > 0 {
+        let mission = self.mission_viewing_repository.get_one(mission_id).await?;
+
+        if mission.chief_id != chief_id {
+            return Err(anyhow::anyhow!("You are not the chief of this mission!"));
+        }
+
+        if mission.status == "InProgress" {
             return Err(anyhow::anyhow!(
-                "Mission has been taken by brawler for now!"
+                "Cannot delete a mission while it is in progress!"
             ));
         }
 

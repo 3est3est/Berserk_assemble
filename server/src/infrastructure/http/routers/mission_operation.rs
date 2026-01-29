@@ -74,6 +74,21 @@ where
     }
 }
 
+pub async fn kick<T1, T2>(
+    State(user_case): State<Arc<MissionOperationUseCase<T1, T2>>>,
+    Extension(user_id): Extension<i32>,
+    Path((mission_id, brawler_id)): Path<(i32, i32)>,
+) -> impl IntoResponse
+where
+    T1: MissionOperationRepository + Send + Sync,
+    T2: MissionViewingRepository + Send + Sync,
+{
+    match user_case.kick(mission_id, brawler_id, user_id).await {
+        Ok(_) => StatusCode::OK.into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
+
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     let mission_repository = MissionOperationPostgres::new(Arc::clone(&db_pool));
     let viewing_repositiory = MissionViewingPostgres::new(Arc::clone(&db_pool));
@@ -84,6 +99,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
         .route("/in-progress/{mission_id}", patch(in_progress))
         .route("/to-completed/{mission_id}", patch(to_completed))
         .route("/to-failed/{mission_id}", patch(to_failed))
+        .route("/kick/{mission_id}/{brawler_id}", patch(kick))
         .route_layer(middleware::from_fn(auth))
         .with_state(Arc::new(user_case))
 }

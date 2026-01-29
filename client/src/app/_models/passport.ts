@@ -1,18 +1,17 @@
-export interface Passport { 
-    token: string, //jwt_model
-    display_name: string,
-    avatar_url?: string, 
+export interface Passport {
+  id: number;
+  token: string; //jwt_model
+  display_name: string;
+  avatar_url?: string;
 }
 
 export interface RegisterModel {
-    username: string,
-    password: string,
-    display_name: string,  
+  username: string;
+  password: string;
+  display_name: string;
 }
 
 export interface LoginModel {
-    username: string,
-    password: string,
-    
+  username: string;
+  password: string;
 }
-

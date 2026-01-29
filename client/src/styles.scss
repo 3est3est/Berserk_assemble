@@ -96,3 +96,42 @@ html, body {
         }
     }
 }
+
+// Premium Toasts
+.mat-mdc-snack-bar-container {
+    &.toast-success .mdc-snackbar__surface {
+        background-color: var(--ctp-green) !important;
+        color: var(--ctp-crust) !important;
+        font-weight: 600;
+    }
+    &.toast-error .mdc-snackbar__surface {
+        background-color: var(--ctp-red) !important;
+        color: var(--ctp-crust) !important;
+        font-weight: 600;
+    }
+    &.toast-info .mdc-snackbar__surface {
+        background-color: var(--ctp-teal) !important;
+        color: var(--ctp-crust) !important;
+        font-weight: 600;
+    }
+    &.toast-warning .mdc-snackbar__surface {
+        background-color: var(--ctp-yellow) !important;
+        color: var(--ctp-crust) !important;
+        font-weight: 600;
+    }
+
+    .mdc-snackbar__surface {
+        border-radius: 12px !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .mdc-snackbar__label {
+        font-family: 'Outfit', 'Inter', sans-serif !important;
+        font-size: 0.95rem !important;
+    }
+
+    .mat-mdc-snack-bar-action {
+        color: inherit !important;
+        font-weight: 800 !important;
+    }
+}
