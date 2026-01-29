@@ -3,7 +3,7 @@ use crate::domain::{
     repositories::{
         crew_operation::CrewOperationRepository, mission_viewing::MissionViewingRepository,
     },
-    value_objects::mission_statuses::MissionStatuses,
+    value_objects::{mission_model::MissionModel, mission_statuses::MissionStatuses},
 };
 use anyhow::Result;
 use std::sync::Arc;
@@ -83,5 +83,12 @@ where
             .await?;
 
         Ok(())
+    }
+
+    /// ดึงรายการภารกิจที่ผู้ใช้เข้าร่วมอยู่ (เป็น crew member)
+    pub async fn get_my_joined_missions(&self, brawler_id: i32) -> Result<Vec<MissionModel>> {
+        self.crew_operation_repository
+            .get_my_joined_missions(brawler_id)
+            .await
     }
 }

@@ -1,12 +1,12 @@
 use std::sync::Arc;
 
 use axum::{
-    Extension, Router,
+    Extension, Json, Router,
     extract::{Path, State},
     http::StatusCode,
     middleware,
     response::IntoResponse,
-    routing::{delete, post},
+    routing::{delete, get, post},
 };
 
 use crate::{
@@ -65,6 +65,21 @@ where
     }
 }
 
+/// ดึงรายการภารกิจที่ผู้ใช้เข้าร่วมอยู่
+pub async fn get_my_joined_missions<T1, T2>(
+    State(user_case): State<Arc<CrewOperationUseCase<T1, T2>>>,
+    Extension(user_id): Extension<i32>,
+) -> impl IntoResponse
+where
+    T1: CrewOperationRepository + Send + Sync + 'static,
+    T2: MissionViewingRepository + Send + Sync,
+{
+    match user_case.get_my_joined_missions(user_id).await {
+        Ok(missions) => (StatusCode::OK, Json(missions)).into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
+
 pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     let crew_operation_repository = CrewOperationPostgres::new(Arc::clone(&db_pool));
     let viewing_repositiory = MissionViewingPostgres::new(Arc::clone(&db_pool));
@@ -76,6 +91,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
     Router::new()
         .route("/join/{mission_id}", post(join))
         .route("/leave/{mission_id}", delete(leave))
+        .route("/my-missions", get(get_my_joined_missions))
         .route_layer(middleware::from_fn(auth))
         .with_state(Arc::new(user_case))
 }

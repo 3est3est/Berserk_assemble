@@ -55,7 +55,7 @@ LIMIT 1
     }
 
     async fn get_all(&self, filter: &MissionFilter) -> Result<Vec<MissionModel>> {
-        use diesel::sql_types::{Nullable, Varchar};
+        use diesel::sql_types::{Int4, Nullable, Varchar};
 
         let sql = r#"
 SELECT m.id,
@@ -73,6 +73,11 @@ LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
 WHERE m.deleted_at IS NULL
   AND ($1::varchar IS NULL OR m.status = $1)
   AND ($2::varchar IS NULL OR m.name ILIKE $2)
+  AND ($3::int4 IS NULL OR m.chief_id != $3)
+  AND ($3::int4 IS NULL OR NOT EXISTS (
+      SELECT 1 FROM crew_memberships cm2 
+      WHERE cm2.mission_id = m.id AND cm2.brawler_id = $3
+  ))
 GROUP BY m.id, b.display_name, m.name, m.description, m.status,
          m.chief_id, m.created_at, m.updated_at
 ORDER BY m.created_at DESC
@@ -80,11 +85,13 @@ ORDER BY m.created_at DESC
 
         let status_bind: Option<String> = filter.status.as_ref().map(|s| s.to_string());
         let name_bind: Option<String> = filter.name.as_ref().map(|n| format!("%{}%", n));
+        let exclude_brawler_bind: Option<i32> = filter.exclude_brawler_id;
 
         let mut conn = Arc::clone(&self.db_pool).get()?;
         let rows = diesel::sql_query(sql)
             .bind::<Nullable<Varchar>, _>(status_bind)
             .bind::<Nullable<Varchar>, _>(name_bind)
+            .bind::<Nullable<Int4>, _>(exclude_brawler_bind)
             .load::<MissionModel>(&mut conn)?;
 
         Ok(rows)

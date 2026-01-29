@@ -1,0 +1,117 @@
+.page-header {
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--ctp-sky);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  p {
+    margin: 0.5rem 0 0;
+    color: var(--ctp-subtext1);
+    font-size: 1rem;
+  }
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+.stat-card {
+  background: var(--ctp-mantle);
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--ctp-surface0);
+  transition: transform 0.2s, box-shadow 0.2s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  }
+
+  .icon-wrapper {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    
+    i {
+      font-size: 2rem;
+    }
+  }
+
+  .stat-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ctp-text);
+    line-height: 1.2;
+  }
+
+  .label {
+    font-size: 0.9rem;
+    color: var(--ctp-subtext0);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 600;
+  }
+
+  /* Specific Colors */
+  &.total {
+    border-bottom: 4px solid var(--ctp-lavender);
+    .icon-wrapper {
+      background: rgba(180, 190, 254, 0.15);
+      color: var(--ctp-lavender);
+    }
+  }
+
+  &.open {
+    border-bottom: 4px solid var(--ctp-sapphire);
+    .icon-wrapper {
+      background: rgba(116, 199, 236, 0.15);
+      color: var(--ctp-sapphire);
+    }
+  }
+
+  &.in-progress {
+    border-bottom: 4px solid var(--ctp-peach);
+    .icon-wrapper {
+      background: rgba(250, 179, 135, 0.15);
+      color: var(--ctp-peach);
+    }
+  }
+
+  &.completed {
+    border-bottom: 4px solid var(--ctp-green);
+    .icon-wrapper {
+      background: rgba(166, 227, 161, 0.15);
+      color: var(--ctp-green);
+    }
+  }
+
+  &.failed {
+    border-bottom: 4px solid var(--ctp-red);
+    .icon-wrapper {
+      background: rgba(243, 139, 168, 0.15);
+      color: var(--ctp-red);
+    }
+  }
+}

@@ -7,6 +7,7 @@ use crate::{
     domain::{
         entities::crew_memberships::CrewMemberShips,
         repositories::crew_operation::CrewOperationRepository,
+        value_objects::mission_model::MissionModel,
     },
     infrastructure::database::{postgresql_connection::PgPoolSquad, schema::crew_memberships},
 };
@@ -38,5 +39,31 @@ impl CrewOperationRepository for CrewOperationPostgres {
             .filter(crew_memberships::mission_id.eq(crew_member_ships.mission_id))
             .execute(&mut conn)?;
         Ok(())
+    }
+
+    async fn get_my_joined_missions(&self, brawler_id: i32) -> Result<Vec<MissionModel>> {
+        let sql = r#"
+SELECT m.id,
+       m.name,
+       m.description,
+       m.status,
+       m.chief_id,
+       COALESCE(b.display_name, '') AS chief_display_name,
+       (SELECT COUNT(*) FROM crew_memberships WHERE mission_id = m.id) AS crew_count,
+       m.created_at,
+       m.updated_at
+FROM missions m
+INNER JOIN crew_memberships cm ON cm.mission_id = m.id AND cm.brawler_id = $1
+LEFT JOIN brawlers b ON b.id = m.chief_id
+WHERE m.deleted_at IS NULL
+ORDER BY cm.joined_at DESC
+        "#;
+
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+        let rows = diesel::sql_query(sql)
+            .bind::<diesel::sql_types::Int4, _>(brawler_id)
+            .load::<MissionModel>(&mut conn)?;
+
+        Ok(rows)
     }
 }

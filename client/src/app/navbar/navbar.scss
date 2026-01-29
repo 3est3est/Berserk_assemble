@@ -76,7 +76,7 @@
         }
     }
 
-    .missions-btn, .my-missions-btn {
+    .missions-btn, .my-missions-btn, .my-crew-btn, .dashboard-btn {
         display: flex !important;
         align-items: center !important;
         gap: 8px !important;
@@ -122,6 +122,34 @@
 
         &.active {
             background-color: var(--ctp-teal) !important;
+            color: var(--ctp-crust) !important;
+        }
+    }
+
+    .my-crew-btn {
+        color: var(--ctp-pink) !important;
+
+        &:hover {
+            background-color: rgba(250, 135, 198, 0.15) !important;
+            color: var(--ctp-pink) !important;
+        }
+
+        &.active {
+            background-color: var(--ctp-pink) !important;
+            color: var(--ctp-crust) !important;
+        }
+    }
+
+    .dashboard-btn {
+        color: var(--ctp-peach) !important;
+
+        &:hover {
+            background-color: rgba(250, 179, 135, 0.15) !important;
+            color: var(--ctp-peach) !important;
+        }
+
+        &.active {
+            background-color: var(--ctp-peach) !important;
             color: var(--ctp-crust) !important;
         }
     }

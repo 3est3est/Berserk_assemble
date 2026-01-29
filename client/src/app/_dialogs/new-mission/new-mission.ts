@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { AddMission } from '../../_models/add-mission';
@@ -13,11 +13,13 @@ import { AddMission } from '../../_models/add-mission';
   styleUrl: './new-mission.scss',
 })
 export class NewMission {
-  addMission: AddMission = {
-    name: '',
-    description: '',
-  };
   private readonly _dialogRef = inject(MatDialogRef<NewMission>);
+  private readonly _data = inject(MAT_DIALOG_DATA, { optional: true });
+
+  addMission: AddMission = {
+    name: this._data?.name || '',
+    description: this._data?.description || '',
+  };
 
   onSubmit() {
     const mission = this.clean(this.addMission);

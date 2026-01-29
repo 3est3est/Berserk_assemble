@@ -1,0 +1,184 @@
+.page-header {
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: var(--ctp-mauve);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  p {
+    margin: 0.5rem 0 0;
+    color: var(--ctp-subtext1);
+    font-size: 1rem;
+  }
+}
+
+.mission-list {
+  display: flex;
+  flex-direction: column;
+  background: var(--ctp-mantle);
+  border-radius: 16px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  border: 1px solid var(--ctp-surface0);
+
+  .header,
+  .contents {
+    display: grid;
+    grid-template-columns: 1.5fr 2fr 1fr 1fr 1fr 1.5fr 1fr;
+    align-items: center;
+    padding: 1.2rem 1.5rem;
+    font-size: 0.95rem;
+  }
+
+  .header {
+    background: var(--ctp-base);
+    font-weight: 700;
+    color: var(--ctp-sky); 
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--ctp-surface1);
+  }
+
+  .contents {
+    background: var(--ctp-mantle);
+    border-bottom: 1px solid var(--ctp-surface0);
+    transition: all 0.2s ease;
+    color: var(--ctp-text);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: var(--ctp-surface0);
+    }
+  }
+
+  .status {
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 2px 10px;
+    border-radius: 12px;
+    display: inline-block;
+    min-width: 80px;
+    text-align: center;
+
+    &[data-status="Open"] { 
+      color: var(--ctp-sapphire); 
+      background: rgba(116, 199, 236, 0.1);
+    }
+    &[data-status="InProgress"] { 
+      color: var(--ctp-peach); 
+      background: rgba(250, 179, 135, 0.1);
+    }
+    &[data-status="Completed"] { 
+      color: var(--ctp-green); 
+      background: rgba(166, 227, 161, 0.1);
+    }
+    &[data-status="Failed"] { 
+      color: var(--ctp-red); 
+      background: rgba(243, 139, 168, 0.1);
+    }
+  }
+
+  .crew_count, .status, .action {
+    text-align: center;
+  }
+
+  .name, .description, .chief, .crew_count, .status, .created_at, .action {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 0.5rem;
+  }
+  
+  .name {
+    font-weight: 500;
+    color: var(--ctp-text);
+  }
+  
+  .description, .chief, .crew_count {
+    color: var(--ctp-subtext1);
+  }
+  
+  .created_at {
+    color: var(--ctp-subtext0); 
+    font-size: 0.85rem;
+  }
+
+  .action {
+    display: flex;
+    justify-content: center;
+  }
+
+  .leave-btn {
+    padding: 0.4rem 1.2rem;
+    border: none;
+    border-radius: 6px;
+    background: var(--ctp-red); /* Using theme variable if available, otherwise fallback */
+    background-color: #ef5350; /* Fallback */
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      background-color: #d32f2f;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ctp-subtext0);
+  background: var(--ctp-mantle);
+  border-radius: 16px;
+  border: 1px solid var(--ctp-surface0);
+
+  p {
+    margin: 0 0 1.5rem 0;
+    font-size: 1.1rem;
+    color: var(--ctp-text);
+  }
+
+  a {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: var(--ctp-teal);
+    color: var(--ctp-crust);
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.2s;
+
+    &:hover {
+      background: var(--ctp-green);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+@media (max-width: 1000px) {
+  .mission-list .header,
+  .mission-list .contents {
+    grid-template-columns: 1.2fr 1.5fr 1fr 0.8fr 1fr 1fr 0.8fr;
+    font-size: 0.85rem;
+    padding: 1rem;
+  }
+}

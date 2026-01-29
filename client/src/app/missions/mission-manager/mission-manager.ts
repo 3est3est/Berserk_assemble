@@ -36,17 +36,40 @@ export class MissionManager {
     ref.afterClosed().subscribe(async (result: AddMission) => {
       if (result) {
         try {
-          // 1. สั่งบันทึกผ่าน API และรับ ID กลับมา
-          const id = await this._missionService.add(result);
-
-          // 2. สร้างก้อนข้อมูลใหม่เพื่อ Update เข้าไปใน BehaviorSubject ทันที
-          // เพื่อความแม่นยำเราสามารถ load ใหม่ทั้งหมด หรือสร้าง object จำลองมาแปะก็ได้
-          // ในสไลด์แนะนำให้แปะเพิ่มเข้าไปใน list เดิม (Optimistic Update)
-          this.loadMyMission(); // วิธีนี้ชัวร์ที่สุดว่าข้อมูลจาก DB ครบถ้วน
+          await this._missionService.add(result);
+          this.loadMyMission();
         } catch (e) {
           console.error('Failed to add mission', e);
         }
       }
     });
+  }
+
+  onEdit(mission: Mission) {
+    const ref = this._dialog.open(NewMission, {
+      data: { name: mission.name, description: mission.description },
+    });
+
+    ref.afterClosed().subscribe(async (result: AddMission) => {
+      if (result) {
+        try {
+          await this._missionService.update(mission.id, result);
+          this.loadMyMission();
+        } catch (e) {
+          console.error('Failed to update mission', e);
+        }
+      }
+    });
+  }
+
+  async onDelete(mission: Mission) {
+    if (!confirm(`Do you want to delete mission "${mission.name}"?`)) return;
+
+    try {
+      await this._missionService.delete(mission.id);
+      this.loadMyMission();
+    } catch (e) {
+      console.error('Failed to delete mission', e);
+    }
   }
 }

@@ -7,6 +7,8 @@ import { NotFound } from './not-found/not-found';
 import { authGuard } from './_guard/auth-guard';
 import { Missions } from './missions/missions';
 import { MissionManager } from './missions/mission-manager/mission-manager';
+import { MyCrew } from './my-crew/my-crew';
+import { Dashboard } from './dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -26,6 +28,18 @@ export const routes: Routes = [
   {
     path: 'chief',
     component: MissionManager,
+    canActivate: [authGuard],
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: 'my-crew',
+    component: MyCrew,
+    canActivate: [authGuard],
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: 'dashboard',
+    component: Dashboard,
     canActivate: [authGuard],
     runGuardsAndResolvers: 'always',
   },

@@ -33,6 +33,10 @@ export class MissionService {
     if (filter.status) {
       params.push(`status=${encodeURIComponent(filter.status)}`);
     }
+    // เพิ่ม exclude_brawler_id สำหรับกรองภารกิจของตัวเองและที่เข้าร่วมแล้ว
+    if (filter.exclude_brawler_id) {
+      params.push(`exclude_brawler_id=${filter.exclude_brawler_id}`);
+    }
 
     return params.join('&');
   }
@@ -49,5 +53,15 @@ export class MissionService {
     const observable = this._http.get<Mission[]>(url);
     const missions = await firstValueFrom(observable);
     return missions;
+  }
+
+  async update(id: number, mission: AddMission): Promise<void> {
+    const url = `${this._base_url}/mission-management/${id}`;
+    await firstValueFrom(this._http.patch(url, mission, { responseType: 'text' }));
+  }
+
+  async delete(id: number): Promise<void> {
+    const url = `${this._base_url}/mission-management/${id}`;
+    await firstValueFrom(this._http.delete(url, { responseType: 'text' }));
   }
 }

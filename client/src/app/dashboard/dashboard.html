@@ -1,0 +1,56 @@
+<div class="page-header">
+  <h2>Mission Dashboard</h2>
+  <p>Overview of your mission activities</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card total">
+    <div class="icon-wrapper">
+      <i class="material-icons">assignment</i>
+    </div>
+    <div class="stat-content">
+      <span class="value">{{ stats.total }}</span>
+      <span class="label">Total Missions</span>
+    </div>
+  </div>
+
+  <div class="stat-card open">
+    <div class="icon-wrapper">
+      <i class="material-icons">lock_open</i>
+    </div>
+    <div class="stat-content">
+      <span class="value">{{ stats.open }}</span>
+      <span class="label">Open</span>
+    </div>
+  </div>
+
+  <div class="stat-card in-progress">
+    <div class="icon-wrapper">
+      <i class="material-icons">trending_up</i>
+    </div>
+    <div class="stat-content">
+      <span class="value">{{ stats.inProgress }}</span>
+      <span class="label">In Progress</span>
+    </div>
+  </div>
+
+  <div class="stat-card completed">
+    <div class="icon-wrapper">
+      <i class="material-icons">check_circle</i>
+    </div>
+    <div class="stat-content">
+      <span class="value">{{ stats.completed }}</span>
+      <span class="label">Completed</span>
+    </div>
+  </div>
+
+  <div class="stat-card failed">
+    <div class="icon-wrapper">
+      <i class="material-icons">error_outline</i>
+    </div>
+    <div class="stat-content">
+      <span class="value">{{ stats.failed }}</span>
+      <span class="label">Failed</span>
+    </div>
+  </div>
+</div>

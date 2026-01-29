@@ -23,9 +23,8 @@
         <span class="created_at">{{ mission.created_at | date: 'short' }}</span>
         <span class="updated_at">{{ mission.updated_at | date: 'short' }}</span>
         <span class="action">
-          <span class="edit-link">Edit</span>
-          <span class="divider">|</span>
-          <span class="delete-link">Delete</span>
+          <button class="edit-btn" (click)="onEdit(mission)">Edit</button>
+          <button class="delete-btn" (click)="onDelete(mission)">Delete</button>
         </span>
       </div>
     }

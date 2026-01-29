@@ -66,26 +66,40 @@
     }
 
     .action {
-      text-align: center;
-      font-weight: 700;
-      font-size: 0.85rem;
-      
-      .edit-link {
-        color: var(--ctp-sky);
-        cursor: pointer;
-        &:hover { text-decoration: underline; }
-      }
-      
-      .delete-link {
-        color: var(--ctp-red);
-        cursor: pointer;
-        &:hover { text-decoration: underline; }
-      }
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
 
-      .divider {
-        color: var(--ctp-surface1);
-        margin: 0 8px;
+    .edit-btn, .delete-btn {
+      padding: 0.35rem 0.8rem !important;
+      border: none !important;
+      border-radius: 6px !important;
+      font-size: 0.8rem !important;
+      font-weight: 600 !important;
+      cursor: pointer;
+      color: var(--ctp-crust) !important;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important;
       }
+      
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .edit-btn {
+      background-color: var(--ctp-sapphire) !important;
+      &:hover { background-color: var(--ctp-sky) !important; }
+    }
+
+    .delete-btn {
+      background-color: var(--ctp-maroon) !important;
+      &:hover { background-color: var(--ctp-red) !important; }
     }
   }
 

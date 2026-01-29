@@ -37,7 +37,9 @@
         <span class="updated_at">{{ mission.updated_at | date: 'short' }}</span>
 
         @if (isSignin()) {
-          <span class="action">Join</span>
+          <span class="action">
+            <button class="join-btn" (click)="onJoin(mission)">Join</button>
+          </span>
         }
       </div>
     }
