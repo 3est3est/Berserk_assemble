@@ -19,10 +19,8 @@ use tracing::info;
 
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::{
-        database::postgresql_connection::PgPoolSquad,
-        http::routers::{self},
-    },
+    infrastructure::{database::postgresql_connection::PgPoolSquad, http::routers},
+    websocket::{handler::ws_handler, manager::ConnectionManager},
 };
 
 fn static_serve() -> Router {
@@ -33,7 +31,12 @@ fn static_serve() -> Router {
     Router::new().fallback_service(service)
 }
 
-fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
+fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Router {
+    // Shared state specifically for the WebSocket handler
+    let ws_router = Router::new()
+        .route("/mission/{id}", axum::routing::get(ws_handler))
+        .with_state(Arc::clone(&manager));
+
     Router::new()
         .nest("/brawler", routers::brawlers::routes(Arc::clone(&db_pool)))
         .nest(
@@ -59,17 +62,18 @@ fn api_serve(db_pool: Arc<PgPoolSquad>) -> Router {
         .nest("/util", routers::default_router::routes())
         .nest(
             "/comment",
-            routers::mission_comment::routes(Arc::clone(&db_pool)),
+            routers::mission_comment::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
         )
+        .nest("/ws", ws_router)
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 
 pub async fn start(config: Arc<DotEnvyConfig>, db_pool: Arc<PgPoolSquad>) -> Result<()> {
+    let manager = Arc::new(ConnectionManager::new());
+
     let app = Router::new()
         .merge(static_serve())
-        .nest("/api", api_serve(db_pool))
-        // .fallback(default_router::health_check)
-        // .route("/health_check", get(default_router::health_check)
+        .nest("/api", api_serve(db_pool, manager))
         .layer(tower_http::timeout::TimeoutLayer::with_status_code(
             StatusCode::REQUEST_TIMEOUT,
             Duration::from_secs(config.server.timeout),

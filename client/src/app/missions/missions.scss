@@ -163,6 +163,37 @@
     .name {
       font-weight: 500;
       color: var(--ctp-text);
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+      white-space: normal;
+
+      .main-name {
+        font-weight: 600;
+        font-size: 1rem;
+        color: var(--ctp-teal);
+      }
+
+      .sub-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.1rem;
+
+        .meta-item {
+          font-size: 0.75rem;
+          color: var(--ctp-subtext0);
+          display: flex;
+          align-items: center;
+          gap: 0.3rem;
+
+          mat-icon {
+            font-size: 0.9rem;
+            width: 0.9rem;
+            height: 0.9rem;
+            color: var(--ctp-peach);
+          }
+        }
+      }
     }
     .description, .chief, .crew_count {
       color: var(--ctp-subtext1);

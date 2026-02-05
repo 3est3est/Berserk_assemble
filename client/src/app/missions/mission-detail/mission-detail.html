@@ -18,6 +18,24 @@
         <div class="breadcrumb"><a routerLink="/chief">Missions</a> / {{ mission.name }}</div>
         <h1>{{ mission.name }}</h1>
         <p class="desc">{{ mission.description }}</p>
+
+        <div class="mission-logistics">
+          @if (mission.scheduled_at) {
+            <div class="logistics-item" title="Scheduled Time">
+              <mat-icon>schedule</mat-icon>
+              <span>{{ mission.scheduled_at | date: 'medium' }}</span>
+              @if (mission.status === 'Open') {
+                <span class="countdown-hint">({{ getRemainingTime(mission.scheduled_at) }})</span>
+              }
+            </div>
+          }
+          @if (mission.location) {
+            <div class="logistics-item" title="Location">
+              <mat-icon>place</mat-icon>
+              <span>{{ mission.location }}</span>
+            </div>
+          }
+        </div>
       </div>
       <div class="status-badge" [class]="mission.status.toLowerCase()">
         {{ mission.status }}
@@ -103,7 +121,7 @@
               </button>
             }
           </div>
-          <div class="chat-messages" #scrollMe [scrollTop]="scrollMe.scrollHeight">
+          <div class="chat-messages" #chatMessages>
             @for (comment of comments; track comment.id) {
               <div class="message" [class.own]="comment.brawler_id === currentUserId">
                 <img

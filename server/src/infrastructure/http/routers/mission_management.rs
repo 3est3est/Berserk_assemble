@@ -39,6 +39,7 @@ where
     T1: MissionManagementRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
 {
+    println!("DEBUG: Backend received payload: {:?}", model);
     match user_case.add(user_id, model).await {
         Ok(mission_id) => (StatusCode::CREATED, mission_id.to_string()).into_response(),
 

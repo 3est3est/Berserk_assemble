@@ -10,4 +10,6 @@ export interface Mission {
   max_crew: number;
   created_at: Date;
   updated_at: Date;
+  scheduled_at?: Date;
+  location?: string;
 }

@@ -9,10 +9,11 @@ import { CommonModule } from '@angular/common';
 import { CrewService } from '../_services/crew-service';
 import { getUserIdFromToken } from '../_helpers/util';
 import { ToastService } from '../_services/toast-service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-missions',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MatIconModule],
   templateUrl: './missions.html',
   styleUrl: './missions.scss',
 })
@@ -41,11 +42,11 @@ export class Missions {
     if (passport) {
       const userId = getUserIdFromToken(passport.token);
       if (userId) {
-        this.filter.exclude_brawler_id = userId;
+        this.filter.exclude_user_id = userId;
       }
     } else {
       // If not logged in, remove the exclude filter
-      delete this.filter.exclude_brawler_id;
+      delete this.filter.exclude_user_id;
     }
 
     const missions = await this._mission.getByFilter(this.filter);

@@ -27,6 +27,16 @@ diesel::table! {
 }
 
 diesel::table! {
+    mission_comments (id) {
+        id -> Int4,
+        mission_id -> Int4,
+        brawler_id -> Int4,
+        content -> Text,
+        created_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     missions (id) {
         id -> Int4,
         #[max_length = 255]
@@ -35,20 +45,13 @@ diesel::table! {
         #[max_length = 255]
         status -> Varchar,
         chief_id -> Int4,
-        max_crew -> Int4,
         created_at -> Timestamp,
         updated_at -> Timestamp,
         deleted_at -> Nullable<Timestamp>,
-    }
-}
-
-diesel::table! {
-    mission_comments (id) {
-        id -> Int4,
-        mission_id -> Int4,
-        brawler_id -> Int4,
-        content -> Text,
-        created_at -> Timestamp,
+        max_crew -> Int4,
+        scheduled_at -> Nullable<Timestamp>,
+        #[max_length = 255]
+        location -> Nullable<Varchar>,
     }
 }
 

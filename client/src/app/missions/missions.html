@@ -28,7 +28,19 @@
 
     @for (mission of missions$ | async; track mission.id) {
       <div class="contents">
-        <span class="name">{{ mission.name }}</span>
+        <span class="name">
+          <div class="main-name">{{ mission.name }}</div>
+          <div class="sub-info">
+            @if (mission.scheduled_at) {
+              <span class="meta-item"
+                ><mat-icon>schedule</mat-icon> {{ mission.scheduled_at | date: 'short' }}</span
+              >
+            }
+            @if (mission.location) {
+              <span class="meta-item"><mat-icon>place</mat-icon> {{ mission.location }}</span>
+            }
+          </div>
+        </span>
         <span class="description">{{ mission.description }}</span>
         <span class="chief">{{ mission.chief_display_name }}</span>
         <span class="crew_count">{{ mission.crew_count }} / {{ mission.max_crew }}</span>

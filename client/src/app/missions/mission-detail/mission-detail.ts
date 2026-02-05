@@ -1,14 +1,17 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { MissionService } from '../../_services/mission-service';
 import { Mission } from '../../_models/mission';
 import { PassportService } from '../../_services/passport-service';
 import { ToastService } from '../../_services/toast-service';
+import { WebsocketService } from '../../_services/websocket-service';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MissionComment } from '../../_models/mission-comment';
 import { FormsModule } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-mission-detail',
@@ -17,11 +20,12 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './mission-detail.html',
   styleUrl: './mission-detail.scss',
 })
-export class MissionDetail implements OnInit {
+export class MissionDetail implements OnInit, OnDestroy {
   private _route = inject(ActivatedRoute);
   private _missionService = inject(MissionService);
   private _passportService = inject(PassportService);
   private _toast = inject(ToastService);
+  private _wsService = inject(WebsocketService);
   private _cdr = inject(ChangeDetectorRef);
 
   mission?: Mission;
@@ -33,6 +37,9 @@ export class MissionDetail implements OnInit {
   countdownValue = 0;
   isCountdownActive = false;
 
+  private _wsSubscription?: Subscription;
+  private _routeSubscription?: Subscription;
+
   get isChief(): boolean {
     return this.mission?.chief_display_name === this._passportService.data()?.display_name;
   }
@@ -42,28 +49,69 @@ export class MissionDetail implements OnInit {
   }
 
   ngOnInit() {
-    this._route.params.subscribe((params) => {
-      const id = +params['id'];
-      if (id) {
-        this.loadMission(id);
+    this._routeSubscription = this._route.params
+      .pipe(
+        map((params) => +params['id']),
+        distinctUntilChanged(),
+      )
+      .subscribe((id) => {
+        if (id) {
+          this.loadMission(id);
+
+          // Setup WebSocket
+          this._wsService.disconnect();
+          this._wsService.connect(id);
+
+          this._wsSubscription?.unsubscribe();
+          this._wsSubscription = this._wsService.messages$.subscribe((msg) => {
+            this.handleWsMessage(msg);
+          });
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this._routeSubscription?.unsubscribe();
+    this._wsSubscription?.unsubscribe();
+    this._wsService.disconnect();
+  }
+
+  private handleWsMessage(msg: any) {
+    if (msg.type === 'new_comment') {
+      const newComment: MissionComment = msg.data;
+
+      const exists = this.comments.some((c) => c.id === newComment.id);
+      if (!exists) {
+        this.comments = [...this.comments, newComment];
+        this._cdr.markForCheck(); // BIND TO VIEW IMMEDIATELY
       }
-    });
+    } else if (msg.type === 'clear_chat') {
+      this.comments = [];
+      this._cdr.markForCheck();
+    }
   }
 
   async loadMission(id: number) {
     this.loading = true;
-    console.log('Loading mission:', id);
     try {
       this.mission = await this._missionService.getById(id);
-      console.log('Mission loaded:', this.mission);
-      this.crew = await this._missionService.getCrew(id);
-      console.log('Crew loaded:', this.crew);
-      this.comments = await this._missionService.getComments(id);
-      console.log('Comments loaded:', this.comments);
+
+      const [crew, comments] = await Promise.all([
+        this._missionService.getCrew(id),
+        this._missionService.getComments(id),
+      ]);
+
+      this.crew = crew;
+      this.comments = comments;
     } catch (e) {
       console.error('Failed to load mission detail', e);
+      this._toast.error('Error loading mission details');
     } finally {
-      this.loading = false;
+      // Use setTimeout to skip a tick and avoid ExpressionChanged error
+      setTimeout(() => {
+        this.loading = false;
+        this._cdr.detectChanges();
+      }, 0);
     }
   }
 
@@ -71,14 +119,21 @@ export class MissionDetail implements OnInit {
     if (!this.newCommentContent.trim() || !this.mission || this.sendingComment) return;
 
     this.sendingComment = true;
+    const content = this.newCommentContent.trim();
+    this.newCommentContent = '';
+
     try {
-      await this._missionService.addComment(this.mission.id, this.newCommentContent.trim());
-      this.newCommentContent = '';
-      this.comments = await this._missionService.getComments(this.mission.id);
+      await this._missionService.addComment(this.mission.id, content);
+      // The message will arrive via WebSocket and trigger handleWsMessage
     } catch (e) {
       console.error('Failed to send comment', e);
+      this._toast.error('Failed to send message');
+      this.newCommentContent = content; // Restore content if failed
     } finally {
-      this.sendingComment = false;
+      setTimeout(() => {
+        this.sendingComment = false;
+        this._cdr.detectChanges();
+      }, 0);
     }
   }
 
@@ -86,7 +141,7 @@ export class MissionDetail implements OnInit {
     if (!this.mission || this.isCountdownActive) return;
 
     this.isCountdownActive = true;
-    this.countdownValue = 5; // 5 seconds countdown
+    this.countdownValue = 5;
     this._toast.info(`Preparing for departure... Starting in ${this.countdownValue}`);
 
     const timer = setInterval(async () => {
@@ -95,7 +150,6 @@ export class MissionDetail implements OnInit {
       if (this.countdownValue <= 0) {
         clearInterval(timer);
 
-        // Use setTimeout to defer state change to next tick (fixes NG0100)
         setTimeout(async () => {
           this.isCountdownActive = false;
           try {
@@ -155,5 +209,21 @@ export class MissionDetail implements OnInit {
     } catch (e: any) {
       this._toast.error('Failed to clear chat: ' + (e.error || e.message));
     }
+  }
+
+  getRemainingTime(scheduledAt: Date | string): string {
+    const target = new Date(scheduledAt).getTime();
+    const now = new Date().getTime();
+    const diff = target - now;
+
+    if (diff <= 0) return 'Gathering now...';
+
+    const minutes = Math.floor(diff / (1000 * 60));
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+
+    if (days > 0) return `in ${days}d ${hours % 24}h`;
+    if (hours > 0) return `in ${hours}h ${minutes % 60}m`;
+    return `in ${minutes}m`;
   }
 }

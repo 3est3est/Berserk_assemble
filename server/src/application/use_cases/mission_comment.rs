@@ -28,7 +28,12 @@ where
         }
     }
 
-    pub async fn add_comment(&self, mission_id: i32, brawler_id: i32, content: &str) -> Result<()> {
+    pub async fn add_comment(
+        &self,
+        mission_id: i32,
+        brawler_id: i32,
+        content: &str,
+    ) -> Result<MissionCommentModel> {
         self.repository.add(mission_id, brawler_id, content).await
     }
 

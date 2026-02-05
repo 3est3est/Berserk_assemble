@@ -22,19 +22,40 @@ impl MissionCommentPostgres {
 
 #[async_trait]
 impl MissionCommentRepository for MissionCommentPostgres {
-    async fn add(&self, mission_id: i32, brawler_id: i32, content: &str) -> Result<()> {
+    async fn add(
+        &self,
+        mission_id: i32,
+        brawler_id: i32,
+        content: &str,
+    ) -> Result<MissionCommentModel> {
         use crate::infrastructure::database::schema::mission_comments;
         use diesel::ExpressionMethods;
 
         let mut conn = Arc::clone(&self.db_pool).get()?;
-        diesel::insert_into(mission_comments::table)
+        let inserted_id: i32 = diesel::insert_into(mission_comments::table)
             .values((
                 mission_comments::mission_id.eq(mission_id),
                 mission_comments::brawler_id.eq(brawler_id),
                 mission_comments::content.eq(content),
             ))
-            .execute(&mut conn)?;
-        Ok(())
+            .returning(mission_comments::id)
+            .get_result(&mut conn)?;
+
+        let sql = r#"
+            SELECT c.id, c.mission_id, c.brawler_id, 
+                   b.display_name as brawler_display_name,
+                   COALESCE(b.avatar_url, '') as brawler_avatar_url,
+                   c.content, c.created_at
+            FROM mission_comments c
+            JOIN brawlers b ON b.id = c.brawler_id
+            WHERE c.id = $1
+        "#;
+
+        let result = diesel::sql_query(sql)
+            .bind::<diesel::sql_types::Int4, _>(inserted_id)
+            .get_result::<MissionCommentModel>(&mut conn)?;
+
+        Ok(result)
     }
 
     async fn get_by_mission_id(&self, mission_id: i32) -> Result<Vec<MissionCommentModel>> {
