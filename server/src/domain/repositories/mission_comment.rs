@@ -4,7 +4,12 @@ use async_trait::async_trait;
 
 #[async_trait]
 pub trait MissionCommentRepository {
-    async fn add(&self, mission_id: i32, brawler_id: i32, content: &str) -> Result<()>;
+    async fn add(
+        &self,
+        mission_id: i32,
+        brawler_id: i32,
+        content: &str,
+    ) -> Result<MissionCommentModel>;
     async fn get_by_mission_id(&self, mission_id: i32) -> Result<Vec<MissionCommentModel>>;
     async fn clear_by_mission_id(&self, mission_id: i32) -> Result<()>;
 }

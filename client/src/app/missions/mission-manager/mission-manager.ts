@@ -64,6 +64,8 @@ export class MissionManager {
         name: mission.name,
         description: mission.description,
         max_crew: mission.max_crew,
+        scheduled_at: mission.scheduled_at,
+        location: mission.location,
       },
     });
 

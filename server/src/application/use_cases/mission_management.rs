@@ -40,6 +40,12 @@ where
             ));
         }
 
+        if let Some(scheduled_at) = add_mission_model.scheduled_at {
+            if scheduled_at < chrono::Utc::now() {
+                return Err(anyhow::anyhow!("Scheduled time cannot be in the past!"));
+            }
+        }
+
         let insert_mission_entity = add_mission_model.to_entity(chief_id);
 
         let result = self
@@ -65,6 +71,12 @@ where
                 ));
             } else {
                 edit_mission_model.name = Some(name.trim().to_string())
+            }
+        }
+
+        if let Some(scheduled_at) = edit_mission_model.scheduled_at {
+            if scheduled_at < chrono::Utc::now() {
+                return Err(anyhow::anyhow!("Scheduled time cannot be in the past!"));
             }
         }
 

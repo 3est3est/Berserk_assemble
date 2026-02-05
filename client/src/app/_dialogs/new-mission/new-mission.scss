@@ -22,6 +22,47 @@
     gap: 0.5rem;
     min-width: 350px;
     margin-top: 0.5rem;
+
+    /* Custom Field Styling to match Material Design */
+    .custom-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
+
+      label {
+        font-size: 0.85rem;
+        font-weight: 500;
+        color: var(--ctp-subtext1);
+        padding-left: 0.2rem;
+      }
+
+      .native-datetime-input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        background: transparent;
+        border: 1px solid var(--ctp-surface1);
+        border-radius: 4px; /* Material Design style */
+        color: var(--ctp-text);
+        font-family: inherit;
+        font-size: 1rem;
+        outline: none;
+        transition: 0.2s;
+        box-sizing: border-box; /* Ensure padding doesn't affect width */
+
+        &:focus {
+          border-color: var(--ctp-mauve);
+          border-width: 2px;
+          padding: calc(0.8rem - 1px) calc(1rem - 1px); /* Adjustment for border width */
+        }
+
+        &::-webkit-calendar-picker-indicator {
+          filter: invert(0.8); /* Make icon visible in dark mode */
+          cursor: pointer;
+        }
+      }
+    }
   }
 
   mat-form-field {

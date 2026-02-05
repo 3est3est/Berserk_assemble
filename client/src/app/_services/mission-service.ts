@@ -40,9 +40,9 @@ export class MissionService {
     if (filter.status) {
       params.push(`status=${encodeURIComponent(filter.status)}`);
     }
-    // เพิ่ม exclude_brawler_id สำหรับกรองภารกิจของตัวเองและที่เข้าร่วมแล้ว
-    if (filter.exclude_brawler_id) {
-      params.push(`exclude_brawler_id=${filter.exclude_brawler_id}`);
+    // เพิ่ม exclude_user_id สำหรับกรองภารกิจของตัวเองและที่เข้าร่วมแล้ว
+    if (filter.exclude_user_id) {
+      params.push(`exclude_user_id=${filter.exclude_user_id}`);
     }
 
     return params.join('&');

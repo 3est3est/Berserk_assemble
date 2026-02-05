@@ -1,0 +1,2 @@
+ALTER TABLE missions ADD COLUMN scheduled_at TIMESTAMP;
+ALTER TABLE missions ADD COLUMN location VARCHAR(255);

@@ -30,6 +30,22 @@
         />
         <mat-hint>Recommended: 5</mat-hint>
       </mat-form-field>
+
+      <div class="custom-field">
+        <label>Scheduled Time</label>
+        <input
+          class="native-datetime-input"
+          type="datetime-local"
+          [(ngModel)]="addMission.scheduled_at"
+          placeholder="When will this happen?"
+        />
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Location</mat-label>
+        <input matInput [(ngModel)]="addMission.location" placeholder="Where will this happen?" />
+        <mat-icon matSuffix>place</mat-icon>
+      </mat-form-field>
     </div>
   </mat-dialog-content>
 

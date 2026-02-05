@@ -1,15 +1,18 @@
 use anyhow::{Ok, Result};
 use async_trait::async_trait;
-use diesel::{ExpressionMethods, RunQueryDsl, dsl::delete, insert_into};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, dsl::delete, insert_into};
 use std::sync::Arc;
 
 use crate::{
     domain::{
         entities::crew_memberships::CrewMemberShips,
         repositories::crew_operation::CrewOperationRepository,
-        value_objects::mission_model::MissionModel,
+        value_objects::{mission_model::MissionModel, mission_statuses::MissionStatuses},
     },
-    infrastructure::database::{postgresql_connection::PgPoolSquad, schema::crew_memberships},
+    infrastructure::database::{
+        postgresql_connection::PgPoolSquad,
+        schema::{crew_memberships, missions},
+    },
 };
 
 pub struct CrewOperationPostgres {
@@ -26,6 +29,16 @@ impl CrewOperationPostgres {
 impl CrewOperationRepository for CrewOperationPostgres {
     async fn join(&self, crew_member_ships: CrewMemberShips) -> Result<()> {
         let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        let mission_status: String = missions::table
+            .select(missions::status)
+            .filter(missions::id.eq(crew_member_ships.mission_id))
+            .first(&mut conn)?;
+
+        if mission_status != MissionStatuses::Open.to_string() {
+            return Err(anyhow::anyhow!("Mission is not open for joining"));
+        }
+
         insert_into(crew_memberships::table)
             .values(crew_member_ships)
             .execute(&mut conn)?;
@@ -53,7 +66,9 @@ SELECT m.id,
        (SELECT COUNT(*) FROM crew_memberships WHERE mission_id = m.id) AS crew_count,
        m.max_crew,
        m.created_at,
-       m.updated_at
+       m.updated_at,
+       m.scheduled_at,
+       m.location
 FROM missions m
 INNER JOIN crew_memberships cm ON cm.mission_id = m.id AND cm.brawler_id = $1
 LEFT JOIN brawlers b ON b.id = m.chief_id

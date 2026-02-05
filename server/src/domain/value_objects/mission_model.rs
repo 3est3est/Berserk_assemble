@@ -1,4 +1,4 @@
-use chrono::NaiveDateTime;
+use chrono::{DateTime, NaiveDateTime, Utc};
 use diesel::{
     QueryableByName,
     sql_types::{BigInt, Int4, Nullable, Text, Timestamp, Varchar},
@@ -34,6 +34,10 @@ pub struct MissionModel {
     pub created_at: NaiveDateTime,
     #[diesel(sql_type = Timestamp)]
     pub updated_at: NaiveDateTime,
+    #[diesel(sql_type = Nullable<Timestamp>)]
+    pub scheduled_at: Option<NaiveDateTime>,
+    #[diesel(sql_type = Nullable<Varchar>)]
+    pub location: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -41,6 +45,8 @@ pub struct AddMissionModel {
     pub name: String,
     pub description: Option<String>,
     pub max_crew: Option<i32>,
+    pub scheduled_at: Option<DateTime<Utc>>,
+    pub location: Option<String>,
 }
 
 impl AddMissionModel {
@@ -51,6 +57,8 @@ impl AddMissionModel {
             status: MissionStatuses::Open.to_string(),
             chief_id,
             max_crew: self.max_crew.unwrap_or(5),
+            scheduled_at: self.scheduled_at.map(|dt| dt.naive_utc()),
+            location: self.location.clone(),
         }
     }
 }
@@ -60,6 +68,8 @@ pub struct EditMissionModel {
     pub name: Option<String>,
     pub description: Option<String>,
     pub max_crew: Option<i32>,
+    pub scheduled_at: Option<DateTime<Utc>>,
+    pub location: Option<String>,
 }
 
 impl EditMissionModel {
@@ -69,6 +79,8 @@ impl EditMissionModel {
             description: self.description.clone(),
             chief_id,
             max_crew: self.max_crew,
+            scheduled_at: self.scheduled_at.map(|dt| dt.naive_utc()),
+            location: self.location.clone(),
         }
     }
 }

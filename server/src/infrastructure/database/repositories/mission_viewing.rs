@@ -38,14 +38,16 @@ SELECT m.id,
        COUNT(cm.brawler_id) AS crew_count,
        m.max_crew,
        m.created_at,
-       m.updated_at
+       m.updated_at,
+       m.scheduled_at,
+       m.location
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
 WHERE m.deleted_at IS NULL
    AND m.id = $1
 GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
-         m.chief_id, m.max_crew, m.created_at, m.updated_at
+         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location
 LIMIT 1
         "#;
         let mut conn = Arc::clone(&self.db_pool).get()?;
@@ -70,7 +72,9 @@ SELECT m.id,
        COUNT(cm.brawler_id) AS crew_count,
        m.max_crew,
        m.created_at,
-       m.updated_at
+       m.updated_at,
+       m.scheduled_at,
+       m.location
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
@@ -83,19 +87,19 @@ WHERE m.deleted_at IS NULL
       WHERE cm2.mission_id = m.id AND cm2.brawler_id = $3
   ))
 GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
-         m.chief_id, m.max_crew, m.created_at, m.updated_at
+         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location
 ORDER BY m.created_at DESC
         "#;
 
         let status_bind: Option<String> = filter.status.as_ref().map(|s| s.to_string());
         let name_bind: Option<String> = filter.name.as_ref().map(|n| format!("%{}%", n));
-        let exclude_brawler_bind: Option<i32> = filter.exclude_brawler_id;
+        let exclude_user_bind: Option<i32> = filter.exclude_user_id;
 
         let mut conn = Arc::clone(&self.db_pool).get()?;
         let rows = diesel::sql_query(sql)
             .bind::<Nullable<Varchar>, _>(status_bind)
             .bind::<Nullable<Varchar>, _>(name_bind)
-            .bind::<Nullable<Int4>, _>(exclude_brawler_bind)
+            .bind::<Nullable<Int4>, _>(exclude_user_bind)
             .load::<MissionModel>(&mut conn)?;
 
         Ok(rows)

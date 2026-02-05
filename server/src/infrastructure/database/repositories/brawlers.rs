@@ -103,7 +103,9 @@ SELECT
     (SELECT COUNT(*) FROM crew_memberships WHERE crew_memberships.mission_id = missions.id) AS crew_count,
     missions.max_crew,
     missions.created_at,
-    missions.updated_at
+    missions.updated_at,
+    missions.scheduled_at,
+    missions.location
 FROM missions
 LEFT JOIN brawlers ON brawlers.id = missions.chief_id
 WHERE missions.deleted_at IS NULL

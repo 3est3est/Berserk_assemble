@@ -4,7 +4,8 @@
   padding: 0 1rem;
   color: var(--ctp-text);
 
-  .loading-state, .error-state {
+  .loading-state,
+  .error-state {
     text-align: center;
     padding: 5rem 2rem;
     display: flex;
@@ -14,10 +15,20 @@
     background: var(--ctp-mantle);
     border-radius: 20px;
     border: 1px solid var(--ctp-surface0);
-    
-    p { color: var(--ctp-subtext0); }
-    mat-icon { font-size: 3rem; width: 3rem; height: 3rem; color: var(--ctp-maroon); }
-    h2 { margin: 0; color: var(--ctp-teal); }
+
+    p {
+      color: var(--ctp-subtext0);
+    }
+    mat-icon {
+      font-size: 3rem;
+      width: 3rem;
+      height: 3rem;
+      color: var(--ctp-maroon);
+    }
+    h2 {
+      margin: 0;
+      color: var(--ctp-teal);
+    }
   }
 
   .spinner {
@@ -30,8 +41,12 @@
   }
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 
   .countdown-overlay {
@@ -81,9 +96,15 @@
   }
 
   @keyframes pulse-countdown {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .mission-header {
@@ -101,11 +122,66 @@
       font-size: 0.85rem;
       margin-bottom: 0.5rem;
       color: var(--ctp-subtext0);
-      a { color: var(--ctp-teal); text-decoration: none; &:hover { text-decoration: underline; } }
+      a {
+        color: var(--ctp-teal);
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
 
-    h1 { margin: 0; font-size: 2.5rem; color: var(--ctp-teal); }
-    .desc { margin: 0.5rem 0 0; color: var(--ctp-subtext1); font-size: 1.1rem; }
+    h1 {
+      margin: 0;
+      font-size: 2.5rem;
+      color: var(--ctp-teal);
+    }
+    .desc {
+      margin: 0.5rem 0 0;
+      color: var(--ctp-subtext1);
+      font-size: 1.1rem;
+    }
+
+    .mission-logistics {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-top: 1.2rem;
+
+      .logistics-item {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: var(--ctp-surface0);
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        color: var(--ctp-text);
+        font-size: 0.95rem;
+        border: 1px solid var(--ctp-surface1);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+
+        &:hover {
+          border-color: var(--ctp-teal);
+          transform: translateY(-2px);
+        }
+
+        mat-icon {
+          font-size: 1.2rem;
+          width: 1.2rem;
+          height: 1.2rem;
+          color: var(--ctp-peach);
+        }
+
+        .countdown-hint {
+          font-size: 0.85rem;
+          color: var(--ctp-pink);
+          font-weight: 700;
+          margin-left: 0.5rem;
+          letter-spacing: 0.05em;
+        }
+      }
+    }
 
     .status-badge {
       padding: 0.5rem 1.5rem;
@@ -114,11 +190,23 @@
       text-transform: uppercase;
       font-size: 0.9rem;
       letter-spacing: 0.1em;
-      
-      &.open { background: var(--ctp-teal); color: var(--ctp-crust); }
-      &.inprogress { background: var(--ctp-yellow); color: var(--ctp-crust); }
-      &.completed { background: var(--ctp-green); color: var(--ctp-crust); }
-      &.failed { background: var(--ctp-maroon); color: var(--ctp-crust); }
+
+      &.open {
+        background: var(--ctp-teal);
+        color: var(--ctp-crust);
+      }
+      &.inprogress {
+        background: var(--ctp-yellow);
+        color: var(--ctp-crust);
+      }
+      &.completed {
+        background: var(--ctp-green);
+        color: var(--ctp-crust);
+      }
+      &.failed {
+        background: var(--ctp-maroon);
+        color: var(--ctp-crust);
+      }
     }
   }
 
@@ -135,7 +223,13 @@
     padding: 1.5rem;
     height: fit-content;
 
-    h3 { margin: 0 0 1.5rem; color: var(--ctp-teal); font-size: 1.2rem; border-bottom: 1px solid var(--ctp-surface0); padding-bottom: 0.75rem; }
+    h3 {
+      margin: 0 0 1.5rem;
+      color: var(--ctp-teal);
+      font-size: 1.2rem;
+      border-bottom: 1px solid var(--ctp-surface0);
+      padding-bottom: 0.75rem;
+    }
 
     .crew-list {
       display: flex;
@@ -152,12 +246,18 @@
         border: 1px solid var(--ctp-surface0);
         transition: 0.2s;
 
-        &:hover { border-color: var(--ctp-teal); background: var(--ctp-surface0); }
+        &:hover {
+          border-color: var(--ctp-teal);
+          background: var(--ctp-surface0);
+        }
 
         &.chief-highlight {
           border: 1px solid var(--ctp-yellow);
           background: rgba(249, 226, 175, 0.05); // Using hex for safety
-          .avatar { border-color: var(--ctp-yellow); box-shadow: 0 0 10px rgba(249, 226, 175, 0.3); }
+          .avatar {
+            border-color: var(--ctp-yellow);
+            box-shadow: 0 0 10px rgba(249, 226, 175, 0.3);
+          }
         }
 
         &.you-highlight {
@@ -173,30 +273,34 @@
           }
         }
 
-        .avatar { 
-          width: 45px; 
-          height: 45px; 
-          border-radius: 50%; 
-          border: 2px solid var(--ctp-teal); 
+        .avatar {
+          width: 45px;
+          height: 45px;
+          border-radius: 50%;
+          border: 2px solid var(--ctp-teal);
           object-fit: cover;
         }
-        
+
         .member-info {
           flex: 1;
           display: flex;
           flex-direction: column;
           gap: 0.3rem;
 
-          .name { font-weight: 600; color: var(--ctp-text); font-size: 0.95rem; }
-          
+          .name {
+            font-weight: 600;
+            color: var(--ctp-text);
+            font-size: 0.95rem;
+          }
+
           .badges {
             display: flex;
             gap: 0.5rem;
             align-items: center;
           }
 
-          .role { 
-            font-size: 0.7rem; 
+          .role {
+            font-size: 0.7rem;
             font-weight: 800;
             padding: 0.1rem 0.5rem;
             border-radius: 4px;
@@ -232,7 +336,10 @@
           cursor: pointer;
           opacity: 0.6;
           transition: 0.2s;
-          &:hover { opacity: 1; transform: scale(1.1); }
+          &:hover {
+            opacity: 1;
+            transform: scale(1.1);
+          }
         }
       }
     }
@@ -262,7 +369,11 @@
         display: flex;
         align-items: center;
         gap: 0.75rem;
-        mat-icon { font-size: 1.2rem; width: 1.2rem; height: 1.2rem; }
+        mat-icon {
+          font-size: 1.2rem;
+          width: 1.2rem;
+          height: 1.2rem;
+        }
       }
 
       .clear-btn {
@@ -277,9 +388,13 @@
         gap: 0.4rem;
         cursor: pointer;
         transition: 0.2s;
-        
-        mat-icon { font-size: 1rem; width: 1rem; height: 1.0rem; }
-        
+
+        mat-icon {
+          font-size: 1rem;
+          width: 1rem;
+          height: 1rem;
+        }
+
         &:hover {
           background: var(--ctp-red);
           color: var(--ctp-crust);
@@ -295,8 +410,13 @@
       flex-direction: column;
       gap: 1.2rem;
 
-      &::-webkit-scrollbar { width: 6px; }
-      &::-webkit-scrollbar-thumb { background: var(--ctp-surface1); border-radius: 3px; }
+      &::-webkit-scrollbar {
+        width: 6px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: var(--ctp-surface1);
+        border-radius: 3px;
+      }
 
       .system-msg {
         text-align: center;
@@ -321,10 +441,22 @@
             border-bottom-right-radius: 4px;
             box-shadow: 0 4px 12px rgba(148, 226, 213, 0.2);
 
-            .msg-author { color: var(--ctp-crust); opacity: 0.9; }
-            .msg-time { color: var(--ctp-crust); opacity: 0.7; }
-            .msg-text { color: var(--ctp-crust); }
-            .role-badge { background: rgba(0,0,0,0.2); color: white; border-color: rgba(255,255,255,0.3); }
+            .msg-author {
+              color: var(--ctp-crust);
+              opacity: 0.9;
+            }
+            .msg-time {
+              color: var(--ctp-crust);
+              opacity: 0.7;
+            }
+            .msg-text {
+              color: var(--ctp-crust);
+            }
+            .role-badge {
+              background: rgba(0, 0, 0, 0.2);
+              color: white;
+              border-color: rgba(255, 255, 255, 0.3);
+            }
           }
         }
 
@@ -341,7 +473,7 @@
           padding: 0.8rem 1.1rem;
           border-radius: 14px;
           border-bottom-left-radius: 4px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
           .msg-header {
             display: flex;
@@ -349,8 +481,12 @@
             gap: 0.6rem;
             margin-bottom: 0.4rem;
 
-            .msg-author { font-size: 0.8rem; font-weight: 700; color: var(--ctp-teal); }
-            
+            .msg-author {
+              font-size: 0.8rem;
+              font-weight: 700;
+              color: var(--ctp-teal);
+            }
+
             .role-badge {
               font-size: 0.6rem;
               padding: 0.1rem 0.4rem;
@@ -367,7 +503,11 @@
               }
             }
 
-            .msg-time { font-size: 0.65rem; color: var(--ctp-subtext0); margin-left: auto; }
+            .msg-time {
+              font-size: 0.65rem;
+              color: var(--ctp-subtext0);
+              margin-left: auto;
+            }
           }
 
           .msg-text {
@@ -395,8 +535,12 @@
         color: var(--ctp-text);
         outline: none;
 
-        &:focus { border-color: var(--ctp-teal); }
-        &:disabled { opacity: 0.5; }
+        &:focus {
+          border-color: var(--ctp-teal);
+        }
+        &:disabled {
+          opacity: 0.5;
+        }
       }
 
       button {
@@ -412,10 +556,18 @@
         cursor: pointer;
         transition: all 0.2s;
 
-        &:hover:not(:disabled) { transform: scale(1.05); background: var(--ctp-green); }
-        &:disabled { opacity: 0.5; cursor: not-allowed; }
+        &:hover:not(:disabled) {
+          transform: scale(1.05);
+          background: var(--ctp-green);
+        }
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
 
-        .spinning { animation: spin 2s linear infinite; }
+        .spinning {
+          animation: spin 2s linear infinite;
+        }
       }
     }
   }
@@ -427,7 +579,14 @@
     padding: 2rem;
     box-shadow: 0 0 40px rgba(148, 226, 213, 0.1);
 
-    h3 { margin: 0 0 1.5rem; color: var(--ctp-teal); text-transform: uppercase; letter-spacing: 0.2em; border-bottom: 1px solid var(--ctp-surface0); padding-bottom: 0.5rem; }
+    h3 {
+      margin: 0 0 1.5rem;
+      color: var(--ctp-teal);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      border-bottom: 1px solid var(--ctp-surface0);
+      padding-bottom: 0.5rem;
+    }
 
     .btn-group {
       display: flex;
@@ -450,13 +609,39 @@
       .start-btn {
         background: var(--ctp-green);
         color: var(--ctp-crust);
-        &:hover:not(:disabled) { background: var(--ctp-teal); box-shadow: 0 0 20px var(--ctp-teal); transform: translateY(-2px); }
-        &:disabled { background: var(--ctp-surface0); color: var(--ctp-subtext0); cursor: not-allowed; }
+        &:hover:not(:disabled) {
+          background: var(--ctp-teal);
+          box-shadow: 0 0 20px var(--ctp-teal);
+          transform: translateY(-2px);
+        }
+        &:disabled {
+          background: var(--ctp-surface0);
+          color: var(--ctp-subtext0);
+          cursor: not-allowed;
+        }
       }
 
-      .complete-btn { background: var(--ctp-blue); color: var(--ctp-crust); &:hover { background: var(--ctp-teal); transform: scale(1.05); } }
-      .fail-btn { background: var(--ctp-red); color: var(--ctp-crust); &:hover { transform: scale(0.95); opacity: 0.8; } }
-      .final-status { color: var(--ctp-subtext0); font-style: italic; font-weight: 600; }
+      .complete-btn {
+        background: var(--ctp-blue);
+        color: var(--ctp-crust);
+        &:hover {
+          background: var(--ctp-teal);
+          transform: scale(1.05);
+        }
+      }
+      .fail-btn {
+        background: var(--ctp-red);
+        color: var(--ctp-crust);
+        &:hover {
+          transform: scale(0.95);
+          opacity: 0.8;
+        }
+      }
+      .final-status {
+        color: var(--ctp-subtext0);
+        font-style: italic;
+        font-weight: 600;
+      }
     }
   }
 }
