@@ -12,8 +12,8 @@ where
     T1: MissionManagementRepository + Send + Sync,
     T2: MissionViewingRepository + Send + Sync,
 {
-    mission_management_repository: Arc<T1>,
-    mission_viewing_repository: Arc<T2>,
+    pub mission_management_repository: Arc<T1>,
+    pub mission_viewing_repository: Arc<T2>,
 }
 
 use anyhow::Result;

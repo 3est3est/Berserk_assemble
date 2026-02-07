@@ -8,7 +8,7 @@ use crate::{
 };
 use anyhow::{Ok, Result};
 use async_trait::async_trait;
-use diesel::{ExpressionMethods, RunQueryDsl, dsl::now, dsl::update, insert_into};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, dsl::now, dsl::update, insert_into};
 use std::sync::Arc;
 
 pub struct MissionManagementPostgres {
@@ -47,13 +47,34 @@ impl MissionManagementRepository for MissionManagementPostgres {
     async fn remove(&self, mission_id: i32, chief_id: i32) -> Result<()> {
         let mut conn = Arc::clone(&self.db_pool).get()?;
 
-        update(missions::table)
-            .filter(missions::id.eq(mission_id))
-            .filter(missions::chief_id.eq(chief_id))
-            .filter(missions::deleted_at.is_null())
-            .filter(missions::status.ne(MissionStatuses::InProgress.to_string()))
-            .set((missions::deleted_at.eq(now),))
-            .execute(&mut conn)?;
+        use crate::infrastructure::database::schema::{crew_memberships, mission_comments};
+
+        // 1. Check if there are any crew members
+        let crew_count: i64 = crew_memberships::table
+            .filter(crew_memberships::mission_id.eq(mission_id))
+            .count()
+            .get_result(&mut conn)?;
+
+        if crew_count == 0 {
+            // 2a. HARD DELETE: No one to notify, just clean up
+            diesel::delete(mission_comments::table)
+                .filter(mission_comments::mission_id.eq(mission_id))
+                .execute(&mut conn)?;
+
+            diesel::delete(missions::table)
+                .filter(missions::id.eq(mission_id))
+                .filter(missions::chief_id.eq(chief_id))
+                .execute(&mut conn)?;
+        } else {
+            // 2b. SOFT DELETE: Keep it so crew members can see Status: REMOVED and leave
+            update(missions::table)
+                .filter(missions::id.eq(mission_id))
+                .filter(missions::chief_id.eq(chief_id))
+                .filter(missions::deleted_at.is_null())
+                .filter(missions::status.ne(MissionStatuses::InProgress.to_string()))
+                .set((missions::deleted_at.eq(now),))
+                .execute(&mut conn)?;
+        }
 
         Ok(())
     }

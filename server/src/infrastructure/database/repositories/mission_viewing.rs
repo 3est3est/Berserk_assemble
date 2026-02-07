@@ -40,14 +40,14 @@ SELECT m.id,
        m.created_at,
        m.updated_at,
        m.scheduled_at,
-       m.location
+       m.location,
+       m.deleted_at
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
-WHERE m.deleted_at IS NULL
-   AND m.id = $1
+WHERE m.id = $1
 GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
-         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location
+         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location, m.deleted_at
 LIMIT 1
         "#;
         let mut conn = Arc::clone(&self.db_pool).get()?;
@@ -74,7 +74,8 @@ SELECT m.id,
        m.created_at,
        m.updated_at,
        m.scheduled_at,
-       m.location
+       m.location,
+       m.deleted_at
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
@@ -87,7 +88,7 @@ WHERE m.deleted_at IS NULL
       WHERE cm2.mission_id = m.id AND cm2.brawler_id = $3
   ))
 GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
-         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location
+         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location, m.deleted_at
 ORDER BY m.created_at DESC
         "#;
 

@@ -23,7 +23,9 @@
         <span class="description">{{ mission.description }}</span>
         <span class="chief">{{ mission.chief_display_name }}</span>
         <span class="crew_count">{{ mission.crew_count }} / {{ mission.max_crew }}</span>
-        <span class="status" [attr.data-status]="mission.status">{{ mission.status }}</span>
+        <span class="status" [attr.data-status]="mission.deleted_at ? 'removed' : mission.status">
+          {{ mission.deleted_at ? 'REMOVED' : mission.status }}
+        </span>
         <span class="created_at">{{ mission.created_at | date: 'short' }}</span>
         <span class="action">
           <button class="manage-btn" [routerLink]="['/missions', mission.id]">Manage</button>

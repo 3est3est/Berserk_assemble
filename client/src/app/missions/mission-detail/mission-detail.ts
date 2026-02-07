@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MissionService } from '../../_services/mission-service';
+import { CrewService } from '../../_services/crew-service';
 import { Mission } from '../../_models/mission';
 import { PassportService } from '../../_services/passport-service';
 import { ToastService } from '../../_services/toast-service';
@@ -22,7 +23,9 @@ import { distinctUntilChanged, map } from 'rxjs/operators';
 })
 export class MissionDetail implements OnInit, OnDestroy {
   private _route = inject(ActivatedRoute);
+  private _router = inject(Router);
   private _missionService = inject(MissionService);
+  private _crewService = inject(CrewService);
   private _passportService = inject(PassportService);
   private _toast = inject(ToastService);
   private _wsService = inject(WebsocketService);
@@ -34,10 +37,13 @@ export class MissionDetail implements OnInit, OnDestroy {
   newCommentContent = '';
   loading = true;
   sendingComment = false;
+  isMissionDeleted = false;
+  isKicked = false;
   countdownValue = 0;
   isCountdownActive = false;
 
   private _wsSubscription?: Subscription;
+  private _notificationSubscription?: Subscription;
   private _routeSubscription?: Subscription;
 
   get isChief(): boolean {
@@ -66,6 +72,17 @@ export class MissionDetail implements OnInit, OnDestroy {
           this._wsSubscription = this._wsService.messages$.subscribe((msg) => {
             this.handleWsMessage(msg);
           });
+
+          // Also listen to notifications to handle being kicked globally
+          this._notificationSubscription?.unsubscribe();
+          this._notificationSubscription = this._wsService.notifications$.subscribe((msg) => {
+            if (msg.type === 'kicked_from_mission' && msg.data.mission_id === id) {
+              console.log('[MissionDetail] Kicked via global notification');
+              this.isKicked = true;
+              this._toast.warning('You have been kicked from this mission by the chief.');
+              this._cdr.detectChanges();
+            }
+          });
         }
       });
   }
@@ -73,21 +90,71 @@ export class MissionDetail implements OnInit, OnDestroy {
   ngOnDestroy() {
     this._routeSubscription?.unsubscribe();
     this._wsSubscription?.unsubscribe();
+    this._notificationSubscription?.unsubscribe();
     this._wsService.disconnect();
   }
 
   private handleWsMessage(msg: any) {
+    console.log('[MissionDetail] WS Message:', msg);
     if (msg.type === 'new_comment') {
       const newComment: MissionComment = msg.data;
 
       const exists = this.comments.some((c) => c.id === newComment.id);
       if (!exists) {
         this.comments = [...this.comments, newComment];
-        this._cdr.markForCheck(); // BIND TO VIEW IMMEDIATELY
+        setTimeout(() => {
+          this._cdr.detectChanges();
+        }, 0);
       }
     } else if (msg.type === 'clear_chat') {
       this.comments = [];
-      this._cdr.markForCheck();
+      this._cdr.detectChanges();
+    } else if (msg.type === 'mission_deleted') {
+      console.log('[MissionDetail] Mission deleted event received');
+      this.isMissionDeleted = true;
+      this._toast.warning('This mission has been removed by the chief.');
+      this._cdr.detectChanges();
+    } else if (msg.type === 'kicked_from_mission') {
+      console.log('[MissionDetail] Kicked event received:', msg.data);
+      const kickedId = msg.data.brawler_id;
+      const myId = this.currentUserId;
+
+      console.log('[MissionDetail] Kicked ID:', kickedId, 'My ID:', myId);
+
+      // If someone was kicked, we should always refresh the list
+      this._missionService.getCrew(msg.data.mission_id).then((crew) => {
+        this.crew = crew;
+        if (this.mission) {
+          this.mission.crew_count = crew.length;
+        }
+        this._cdr.detectChanges();
+      });
+
+      if (kickedId === myId) {
+        console.warn('[MissionDetail] I was kicked!');
+        this.isKicked = true;
+        this._toast.warning('You have been removed from this mission.');
+        this._cdr.detectChanges();
+      }
+    } else if (msg.type === 'new_crew_joined' || msg.type === 'crew_left') {
+      console.log('[MissionDetail] Crew change event:', msg.type);
+      this._missionService.getCrew(this.mission!.id).then((crew) => {
+        this.crew = crew;
+        if (this.mission) {
+          this.mission.crew_count = crew.length;
+        }
+        this._cdr.detectChanges();
+      });
+    } else if (
+      msg.type === 'mission_started' ||
+      msg.type === 'mission_completed' ||
+      msg.type === 'mission_failed'
+    ) {
+      console.log('[MissionDetail] Mission status changed:', msg.data.new_status);
+      if (this.mission) {
+        this.mission.status = msg.data.new_status;
+        this._cdr.detectChanges();
+      }
     }
   }
 
@@ -95,6 +162,12 @@ export class MissionDetail implements OnInit, OnDestroy {
     this.loading = true;
     try {
       this.mission = await this._missionService.getById(id);
+
+      // Check if mission is deleted
+      if (this.mission.deleted_at) {
+        this.isMissionDeleted = true;
+        this._toast.warning('This mission has been removed.');
+      }
 
       const [crew, comments] = await Promise.all([
         this._missionService.getCrew(id),
@@ -225,5 +298,16 @@ export class MissionDetail implements OnInit, OnDestroy {
     if (days > 0) return `in ${days}d ${hours % 24}h`;
     if (hours > 0) return `in ${hours}h ${minutes % 60}m`;
     return `in ${minutes}m`;
+  }
+
+  async leaveMission() {
+    if (!this.mission) return;
+    try {
+      await this._crewService.leave(this.mission.id);
+      this._toast.success('You have left the mission.');
+      this._router.navigate(['/my-crew']);
+    } catch (e: any) {
+      this._toast.error('Failed to leave: ' + (e.error || e.message));
+    }
   }
 }

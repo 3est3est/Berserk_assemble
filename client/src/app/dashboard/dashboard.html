@@ -1,56 +1,170 @@
-<div class="page-header">
-  <h2>Mission Dashboard</h2>
-  <p>Overview of your mission activities</p>
-</div>
-
-<div class="stats-grid">
-  <div class="stat-card total">
-    <div class="icon-wrapper">
-      <i class="material-icons">assignment</i>
+<div class="dashboard-container">
+  <!-- Top Utility Bar -->
+  <div class="top-bar">
+    <div class="breadcrumb">
+      <span class="root">SYSTEM</span>
+      <i class="material-icons">chevron_right</i>
+      <span class="active">DASHBOARD</span>
     </div>
-    <div class="stat-content">
-      <span class="value">{{ stats.total }}</span>
-      <span class="label">Total Missions</span>
+    <div class="system-status">
+      <div class="status-dot pulse"></div>
+      <span class="status-text">LIVE LINK ACTIVE</span>
     </div>
   </div>
 
-  <div class="stat-card open">
-    <div class="icon-wrapper">
-      <i class="material-icons">lock_open</i>
+  <header class="dashboard-header">
+    <div class="title-area">
+      <h1>OPERATIONS CENTER</h1>
+      <p>Tactical data visualization & mission intelligence</p>
     </div>
-    <div class="stat-content">
-      <span class="value">{{ stats.open }}</span>
-      <span class="label">Open</span>
+    <div class="header-actions">
+      <div class="quick-insight">
+        <span class="label">SUCCESS RATIO</span>
+        <span class="value">{{ stats.successRate }}%</span>
+      </div>
+      <div class="quick-insight">
+        <span class="label">XP ACCUMULATED</span>
+        <span class="value">{{ stats.totalExp }}</span>
+      </div>
+    </div>
+  </header>
+
+  <div class="dashboard-grid">
+    <!-- Summary Row -->
+    <section class="summary-row">
+      <div class="summary-card total">
+        <div class="card-icon"><i class="material-icons">lan</i></div>
+        <div class="card-data">
+          <span class="count">{{ stats.total }}</span>
+          <span class="label">Total Ops</span>
+        </div>
+      </div>
+      <div class="summary-card pending">
+        <div class="card-icon"><i class="material-icons">radio_button_checked</i></div>
+        <div class="card-data">
+          <span class="count">{{ stats.open }}</span>
+          <span class="label">Pending</span>
+        </div>
+      </div>
+      <div class="summary-card active">
+        <div class="card-icon pulse-blue"><i class="material-icons">bolt</i></div>
+        <div class="card-data">
+          <span class="count">{{ stats.inProgress }}</span>
+          <span class="label">Active</span>
+        </div>
+      </div>
+      <div class="summary-card nominal">
+        <div class="card-icon"><i class="material-icons">verified</i></div>
+        <div class="card-data">
+          <span class="count">{{ stats.completed }}</span>
+          <span class="label">Nominal</span>
+        </div>
+      </div>
+      <div class="summary-card aborted">
+        <div class="card-icon"><i class="material-icons">warning</i></div>
+        <div class="card-data">
+          <span class="count">{{ stats.failed }}</span>
+          <span class="label">Aborted</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main Content Area -->
+    <div class="content-row">
+      <!-- Left: Activity Log (Priority) -->
+      <section class="glass-section activity-section">
+        <div class="section-header">
+          <div class="h-title">
+            <i class="material-icons">terminal</i>
+            <span>ACTIVITY STREAM</span>
+          </div>
+          <div class="live-indicator">
+            <div class="dot"></div>
+            <span>LIVE_FEED</span>
+          </div>
+        </div>
+
+        <div class="activity-scroll">
+          <div
+            *ngFor="let mission of recentMissions"
+            class="stream-item"
+            [attr.data-status]="mission.status.toLowerCase()"
+          >
+            <div class="status-marker"></div>
+            <div class="item-content">
+              <div class="main-info">
+                <span class="name">{{ mission.name }}</span>
+                <span class="timestamp">{{ mission.updated_at | date: 'HH:mm:ss' }}</span>
+              </div>
+              <div class="sub-info">
+                <span class="status-badge">{{ mission.status.toUpperCase() }}</span>
+                <span class="detail">/ {{ mission.crew_count }} UNITS DEPLOYED</span>
+              </div>
+            </div>
+            <i class="material-icons arrow">navigate_next</i>
+          </div>
+
+          <div *ngIf="recentMissions.length === 0" class="empty-state">
+            <i class="material-icons">sensors_off</i>
+            <p>NO DATA STREAMS FOUND</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Performance Sidebar -->
+      <aside class="performance-sidebar">
+        <section class="glass-section efficiency-section">
+          <div class="section-header">
+            <div class="h-title">
+              <i class="material-icons">speed</i>
+              <span>EFFICIENCY</span>
+            </div>
+          </div>
+          <div class="performance-data">
+            <div class="stat-block">
+              <div class="block-info">
+                <span class="label">MISSION INTEGRITY</span>
+                <span class="value">{{ stats.successRate }}%</span>
+              </div>
+              <div class="custom-progress">
+                <div
+                  class="bar"
+                  [style.width.%]="stats.successRate"
+                  [style.background-color]="getProgressBarColor(stats.successRate)"
+                ></div>
+              </div>
+            </div>
+            <div class="stat-block">
+              <div class="block-info">
+                <span class="label">PARTICIPATION RATE</span>
+                <span class="value">{{ stats.avgCrewSize }}</span>
+              </div>
+              <div class="custom-progress">
+                <div class="bar teal" [style.width.%]="(stats.avgCrewSize / 10) * 100"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="glass-section exp-banner">
+          <div class="banner-content">
+            <span class="label">LEVEL_UP_CAPACITY</span>
+            <div class="exp-display">
+              <span class="title">EXP</span>
+              <span class="number">{{ stats.totalExp }}</span>
+            </div>
+          </div>
+          <div class="glow-effect"></div>
+        </section>
+      </aside>
     </div>
   </div>
 
-  <div class="stat-card in-progress">
-    <div class="icon-wrapper">
-      <i class="material-icons">trending_up</i>
+  <footer class="dashboard-footer">
+    <div class="footer-line"></div>
+    <div class="footer-meta">
+      <span>PERFORMANCE_LOG_BETA_v3.5</span>
+      <span>READY_FOR_DEPLOYMENT</span>
     </div>
-    <div class="stat-content">
-      <span class="value">{{ stats.inProgress }}</span>
-      <span class="label">In Progress</span>
-    </div>
-  </div>
-
-  <div class="stat-card completed">
-    <div class="icon-wrapper">
-      <i class="material-icons">check_circle</i>
-    </div>
-    <div class="stat-content">
-      <span class="value">{{ stats.completed }}</span>
-      <span class="label">Completed</span>
-    </div>
-  </div>
-
-  <div class="stat-card failed">
-    <div class="icon-wrapper">
-      <i class="material-icons">error_outline</i>
-    </div>
-    <div class="stat-content">
-      <span class="value">{{ stats.failed }}</span>
-      <span class="label">Failed</span>
-    </div>
-  </div>
+  </footer>
 </div>

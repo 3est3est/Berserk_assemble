@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Mission } from '../../_models/mission';
 import { MissionService } from '../../_services/mission-service';
@@ -8,9 +8,10 @@ import { AddMission } from '../../_models/add-mission';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { CommonModule } from '@angular/common';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { RouterModule } from '@angular/router';
 import { ToastService } from '../../_services/toast-service';
+import { WebsocketService } from '../../_services/websocket-service';
 
 @Component({
   selector: 'app-mission-manager',
@@ -19,17 +20,42 @@ import { ToastService } from '../../_services/toast-service';
   templateUrl: './mission-manager.html',
   styleUrl: './mission-manager.scss',
 })
-export class MissionManager {
+export class MissionManager implements OnDestroy {
   private _missionService = inject(MissionService);
   private _dialog = inject(MatDialog);
   private _router = inject(Router);
   private _toast = inject(ToastService);
+  private _wsService = inject(WebsocketService);
 
   private _missionsSubject = new BehaviorSubject<Mission[]>([]);
   readonly myMissions$ = this._missionsSubject.asObservable();
+  private _wsSubscription?: Subscription;
 
   constructor() {
     this.loadMyMission();
+    this.setupRealtimeUpdates();
+  }
+
+  ngOnDestroy() {
+    this._wsSubscription?.unsubscribe();
+  }
+
+  private setupRealtimeUpdates() {
+    this._wsSubscription = this._wsService.notifications$.subscribe((msg) => {
+      const reloadTypes = [
+        'new_crew_joined',
+        'crew_left',
+        'mission_started',
+        'mission_completed',
+        'mission_failed',
+        'mission_deleted',
+        'kicked_from_mission',
+      ];
+      if (reloadTypes.includes(msg.type)) {
+        console.log('[MissionManager] Real-time mission update received, reloading...');
+        this.loadMyMission();
+      }
+    });
   }
 
   private async loadMyMission() {
