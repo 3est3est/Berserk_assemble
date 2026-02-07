@@ -1,6 +1,6 @@
 # ⚔️ Mission Collaborate (Berserk Assemble)
 
-**Mission Collaborate** is a high-performance, real-time mission management and collaboration platform designed for seamless user experience, reliability, and speed—delivering a desktop-like feel on the web.
+**Berserk Assemble** is a high-performance, real-time mission management and collaboration platform designed for seamless user experience, reliability, and speed—delivering a desktop-like feel on the web.
 
 ---
 
@@ -51,21 +51,35 @@ This project follows **Clean Architecture** and **Domain-Driven Design (DDD)** p
 - [Node.js](https://nodejs.org/) & [Angular CLI](https://angular.io/cli)
 - [PostgreSQL](https://www.postgresql.org/)
 
-### 2. Database Migration
+### 2. Environment Configuration
+
+Create a `.env` file in the `server` directory and configure the following variables:
+
+```env
+STAGE=Local
+SERVER_PORT=8000
+DATABASE_URL=postgres://<username>:<password>@<host>:<port>/<database_name>
+JWT_USER_SECRET=your_secret_key
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+```
+
+### 3. Database Migration
 
 ```bash
 # Inside the server directory
 diesel migration run
 ```
 
-### 3. Start Backend Server
+### 4. Start Backend Server
 
 ```bash
 cd server
 cargo run
 ```
 
-### 4. Start Frontend Client
+### 5. Start Frontend Client
 
 ```bash
 cd client
