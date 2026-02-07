@@ -1,4 +1,4 @@
-# ⚔️ Mission Collaborate (Berserk Assemble)
+# Berserk Assemble
 
 **Berserk Assemble** is a high-performance, real-time mission management and collaboration platform designed for seamless user experience, reliability, and speed—delivering a desktop-like feel on the web.
 
