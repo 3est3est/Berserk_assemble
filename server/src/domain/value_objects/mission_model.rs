@@ -38,6 +38,8 @@ pub struct MissionModel {
     pub scheduled_at: Option<NaiveDateTime>,
     #[diesel(sql_type = Nullable<Varchar>)]
     pub location: Option<String>,
+    #[diesel(sql_type = Nullable<Timestamp>)]
+    pub deleted_at: Option<NaiveDateTime>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]

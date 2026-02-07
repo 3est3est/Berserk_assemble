@@ -66,9 +66,10 @@ where
         let mission = self.mission_viewing_repository.get_one(mission_id).await?;
 
         let leaving_condition = mission.status == MissionStatuses::Open.to_string()
-            || mission.status == MissionStatuses::Failed.to_string();
+            || mission.status == MissionStatuses::Failed.to_string()
+            || mission.deleted_at.is_some(); // Allow leaving if mission is deleted
         if !leaving_condition {
-            return Err(anyhow::anyhow!("Mission is not leavable"));
+            return Err(anyhow::anyhow!("Mission is not leavable at this state"));
         }
         self.crew_operation_repository
             .leave(CrewMemberShips {

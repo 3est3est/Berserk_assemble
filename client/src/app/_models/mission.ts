@@ -12,4 +12,5 @@ export interface Mission {
   updated_at: Date;
   scheduled_at?: Date;
   location?: string;
+  deleted_at?: Date | null;
 }

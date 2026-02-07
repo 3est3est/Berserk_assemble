@@ -1,6 +1,6 @@
 use anyhow::{Ok, Result};
 use async_trait::async_trait;
-use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, dsl::delete, insert_into};
+use diesel::{ExpressionMethods, QueryDsl, RunQueryDsl, insert_into};
 use std::sync::Arc;
 
 use crate::{
@@ -11,7 +11,7 @@ use crate::{
     },
     infrastructure::database::{
         postgresql_connection::PgPoolSquad,
-        schema::{crew_memberships, missions},
+        schema::{crew_memberships, mission_comments, missions},
     },
 };
 
@@ -47,10 +47,41 @@ impl CrewOperationRepository for CrewOperationPostgres {
 
     async fn leave(&self, crew_member_ships: CrewMemberShips) -> Result<()> {
         let mut conn = Arc::clone(&self.db_pool).get()?;
-        delete(crew_memberships::table)
+
+        // 1. Remove the membership
+        diesel::delete(crew_memberships::table)
             .filter(crew_memberships::brawler_id.eq(crew_member_ships.brawler_id))
             .filter(crew_memberships::mission_id.eq(crew_member_ships.mission_id))
             .execute(&mut conn)?;
+
+        // 2. Check if the mission is soft-deleted and has 0 members remaining
+        use diesel::OptionalExtension;
+        let mission_info: Option<(bool, i32)> = missions::table
+            .select((missions::deleted_at.is_not_null(), missions::id))
+            .filter(missions::id.eq(crew_member_ships.mission_id))
+            .first::<(bool, i32)>(&mut conn)
+            .optional()?;
+
+        if let Some((is_deleted, mid)) = mission_info {
+            if is_deleted {
+                let count: i64 = crew_memberships::table
+                    .filter(crew_memberships::mission_id.eq(mid))
+                    .count()
+                    .get_result(&mut conn)?;
+
+                if count == 0 {
+                    // 3. HARD DELETE: Last crew member left a deleted mission. Clean up DB.
+                    diesel::delete(mission_comments::table)
+                        .filter(mission_comments::mission_id.eq(mid))
+                        .execute(&mut conn)?;
+
+                    diesel::delete(missions::table)
+                        .filter(missions::id.eq(mid))
+                        .execute(&mut conn)?;
+                }
+            }
+        }
+
         Ok(())
     }
 
@@ -68,11 +99,12 @@ SELECT m.id,
        m.created_at,
        m.updated_at,
        m.scheduled_at,
-       m.location
+       m.location,
+       m.deleted_at
 FROM missions m
 INNER JOIN crew_memberships cm ON cm.mission_id = m.id AND cm.brawler_id = $1
 LEFT JOIN brawlers b ON b.id = m.chief_id
-WHERE m.deleted_at IS NULL
+-- WHERE m.deleted_at IS NULL -- Allow seeing deleted missions so user can visit and leave
 ORDER BY cm.joined_at DESC
         "#;
 

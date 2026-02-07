@@ -8,16 +8,27 @@ use axum::{
 use crate::{config::config_loader::get_jwt_env, infrastructure::jwt::verify_token};
 
 pub async fn auth(mut req: Request, next: Next) -> Result<Response, StatusCode> {
-    let header = req
+    tracing::debug!("Auth middleware called for: {}", req.uri());
+    // 1. Try to get token from Authorization header
+    let token_header = req
         .headers()
         .get(header::AUTHORIZATION)
         .and_then(|value| value.to_str().ok())
-        .ok_or(StatusCode::UNAUTHORIZED)?;
+        .and_then(|value| value.strip_prefix("Bearer "));
 
-    let token = header
-        .strip_prefix("Bearer ")
-        .ok_or(StatusCode::UNAUTHORIZED)?
-        .to_string();
+    // 2. If not in header, try query parameter (for WebSockets)
+    let token = if let Some(t) = token_header {
+        t.to_string()
+    } else {
+        req.uri()
+            .query()
+            .and_then(|q| {
+                q.split('&')
+                    .find(|p| p.starts_with("token="))
+                    .map(|p| p.trim_start_matches("token=").to_string())
+            })
+            .ok_or(StatusCode::UNAUTHORIZED)?
+    };
 
     let jwt_env = get_jwt_env().unwrap();
     let secret = jwt_env.secret;

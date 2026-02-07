@@ -34,6 +34,26 @@ where
         brawler_id: i32,
         content: &str,
     ) -> Result<MissionCommentModel> {
+        // 1. Check if user is chief or member
+        let mission = self.mission_viewing_repository.get_one(mission_id).await?;
+
+        if mission.deleted_at.is_some() {
+            return Err(anyhow::anyhow!(
+                "This mission has been removed. Chat is disabled."
+            ));
+        }
+
+        let crew = self.mission_viewing_repository.get_crew(mission_id).await?;
+
+        let is_chief = mission.chief_id == brawler_id;
+        let is_member = crew.iter().any(|m| m.id == brawler_id);
+
+        if !is_chief && !is_member {
+            return Err(anyhow::anyhow!(
+                "You are not authorized to post in this mission's chat."
+            ));
+        }
+
         self.repository.add(mission_id, brawler_id, content).await
     }
 

@@ -38,6 +38,7 @@ impl MissionEntity {
             updated_at: self.updated_at,
             scheduled_at: self.scheduled_at,
             location: self.location.clone(),
+            deleted_at: self.deleted_at,
         }
     }
 }

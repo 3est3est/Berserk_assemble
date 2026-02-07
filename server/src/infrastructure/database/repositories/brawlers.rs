@@ -105,7 +105,8 @@ SELECT
     missions.created_at,
     missions.updated_at,
     missions.scheduled_at,
-    missions.location
+    missions.location,
+    missions.deleted_at
 FROM missions
 LEFT JOIN brawlers ON brawlers.id = missions.chief_id
 WHERE missions.deleted_at IS NULL

@@ -7,6 +7,7 @@ use axum::{
         Method, StatusCode,
         header::{AUTHORIZATION, CONTENT_TYPE},
     },
+    middleware,
 };
 use tokio::net::TcpListener;
 use tower_http::{
@@ -19,22 +20,33 @@ use tracing::info;
 
 use crate::{
     config::config_model::DotEnvyConfig,
-    infrastructure::{database::postgresql_connection::PgPoolSquad, http::routers},
-    websocket::{handler::ws_handler, manager::ConnectionManager},
+    infrastructure::{
+        database::postgresql_connection::PgPoolSquad,
+        http::{middlewares::auth::auth, routers},
+        websocket::{
+            handler::{global_ws_handler, ws_handler},
+            manager::ConnectionManager,
+        },
+    },
 };
 
 fn static_serve() -> Router {
     let dir = "statics";
-
     let service = ServeDir::new(dir).not_found_service(ServeFile::new(format!("{dir}/index.html")));
-
     Router::new().fallback_service(service)
 }
 
 fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Router {
-    // Shared state specifically for the WebSocket handler
+    // Room-based WebSocket (for mission chat)
     let ws_router = Router::new()
         .route("/mission/{id}", axum::routing::get(ws_handler))
+        .with_state(Arc::clone(&manager));
+
+    // Global WebSocket routes (Personalized notifications)
+    let notification_routes = Router::new()
+        .route("/notifications", axum::routing::get(global_ws_handler))
+        .route("/notifications/", axum::routing::get(global_ws_handler))
+        .route_layer(middleware::from_fn(auth))
         .with_state(Arc::clone(&manager));
 
     Router::new()
@@ -45,15 +57,15 @@ fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rout
         )
         .nest(
             "/mission",
-            routers::mission_operation::routes(Arc::clone(&db_pool)),
+            routers::mission_operation::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
         )
         .nest(
             "/crew",
-            routers::crew_operation::routes(Arc::clone(&db_pool)),
+            routers::crew_operation::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
         )
         .nest(
             "/mission-management",
-            routers::mission_management::routes(Arc::clone(&db_pool)),
+            routers::mission_management::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
         )
         .nest(
             "/authentication",
@@ -65,6 +77,7 @@ fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rout
             routers::mission_comment::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
         )
         .nest("/ws", ws_router)
+        .merge(notification_routes)
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 

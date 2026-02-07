@@ -1,5 +1,6 @@
 use crate::{
     application::use_cases::mission_comment::MissionCommentUseCase,
+    domain::repositories::mission_viewing::MissionViewingRepository,
     domain::value_objects::mission_comment_model::AddMissionCommentModel,
     infrastructure::{
         database::{
@@ -9,8 +10,8 @@ use crate::{
             },
         },
         http::middlewares::auth::auth,
+        websocket::{handler::WSMessage, manager::ConnectionManager},
     },
-    websocket::{handler::WSMessage, manager::ConnectionManager},
 };
 use axum::{
     Extension, Json, Router,
@@ -65,12 +66,57 @@ async fn add_comment(
         .await
     {
         Ok(comment) => {
-            // BROADCAST NEW COMMENT VIA WEBSOCKET
+            // 1. BROADCAST NEW COMMENT VIA ROOM-BASED WEBSOCKET (for people currently in the chat room)
             let ws_msg = WSMessage {
                 msg_type: "new_comment".to_string(),
                 data: serde_json::to_value(&comment).unwrap_or_default(),
             };
-            state.manager.broadcast(mission_id, ws_msg).await;
+            state.manager.broadcast(mission_id, ws_msg.clone()).await;
+
+            // 2. SEND GLOBAL NOTIFICATIONS (for people not currently in the room)
+            if let Ok(mission) = state
+                .use_case
+                .mission_viewing_repository
+                .get_one(mission_id)
+                .await
+            {
+                let notification = WSMessage {
+                    msg_type: "new_chat_message".to_string(),
+                    data: serde_json::json!({
+                        "mission_id": mission_id,
+                        "mission_name": mission.name,
+                        "sender_name": comment.brawler_display_name,
+                        "content": comment.content,
+                    }),
+                };
+
+                tracing::info!("Sending global chat notification: {:?}", notification);
+
+                // Notify Chief (if not the sender)
+                if mission.chief_id != user_id {
+                    state
+                        .manager
+                        .notify_user(mission.chief_id, notification.clone())
+                        .await;
+                }
+
+                // Notify all crew members (if not the sender)
+                if let Ok(crew) = state
+                    .use_case
+                    .mission_viewing_repository
+                    .get_crew(mission_id)
+                    .await
+                {
+                    for member in crew {
+                        if member.id != user_id {
+                            state
+                                .manager
+                                .notify_user(member.id, notification.clone())
+                                .await;
+                        }
+                    }
+                }
+            }
 
             (StatusCode::CREATED, Json(comment)).into_response()
         }

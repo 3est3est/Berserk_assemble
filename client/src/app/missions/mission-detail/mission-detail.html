@@ -114,7 +114,7 @@
               <mat-icon>forum</mat-icon>
               <span>Mission Chat</span>
             </div>
-            @if (isChief && comments.length > 0) {
+            @if (isChief && comments.length > 0 && !isMissionDeleted) {
               <button class="clear-btn" (click)="clearChat()" title="Clear Chat">
                 <mat-icon>delete_sweep</mat-icon>
                 <span>Clear</span>
@@ -146,22 +146,49 @@
                 </div>
               </div>
             } @empty {
-              <div class="system-msg">
-                Welcome to the Mission Room. Be the first to say something!
-              </div>
+              <div class="system-msg">Welcome to the Mission Room.</div>
             }
           </div>
-          <div class="chat-input">
+
+          @if (isMissionDeleted) {
+            <div class="deleted-banner">
+              <mat-icon>no_accounts</mat-icon>
+              <div class="content">
+                <h4>This mission has been removed</h4>
+                <p>The chief has closed this room. You can no longer send messages.</p>
+              </div>
+              <button class="exit-btn" (click)="leaveMission()">
+                <mat-icon>exit_to_app</mat-icon> Exit Room
+              </button>
+            </div>
+          } @else if (isKicked) {
+            <div class="deleted-banner kicked">
+              <mat-icon>person_remove</mat-icon>
+              <div class="content">
+                <h4>You are no longer in this mission</h4>
+                <p>The chief has removed you from the crew. Check other missions!</p>
+              </div>
+              <button class="exit-btn" routerLink="/my-crew">
+                <mat-icon>exit_to_app</mat-icon> Back to My Crew
+              </button>
+            </div>
+          }
+
+          <div class="chat-input" [class.disabled]="isMissionDeleted || isKicked">
             <input
               type="text"
-              placeholder="Type a message..."
+              [placeholder]="
+                isMissionDeleted || isKicked ? 'Chat is disabled' : 'Type a message...'
+              "
               [(ngModel)]="newCommentContent"
               (keyup.enter)="sendComment()"
-              [disabled]="sendingComment"
+              [disabled]="sendingComment || isMissionDeleted || isKicked"
             />
             <button
               (click)="sendComment()"
-              [disabled]="sendingComment || !newCommentContent.trim()"
+              [disabled]="
+                sendingComment || !newCommentContent.trim() || isMissionDeleted || isKicked
+              "
             >
               @if (sendingComment) {
                 <mat-icon class="spinning">sync</mat-icon>

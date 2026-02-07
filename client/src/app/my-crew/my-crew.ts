@@ -1,10 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CrewService } from '../_services/crew-service';
 import { Mission } from '../_models/mission';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { RouterModule, Router } from '@angular/router';
 import { ToastService } from '../_services/toast-service';
+import { WebsocketService } from '../_services/websocket-service';
 
 @Component({
   selector: 'app-my-crew',
@@ -13,16 +14,39 @@ import { ToastService } from '../_services/toast-service';
   templateUrl: './my-crew.html',
   styleUrl: './my-crew.scss',
 })
-export class MyCrew {
+export class MyCrew implements OnDestroy {
   private _crewService = inject(CrewService);
   private _router = inject(Router);
   private _toast = inject(ToastService);
+  private _wsService = inject(WebsocketService);
 
   private _missionsSubject = new BehaviorSubject<Mission[]>([]);
   readonly myJoinedMissions$ = this._missionsSubject.asObservable();
+  private _wsSubscription?: Subscription;
 
   constructor() {
     this.loadMyJoinedMissions();
+    this.setupRealtimeUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this._wsSubscription?.unsubscribe();
+  }
+
+  private setupRealtimeUpdates() {
+    this._wsSubscription = this._wsService.notifications$.subscribe((msg) => {
+      const types = [
+        'mission_started',
+        'mission_completed',
+        'mission_failed',
+        'mission_deleted',
+        'kicked_from_mission',
+      ];
+      if (types.includes(msg.type)) {
+        console.log('[MyCrew] Real-time mission update received, reloading...');
+        this.loadMyJoinedMissions();
+      }
+    });
   }
 
   private async loadMyJoinedMissions() {
