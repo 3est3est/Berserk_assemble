@@ -6,3 +6,4 @@ pub mod mission_comment;
 pub mod mission_management;
 pub mod mission_operation;
 pub mod mission_viewing;
+pub mod notifications;

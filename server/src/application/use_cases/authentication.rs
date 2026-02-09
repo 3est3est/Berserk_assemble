@@ -34,7 +34,16 @@ where
             return Err(anyhow::anyhow!("Invalid Password !!"));
         }
 
-        let passport = Passport::new(user.id, user.display_name, user.avatar_url)?;
+        let passport = Passport::new(
+            user.id,
+            user.display_name,
+            user.avatar_url,
+            user.bio,
+            user.discord_id,
+            user.contact_email,
+            user.instagram,
+            user.facebook,
+        )?;
         Ok(passport)
     }
 }

@@ -1,0 +1,3 @@
+ALTER TABLE brawlers ADD COLUMN bio TEXT;
+ALTER TABLE brawlers ADD COLUMN discord_id VARCHAR(255);
+ALTER TABLE brawlers ADD COLUMN role VARCHAR(50);

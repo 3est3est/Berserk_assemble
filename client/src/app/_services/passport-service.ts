@@ -28,6 +28,12 @@ export class PassportService {
     }
   }
 
+  updatePassport(passport: Passport) {
+    this.data.set(passport);
+    this.avatar.set(getAvatarUrl(passport));
+    this.savePassportToLocalStorage();
+  }
+
   private loadPassportFromLocalStorage(): string | null {
     const jsonString = localStorage.getItem(this._key);
     if (!jsonString) return 'not found ';

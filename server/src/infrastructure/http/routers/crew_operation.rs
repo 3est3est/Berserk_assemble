@@ -11,14 +11,19 @@ use axum::{
 
 use crate::{
     application::use_cases::crew_operation::CrewOperationUseCase,
-    domain::repositories::{
-        crew_operation::CrewOperationRepository, mission_viewing::MissionViewingRepository,
+    domain::{
+        entities::notifications::AddNotificationEntity,
+        repositories::{
+            crew_operation::CrewOperationRepository, mission_viewing::MissionViewingRepository,
+            notifications::NotificationRepository,
+        },
     },
     infrastructure::{
         database::{
             postgresql_connection::PgPoolSquad,
             repositories::{
                 crew_operation::CrewOperationPostgres, mission_viewing::MissionViewingPostgres,
+                notifications::NotificationPostgres,
             },
         },
         http::middlewares::auth::auth,
@@ -34,6 +39,7 @@ where
     pub use_case: CrewOperationUseCase<T1, T2>,
     pub manager: Arc<ConnectionManager>,
     pub viewing_repository: Arc<T2>,
+    pub notification_repo: Arc<dyn NotificationRepository>,
 }
 
 pub async fn join<T1, T2>(
@@ -61,7 +67,19 @@ where
                 state.manager.broadcast_all(ws_msg.clone()).await;
 
                 // 2. Broadcast to the specific room (for in-room UI update)
-                state.manager.broadcast(mission_id, ws_msg).await;
+                state.manager.broadcast(mission_id, ws_msg.clone()).await;
+
+                // 3. Notify the CHIEF globally and save to DB
+                let _ = state
+                    .notification_repo
+                    .add(AddNotificationEntity {
+                        brawler_id: mission.chief_id,
+                        type_: "new_crew_joined".to_string(),
+                        content: format!("A new crew member joined your mission: {}", mission.name),
+                        related_id: Some(mission_id),
+                    })
+                    .await;
+                state.manager.notify_user(mission.chief_id, ws_msg).await;
             }
             (
                 StatusCode::OK,
@@ -98,7 +116,19 @@ where
                 state.manager.broadcast_all(ws_msg.clone()).await;
 
                 // 2. Broadcast to the specific room (for in-room UI update)
-                state.manager.broadcast(mission_id, ws_msg).await;
+                state.manager.broadcast(mission_id, ws_msg.clone()).await;
+
+                // 3. PERSIST FOR CHIEF
+                let _ = state
+                    .notification_repo
+                    .add(AddNotificationEntity {
+                        brawler_id: mission.chief_id,
+                        type_: "crew_left".to_string(),
+                        content: format!("A crew member left your mission: {}", mission.name),
+                        related_id: Some(mission_id),
+                    })
+                    .await;
+                state.manager.notify_user(mission.chief_id, ws_msg).await;
             }
             (
                 StatusCode::OK,
@@ -130,6 +160,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rou
     let crew_operation_repository = CrewOperationPostgres::new(Arc::clone(&db_pool));
     let viewing_repository = MissionViewingPostgres::new(Arc::clone(&db_pool));
     let viewing_repository_arc = Arc::new(viewing_repository);
+    let notification_repo = Arc::new(NotificationPostgres::new(Arc::clone(&db_pool)));
 
     let use_case = CrewOperationUseCase::new(
         Arc::new(crew_operation_repository),
@@ -140,6 +171,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rou
         use_case,
         manager,
         viewing_repository: viewing_repository_arc,
+        notification_repo,
     });
 
     Router::new()

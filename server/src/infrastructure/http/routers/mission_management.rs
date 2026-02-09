@@ -13,7 +13,10 @@ use crate::infrastructure::websocket::handler::WSMessage;
 use crate::{
     application::use_cases::mission_management::MissionManagementUseCase,
     domain::{
-        repositories::mission_viewing::MissionViewingRepository,
+        entities::notifications::AddNotificationEntity,
+        repositories::{
+            mission_viewing::MissionViewingRepository, notifications::NotificationRepository,
+        },
         value_objects::mission_model::{AddMissionModel, EditMissionModel},
     },
     infrastructure::{
@@ -21,7 +24,7 @@ use crate::{
             postgresql_connection::PgPoolSquad,
             repositories::{
                 mission_management::MissionManagementPostgres,
-                mission_viewing::MissionViewingPostgres,
+                mission_viewing::MissionViewingPostgres, notifications::NotificationPostgres,
             },
         },
         http::middlewares::auth::auth,
@@ -32,6 +35,7 @@ use crate::{
 pub struct MissionManagementState {
     pub use_case: MissionManagementUseCase<MissionManagementPostgres, MissionViewingPostgres>,
     pub manager: Arc<ConnectionManager>,
+    pub notification_repo: Arc<dyn NotificationRepository>,
 }
 
 pub async fn add(
@@ -98,9 +102,23 @@ pub async fn remove(
                     crew.len()
                 );
 
-                // Notify all crew members globally
+                // Notify all crew members globally and save to DB
                 for member in crew {
                     if member.id != user_id {
+                        // Save notification to DB
+                        let _ = state
+                            .notification_repo
+                            .add(AddNotificationEntity {
+                                brawler_id: member.id,
+                                type_: "mission_deleted".to_string(),
+                                content: format!(
+                                    "Mission '{}' has been removed by the chief.",
+                                    mission.name
+                                ),
+                                related_id: Some(mission_id),
+                            })
+                            .await;
+
                         // Don't notify the chief who deleted it
                         state.manager.notify_user(member.id, ws_msg.clone()).await;
                     }
@@ -124,10 +142,15 @@ pub async fn remove(
 pub fn routes(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Router {
     let mission_repository = MissionManagementPostgres::new(Arc::clone(&db_pool));
     let viewing_repositiory = MissionViewingPostgres::new(Arc::clone(&db_pool));
+    let notification_repo = Arc::new(NotificationPostgres::new(Arc::clone(&db_pool)));
     let use_case =
         MissionManagementUseCase::new(Arc::new(mission_repository), Arc::new(viewing_repositiory));
 
-    let state = Arc::new(MissionManagementState { use_case, manager });
+    let state = Arc::new(MissionManagementState {
+        use_case,
+        manager,
+        notification_repo,
+    });
 
     Router::new()
         .route("/", post(add))

@@ -52,7 +52,7 @@ export class WebsocketService {
     if (!token) return;
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const url = `${protocol}//localhost:8000/api/notifications?token=${token}`;
+    const url = `${protocol}//localhost:8000/api/ws/global?token=${token}`;
 
     if (this.notificationSocket) {
       this.notificationSocket.close();

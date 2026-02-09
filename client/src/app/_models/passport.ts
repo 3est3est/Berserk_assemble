@@ -3,6 +3,11 @@ export interface Passport {
   token: string; //jwt_model
   display_name: string;
   avatar_url?: string;
+  bio?: string;
+  discord_id?: string;
+  contact_email?: string;
+  instagram?: string;
+  facebook?: string;
 }
 
 export interface RegisterModel {

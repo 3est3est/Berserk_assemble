@@ -1,67 +1,92 @@
-<div class="filter-form">
-  <h3>Search</h3>
-  <input type="text" [(ngModel)]="filter.name" placeholder="Mission Name" />
-  <select [(ngModel)]="filter.status">
-    <option value="">-- Select Status --</option>
+<header class="page-header">
+  <h1>Discovery</h1>
+  <p>Find and join open missions across the galaxy.</p>
+</header>
+
+<div class="discovery-controls">
+  <div class="search-input">
+    <mat-icon>search</mat-icon>
+    <input
+      type="text"
+      [(ngModel)]="filter.name"
+      placeholder="Search by mission name..."
+      (keyup.enter)="onSubmit()"
+    />
+  </div>
+
+  <select class="status-select" [(ngModel)]="filter.status">
+    <option value="">All Statuses</option>
     <option value="Open">Open</option>
     <option value="InProgress">In Progress</option>
     <option value="Completed">Completed</option>
     <option value="Failed">Failed</option>
   </select>
-  <button (click)="onSubmit()">Go</button>
+
+  <button class="filter-btn" (click)="onSubmit()">Filter</button>
 </div>
 
-<div class="mission-list">
+<div class="data-table">
   @if ((missions$ | async)?.length) {
-    <div class="header">
-      <span class="name">Name</span>
-      <span class="description">Description</span>
-      <span class="chief">Chief</span>
-      <span class="crew_count">Crew</span>
-      <span class="status">Status</span>
-      <span class="created_at">Created at</span>
-      <span class="updated_at">Updated at</span>
-      @if (isSignin()) {
-        <span class="action">Actions</span>
-      }
+    <div class="table-header">
+      <span>Mission</span>
+      <span>Description</span>
+      <span>Chief</span>
+      <span>Status</span>
+      <span>Crew</span>
+      <span></span>
     </div>
 
     @for (mission of missions$ | async; track mission.id) {
-      <div class="contents">
-        <span class="name">
-          <div class="main-name">{{ mission.name }}</div>
-          <div class="sub-info">
+      <div class="table-row">
+        <div class="mission-info">
+          <span class="name">{{ mission.name }}</span>
+          <div class="meta">
             @if (mission.scheduled_at) {
-              <span class="meta-item"
-                ><mat-icon>schedule</mat-icon> {{ mission.scheduled_at | date: 'short' }}</span
+              <span
+                ><mat-icon>schedule</mat-icon>
+                {{ mission.scheduled_at | date: 'MMM d, h:mm a' }}</span
               >
             }
             @if (mission.location) {
-              <span class="meta-item"><mat-icon>place</mat-icon> {{ mission.location }}</span>
+              <span><mat-icon>place</mat-icon> {{ mission.location }}</span>
             }
           </div>
-        </span>
-        <span class="description">{{ mission.description }}</span>
-        <span class="chief">{{ mission.chief_display_name }}</span>
-        <span class="crew_count">{{ mission.crew_count }} / {{ mission.max_crew }}</span>
-        <span [class]="'status ' + mission.status.toLowerCase()">{{ mission.status }}</span>
-        <span class="created_at">{{ mission.created_at | date: 'short' }}</span>
-        <span class="updated_at">{{ mission.updated_at | date: 'short' }}</span>
+        </div>
 
-        @if (isSignin()) {
-          <span class="action">
+        <div class="description" [title]="mission.description">{{ mission.description }}</div>
+
+        <div class="chief">
+          <div class="chief-circle">{{ mission.chief_display_name[0] | uppercase }}</div>
+          <span>{{ mission.chief_display_name }}</span>
+        </div>
+
+        <div>
+          <span [class]="'status-badge ' + mission.status.toLowerCase()">{{ mission.status }}</span>
+        </div>
+
+        <div class="crew-count">{{ mission.crew_count }} / {{ mission.max_crew }}</div>
+
+        <div class="action-cell">
+          @if (isSignin()) {
             @if (mission.status === 'Open') {
-              @if (mission.crew_count < mission.max_crew) {
-                <button class="join-btn" (click)="onJoin(mission)">Join</button>
-              } @else {
-                <button class="join-btn full" disabled>FULL</button>
-              }
+              <button
+                class="action-btn"
+                (click)="onJoin(mission)"
+                [disabled]="mission.crew_count >= mission.max_crew"
+              >
+                {{ mission.crew_count >= mission.max_crew ? 'Full' : 'Join' }}
+              </button>
             } @else {
-              <span class="closed-msg">CLOSED</span>
+              <span class="status-badge">Locked</span>
             }
-          </span>
-        }
+          }
+        </div>
       </div>
     }
+  } @else {
+    <div class="empty-state">
+      <mat-icon>rocket</mat-icon>
+      <p>No missions found matching your criteria.</p>
+    </div>
   }
 </div>

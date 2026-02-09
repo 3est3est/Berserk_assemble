@@ -1,42 +1,42 @@
 <div class="page-header">
   <h2>My Joined Missions</h2>
-  <p>Missions you are currently participating in.</p>
+  <p>Operational deployments where you are currently stationed.</p>
 </div>
 
-<div class="mission-list">
-  @if ((myJoinedMissions$ | async)?.length) {
-    <div class="header">
-      <span class="name">Name</span>
-      <span class="description">Description</span>
-      <span class="chief">Chief</span>
-      <span class="crew_count">Crew</span>
-      <span class="status">Status</span>
-      <span class="created_at">Created at</span>
-      <span class="action">Actions</span>
-    </div>
+<div class="data-table">
+  <div class="table-header">
+    <span>Mission</span>
+    <span>Description</span>
+    <span>Chief</span>
+    <span style="text-align: center">Crew</span>
+    <span>Status</span>
+    <span style="text-align: right">Actions</span>
+  </div>
 
-    @for (mission of myJoinedMissions$ | async; track mission.id) {
-      <div class="contents clickable" (click)="onManage(mission)">
-        <span class="name">
-          {{ mission.name }}
-        </span>
-        <span class="description">{{ mission.description }}</span>
-        <span class="chief">{{ mission.chief_display_name }}</span>
-        <span class="crew_count">{{ mission.crew_count }} / {{ mission.max_crew }}</span>
-        <span class="status" [attr.data-status]="mission.deleted_at ? 'removed' : mission.status">
+  @for (mission of myJoinedMissions$ | async; track mission.id) {
+    <div class="table-row" (click)="onManage(mission)">
+      <div class="name">{{ mission.name }}</div>
+      <div class="description" [title]="mission.description">{{ mission.description }}</div>
+      <div class="chief">{{ mission.chief_display_name }}</div>
+      <div class="crew-count">{{ mission.crew_count }} / {{ mission.max_crew }}</div>
+      <div>
+        <span
+          [class]="
+            'status-badge ' + (mission.deleted_at ? 'removed' : mission.status.toLowerCase())
+          "
+        >
           {{ mission.deleted_at ? 'REMOVED' : mission.status }}
         </span>
-        <span class="created_at">{{ mission.created_at | date: 'short' }}</span>
-        <span class="action">
-          <button class="manage-btn" [routerLink]="['/missions', mission.id]">Manage</button>
-          <button class="leave-btn" (click)="onLeave(mission, $event)">Leave</button>
-        </span>
       </div>
-    }
-  } @else {
+      <div class="action-cell">
+        <button class="row-btn primary" [routerLink]="['/missions', mission.id]">Room</button>
+        <button class="row-btn danger" (click)="onLeave(mission, $event)">Leave</button>
+      </div>
+    </div>
+  } @empty {
     <div class="empty-state">
-      <p>You haven't joined any missions yet.</p>
-      <a routerLink="/missions">Browse available missions</a>
+      <p>No active deployments found for your profile.</p>
+      <a routerLink="/missions" class="browse-link">Browse Operations</a>
     </div>
   }
 </div>

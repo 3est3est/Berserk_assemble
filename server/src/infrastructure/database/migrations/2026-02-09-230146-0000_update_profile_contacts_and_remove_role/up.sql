@@ -1,0 +1,4 @@
+ALTER TABLE brawlers DROP COLUMN role;
+ALTER TABLE brawlers ADD COLUMN contact_email VARCHAR(255);
+ALTER TABLE brawlers ADD COLUMN instagram VARCHAR(255);
+ALTER TABLE brawlers ADD COLUMN facebook VARCHAR(255);

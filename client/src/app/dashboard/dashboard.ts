@@ -1,5 +1,6 @@
 import { Component, inject, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { MissionService } from '../_services/mission-service';
 import { CrewService } from '../_services/crew-service';
 import { Mission } from '../_models/mission';
@@ -20,7 +21,7 @@ interface MissionStats {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, MatIconModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

@@ -5,6 +5,7 @@ import { PassportService } from './passport-service';
 import { fileToBase64 } from '../_helpers/file';
 import { firstValueFrom } from 'rxjs';
 import { CloudinaryImage } from '../_models/cloudinary-image';
+import { Passport } from '../_models/passport';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +24,32 @@ export class UserService {
     try {
       const cloudinaryImg = await firstValueFrom(this._http.post<CloudinaryImage>(url, uploadImg));
       this._passport.saveAvatarImgUrl(cloudinaryImg.url);
+    } catch (error: any) {
+      return error.error as string;
+    }
+    return null;
+  }
+
+  async updateProfile(
+    displayName: string,
+    bio?: string,
+    discordId?: string,
+    contactEmail?: string,
+    instagram?: string,
+    facebook?: string,
+  ): Promise<string | null> {
+    const url = this._base_url + '/profile';
+    const body = {
+      display_name: displayName,
+      bio: bio,
+      discord_id: discordId,
+      contact_email: contactEmail,
+      instagram: instagram,
+      facebook: facebook,
+    };
+    try {
+      const passport = await firstValueFrom(this._http.patch<Passport>(url, body));
+      this._passport.updatePassport(passport);
     } catch (error: any) {
       return error.error as string;
     }

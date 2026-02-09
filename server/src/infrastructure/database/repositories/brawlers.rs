@@ -42,7 +42,7 @@ impl BrawlerRepository for BrawlerPostgres {
             .get_result::<i32>(&mut connection)?;
 
         let display_name = register_brawler_entity.display_name;
-        Passport::new(user_id, display_name, None)
+        Passport::new(user_id, display_name, None, None, None, None, None, None)
     }
 
     async fn find_by_username(&self, username: String) -> Result<BrawlerEntity> {
@@ -119,5 +119,51 @@ ORDER BY missions.created_at DESC
             .load::<MissionModel>(&mut conn)?;
 
         Ok(results)
+    }
+
+    async fn update_profile(
+        &self,
+        brawler_id: i32,
+        model: crate::domain::value_objects::brawler_model::UpdateBrawlerModel,
+    ) -> Result<Passport> {
+        let mut conn = Arc::clone(&self.db_pool).get()?;
+
+        diesel::update(brawlers::table)
+            .filter(brawlers::id.eq(brawler_id))
+            .set((
+                model
+                    .display_name
+                    .as_ref()
+                    .map(|v| brawlers::display_name.eq(v)),
+                model.bio.as_ref().map(|v| brawlers::bio.eq(v)),
+                model
+                    .discord_id
+                    .as_ref()
+                    .map(|v| brawlers::discord_id.eq(v)),
+                model
+                    .contact_email
+                    .as_ref()
+                    .map(|v| brawlers::contact_email.eq(v)),
+                model.instagram.as_ref().map(|v| brawlers::instagram.eq(v)),
+                model.facebook.as_ref().map(|v| brawlers::facebook.eq(v)),
+            ))
+            .execute(&mut conn)?;
+
+        let brawler = brawlers::table
+            .find(brawler_id)
+            .select(BrawlerEntity::as_select())
+            .first::<BrawlerEntity>(&mut conn)?;
+
+        // but we return it to update basic info on client if needed.
+        Passport::new(
+            brawler.id,
+            brawler.display_name,
+            brawler.avatar_url,
+            brawler.bio,
+            brawler.discord_id,
+            brawler.contact_email,
+            brawler.instagram,
+            brawler.facebook,
+        )
     }
 }

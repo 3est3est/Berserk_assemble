@@ -37,16 +37,13 @@ fn static_serve() -> Router {
 }
 
 fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Router {
-    // Room-based WebSocket (for mission chat)
+    // WebSocket routes
     let ws_router = Router::new()
         .route("/mission/{id}", axum::routing::get(ws_handler))
-        .with_state(Arc::clone(&manager));
-
-    // Global WebSocket routes (Personalized notifications)
-    let notification_routes = Router::new()
-        .route("/notifications", axum::routing::get(global_ws_handler))
-        .route("/notifications/", axum::routing::get(global_ws_handler))
-        .route_layer(middleware::from_fn(auth))
+        .route(
+            "/global",
+            axum::routing::get(global_ws_handler).route_layer(middleware::from_fn(auth)),
+        )
         .with_state(Arc::clone(&manager));
 
     Router::new()
@@ -76,8 +73,11 @@ fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rout
             "/comment",
             routers::mission_comment::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
         )
+        .nest(
+            "/notifications",
+            routers::notifications::routes(Arc::clone(&db_pool)),
+        )
         .nest("/ws", ws_router)
-        .merge(notification_routes)
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
 

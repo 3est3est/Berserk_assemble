@@ -13,10 +13,24 @@ pub struct Passport {
     pub token: String,
     pub display_name: String,
     pub avatar_url: Option<String>,
+    pub bio: Option<String>,
+    pub discord_id: Option<String>,
+    pub contact_email: Option<String>,
+    pub instagram: Option<String>,
+    pub facebook: Option<String>,
 }
 
 impl Passport {
-    pub fn new(user_id: i32, display_name: String, avatar_url: Option<String>) -> Result<Self> {
+    pub fn new(
+        user_id: i32,
+        display_name: String,
+        avatar_url: Option<String>,
+        bio: Option<String>,
+        discord_id: Option<String>,
+        contact_email: Option<String>,
+        instagram: Option<String>,
+        facebook: Option<String>,
+    ) -> Result<Self> {
         let jwt_env = get_jwt_env()?;
         let claims = Claims {
             sub: user_id.to_string(),
@@ -29,6 +43,11 @@ impl Passport {
             token,
             display_name,
             avatar_url,
+            bio,
+            discord_id,
+            contact_email,
+            instagram,
+            facebook,
         })
     }
 }

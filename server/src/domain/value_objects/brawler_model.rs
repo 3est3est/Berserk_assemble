@@ -33,3 +33,13 @@ pub struct BrawlerModel {
     #[diesel(sql_type = diesel::sql_types::BigInt)]
     pub mission_join_count: i64,
 }
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct UpdateBrawlerModel {
+    pub display_name: Option<String>,
+    pub bio: Option<String>,
+    pub discord_id: Option<String>,
+    pub contact_email: Option<String>,
+    pub instagram: Option<String>,
+    pub facebook: Option<String>,
+}

@@ -4,9 +4,11 @@ import { Navbar } from './navbar/navbar';
 import { PassportService } from './_services/passport-service';
 import { WebsocketService } from './_services/websocket-service';
 import { ToastService } from './_services/toast-service';
+import { NotificationService } from './_services/notification-service';
 
 @Component({
   selector: 'app-root',
+  standalone: true,
   imports: [RouterOutlet, Navbar],
   templateUrl: './app.html',
   styleUrl: './app.scss',
@@ -18,12 +20,14 @@ export class App {
   private _ws = inject(WebsocketService);
   private _toast = inject(ToastService);
   private _router = inject(Router);
+  private _notifService = inject(NotificationService);
 
   constructor() {
     // Auto-connect/disconnect notifications based on login state
     effect(() => {
       if (this._passport.isSignin()) {
         this._ws.connectNotifications();
+        this._notifService.getNotifications();
       } else {
         this._ws.disconnectNotifications();
       }

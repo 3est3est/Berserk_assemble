@@ -1,12 +1,16 @@
+use crate::domain::entities::notifications::AddNotificationEntity;
 use crate::{
     application::use_cases::mission_comment::MissionCommentUseCase,
-    domain::repositories::mission_viewing::MissionViewingRepository,
+    domain::repositories::{
+        mission_viewing::MissionViewingRepository, notifications::NotificationRepository,
+    },
     domain::value_objects::mission_comment_model::AddMissionCommentModel,
     infrastructure::{
         database::{
             postgresql_connection::PgPoolSquad,
             repositories::{
                 mission_comment::MissionCommentPostgres, mission_viewing::MissionViewingPostgres,
+                notifications::NotificationPostgres,
             },
         },
         http::middlewares::auth::auth,
@@ -26,15 +30,21 @@ use std::sync::Arc;
 pub struct CommentState {
     pub use_case: MissionCommentUseCase<MissionCommentPostgres, MissionViewingPostgres>,
     pub manager: Arc<ConnectionManager>,
+    pub notification_repo: Arc<dyn NotificationRepository>,
 }
 
 pub fn routes(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Router {
     let repository = MissionCommentPostgres::new(Arc::clone(&db_pool));
-    let mission_viewing_repository = MissionViewingPostgres::new(db_pool);
+    let mission_viewing_repository = MissionViewingPostgres::new(Arc::clone(&db_pool));
+    let notification_repo = Arc::new(NotificationPostgres::new(Arc::clone(&db_pool)));
     let use_case =
         MissionCommentUseCase::new(Arc::new(repository), Arc::new(mission_viewing_repository));
 
-    let state = Arc::new(CommentState { use_case, manager });
+    let state = Arc::new(CommentState {
+        use_case,
+        manager,
+        notification_repo,
+    });
 
     Router::new()
         .route("/{mission_id}", get(get_comments))
@@ -94,6 +104,19 @@ async fn add_comment(
 
                 // Notify Chief (if not the sender)
                 if mission.chief_id != user_id {
+                    let _ = state
+                        .notification_repo
+                        .add(AddNotificationEntity {
+                            brawler_id: mission.chief_id,
+                            type_: "new_chat_message".to_string(),
+                            content: format!(
+                                "[{}] {}: \"{}\"",
+                                mission.name, comment.brawler_display_name, comment.content
+                            ),
+                            related_id: Some(mission_id),
+                        })
+                        .await;
+
                     state
                         .manager
                         .notify_user(mission.chief_id, notification.clone())
@@ -109,6 +132,19 @@ async fn add_comment(
                 {
                     for member in crew {
                         if member.id != user_id {
+                            let _ = state
+                                .notification_repo
+                                .add(AddNotificationEntity {
+                                    brawler_id: member.id,
+                                    type_: "new_chat_message".to_string(),
+                                    content: format!(
+                                        "[{}] {}: \"{}\"",
+                                        mission.name, comment.brawler_display_name, comment.content
+                                    ),
+                                    related_id: Some(mission_id),
+                                })
+                                .await;
+
                             state
                                 .manager
                                 .notify_user(member.id, notification.clone())

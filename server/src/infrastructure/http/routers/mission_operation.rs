@@ -11,15 +11,19 @@ use axum::{
 
 use crate::{
     application::use_cases::mission_operation::MissionOperationUseCase,
-    domain::repositories::{
-        mission_operation::MissionOperationRepository, mission_viewing::MissionViewingRepository,
+    domain::{
+        entities::notifications::AddNotificationEntity,
+        repositories::{
+            mission_operation::MissionOperationRepository,
+            mission_viewing::MissionViewingRepository, notifications::NotificationRepository,
+        },
     },
     infrastructure::{
         database::{
             postgresql_connection::PgPoolSquad,
             repositories::{
                 mission_operation::MissionOperationPostgres,
-                mission_viewing::MissionViewingPostgres,
+                mission_viewing::MissionViewingPostgres, notifications::NotificationPostgres,
             },
         },
         http::middlewares::auth::auth,
@@ -35,6 +39,7 @@ where
     pub use_case: MissionOperationUseCase<T1, T2>,
     pub manager: Arc<ConnectionManager>,
     pub viewing_repository: Arc<T2>,
+    pub notification_repo: Arc<dyn NotificationRepository>,
 }
 
 pub async fn in_progress<T1, T2>(
@@ -60,6 +65,17 @@ where
                         }),
                     };
                     for member in crew {
+                        // Save notification to DB for each member
+                        let _ = state
+                            .notification_repo
+                            .add(AddNotificationEntity {
+                                brawler_id: member.id,
+                                type_: "mission_started".to_string(),
+                                content: format!("Mission '{}' has started!", mission.name),
+                                related_id: Some(mission_id),
+                            })
+                            .await;
+
                         state.manager.notify_user(member.id, ws_msg.clone()).await;
                     }
 
@@ -101,7 +117,43 @@ where
                 state.manager.broadcast_all(ws_msg.clone()).await;
 
                 // 2. Broadcast to the specific room (In-room UI update)
-                state.manager.broadcast(mission_id, ws_msg).await;
+                state.manager.broadcast(mission_id, ws_msg.clone()).await;
+
+                // 3. PERSIST FOR CHIEF & CREW
+                let crew = state
+                    .viewing_repository
+                    .get_crew(mission_id)
+                    .await
+                    .unwrap_or_default();
+
+                // For Chief
+                let _ = state
+                    .notification_repo
+                    .add(AddNotificationEntity {
+                        brawler_id: mission.chief_id,
+                        type_: "mission_completed".to_string(),
+                        content: format!("Mission '{}' has been COMPLETED!", mission.name),
+                        related_id: Some(mission_id),
+                    })
+                    .await;
+
+                // For Crew members
+                for member in crew {
+                    if member.id != mission.chief_id {
+                        let _ = state
+                            .notification_repo
+                            .add(AddNotificationEntity {
+                                brawler_id: member.id,
+                                type_: "mission_completed".to_string(),
+                                content: format!("Mission '{}' has been COMPLETED!", mission.name),
+                                related_id: Some(mission_id),
+                            })
+                            .await;
+
+                        // Also notify via Global WS for real-time toast
+                        state.manager.notify_user(member.id, ws_msg.clone()).await;
+                    }
+                }
             }
             (StatusCode::OK, mission_id.to_string()).into_response()
         }
@@ -134,7 +186,43 @@ where
                 state.manager.broadcast_all(ws_msg.clone()).await;
 
                 // 2. Broadcast to the specific room (In-room UI update)
-                state.manager.broadcast(mission_id, ws_msg).await;
+                state.manager.broadcast(mission_id, ws_msg.clone()).await;
+
+                // 3. PERSIST FOR CHIEF & CREW
+                let crew = state
+                    .viewing_repository
+                    .get_crew(mission_id)
+                    .await
+                    .unwrap_or_default();
+
+                // For Chief
+                let _ = state
+                    .notification_repo
+                    .add(AddNotificationEntity {
+                        brawler_id: mission.chief_id,
+                        type_: "mission_failed".to_string(),
+                        content: format!("Mission '{}' has FAILED.", mission.name),
+                        related_id: Some(mission_id),
+                    })
+                    .await;
+
+                // For Crew members
+                for member in crew {
+                    if member.id != mission.chief_id {
+                        let _ = state
+                            .notification_repo
+                            .add(AddNotificationEntity {
+                                brawler_id: member.id,
+                                type_: "mission_failed".to_string(),
+                                content: format!("Mission '{}' has FAILED.", mission.name),
+                                related_id: Some(mission_id),
+                            })
+                            .await;
+
+                        // Also notify via Global WS for real-time toast
+                        state.manager.notify_user(member.id, ws_msg.clone()).await;
+                    }
+                }
             }
             (StatusCode::OK, mission_id.to_string()).into_response()
         }
@@ -164,7 +252,17 @@ where
                     }),
                 };
 
-                // 1. Notify the kicked user globally (for toast)
+                // 1. Notify the kicked user globally (for toast) and save to DB
+                let _ = state
+                    .notification_repo
+                    .add(AddNotificationEntity {
+                        brawler_id,
+                        type_: "kicked_from_mission".to_string(),
+                        content: format!("You were removed from crew in mission: {}", mission.name),
+                        related_id: Some(mission_id),
+                    })
+                    .await;
+
                 state.manager.notify_user(brawler_id, ws_msg.clone()).await;
 
                 // 2. Broadcast to EVERYONE (for public list/manager real-time count update)
@@ -183,6 +281,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rou
     let mission_repository = MissionOperationPostgres::new(Arc::clone(&db_pool));
     let viewing_repository = MissionViewingPostgres::new(Arc::clone(&db_pool));
     let viewing_repository_arc = Arc::new(viewing_repository);
+    let notification_repo = Arc::new(NotificationPostgres::new(Arc::clone(&db_pool)));
 
     let use_case = MissionOperationUseCase::new(
         Arc::new(mission_repository),
@@ -193,6 +292,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rou
         use_case,
         manager,
         viewing_repository: viewing_repository_arc,
+        notification_repo,
     });
 
     Router::new()

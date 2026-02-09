@@ -1,39 +1,53 @@
-<div class="new-mission">
-  <button mat-raised-button (click)="openDialog()"><mat-icon>add</mat-icon> new mission</button>
+<div class="manager-header">
+  <div class="title-area">
+    <h1>Mission Manager</h1>
+    <p>Coordinate and oversee your operational deployments.</p>
+  </div>
+  <button class="new-mission-btn" (click)="openDialog()">
+    <mat-icon>add</mat-icon>
+    New Mission
+  </button>
 </div>
 
-<div class="mission-list">
-  @if ((myMissions$ | async)?.length) {
-    <div class="header">
-      <span class="name">Name</span>
-      <span class="description">Description</span>
-      <span class="crew_count">Crew</span>
-      <span class="status">Status</span>
-      <span class="created_at">Created at</span>
-      <span class="updated_at">Updated at</span>
-      <span class="action">Actions</span>
-    </div>
+<div class="data-table">
+  <div class="table-header">
+    <span>Mission</span>
+    <span>Description</span>
+    <span style="text-align: center">Crew</span>
+    <span>Status</span>
+    <span>Timeline</span>
+    <span style="text-align: right">Actions</span>
+  </div>
 
-    @for (mission of myMissions$ | async; track mission.id) {
-      <div class="mission-item clickable" (click)="onManage(mission)">
-        <div class="contents">
-          <span class="name">
-            {{ mission.name }}
-          </span>
-          <span class="description">{{ mission.description }}</span>
-          <span class="crew_count"> {{ mission.crew_count }} / {{ mission.max_crew }} </span>
-          <span [class]="'status ' + mission.status.toLowerCase()">{{ mission.status }}</span>
-          <span class="created_at">{{ mission.created_at | date: 'short' }}</span>
-          <span class="updated_at">{{ mission.updated_at | date: 'short' }}</span>
-          <span class="action">
-            <button class="manage-btn" [routerLink]="['/missions', mission.id]">Manage</button>
-            @if (mission.status === 'Open') {
-              <button class="edit-btn" (click)="onEdit($event, mission)">Edit</button>
-            }
-            <button class="delete-btn" (click)="onDelete($event, mission)">Delete</button>
-          </span>
-        </div>
+  @for (mission of myMissions$ | async; track mission.id) {
+    <div class="table-row">
+      <div class="name" (click)="onManage(mission)">{{ mission.name }}</div>
+      <div class="description" [title]="mission.description">{{ mission.description }}</div>
+      <div class="crew-count">{{ mission.crew_count }} / {{ mission.max_crew }}</div>
+      <div>
+        <span [class]="'status-badge ' + mission.status.toLowerCase()">{{ mission.status }}</span>
       </div>
-    }
+      <div class="dates">
+        <span><span class="label">C:</span>{{ mission.created_at | date: 'MMM d, h:mm a' }}</span>
+        <span><span class="label">U:</span>{{ mission.updated_at | date: 'MMM d, h:mm a' }}</span>
+      </div>
+      <div class="action-cell">
+        <button class="icon-btn" [routerLink]="['/missions', mission.id]" title="Room">
+          <mat-icon>meeting_room</mat-icon>
+        </button>
+        @if (mission.status === 'Open') {
+          <button class="icon-btn" (click)="onEdit($event, mission)" title="Edit">
+            <mat-icon>edit</mat-icon>
+          </button>
+        }
+        <button class="icon-btn delete" (click)="onDelete($event, mission)" title="Delete">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </div>
+    </div>
+  } @empty {
+    <div class="empty-state" style="padding: 48px; text-align: center; color: var(--ctp-subtext0)">
+      <p>No missions found. Create your first mission to begin.</p>
+    </div>
   }
 </div>

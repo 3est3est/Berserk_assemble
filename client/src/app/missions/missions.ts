@@ -14,6 +14,7 @@ import { WebsocketService } from '../_services/websocket-service';
 
 @Component({
   selector: 'app-missions',
+  standalone: true,
   imports: [FormsModule, CommonModule, MatIconModule],
   templateUrl: './missions.html',
   styleUrl: './missions.scss',

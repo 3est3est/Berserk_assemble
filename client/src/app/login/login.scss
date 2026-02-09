@@ -1,156 +1,191 @@
 .login-container {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 64px);
+  min-height: 100vh;
+  background-color: var(--ctp-base); // Main background
+  font-family: 'Inter', sans-serif;
+  padding: 24px;
+}
+
+.login-card {
+  background-color: var(--ctp-mantle); // Card background
+  width: 100%;
+  max-width: 350px; // Compact width like reference
+  padding: 40px 30px;
+  border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5); // Deep shadow
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.05); // Subtle border
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 10px;
 
   h3 {
-    margin: 0;
-    padding: 0;
-    margin-bottom: 1em;
-    background-image: linear-gradient(100deg, #cba6f7, #f5c2e7);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-align: center;
-    width: 100%;
-  }
-
-  .mat-error {
-    color: var(--ctp-red);
-    font-size: small;
-    text-align: center;
-    margin-top: 0.2em;
-  }
-
-  mat-card {
-    margin-top: 2em;
-    padding: 2.5em 3em;
-    border-radius: 16px;
-    border: 1px solid #313244;
-    background-color: var(--ctp-mantle) !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  div.login-spacer,
-  form {
-    width: 300px;
-    min-width: 200px;
-    max-width: 400px;
-  }
-
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 1.2em;
-    display: block;
-
-    ::ng-deep .mat-mdc-input-element {
-      color: var(--ctp-text);
-    }
-    ::ng-deep .mat-mdc-floating-label {
-      color: var(--ctp-subtext1);
-    }
-    ::ng-deep .mat-mdc-input-element::placeholder {
-      color: #b4befe;
-    }
-
-    &:hover ::ng-deep {
-      .mdc-notched-outline__leading,
-      .mdc-notched-outline__notch,
-      .mdc-notched-outline__trailing {
-        border-color: #cba6f7 !important;
-      }
-      .mat-mdc-floating-label {
-        color: #cba6f7 !important;
-      }
-    }
-
-    &.mat-focused ::ng-deep {
-      .mdc-notched-outline__leading,
-      .mdc-notched-outline__notch,
-      .mdc-notched-outline__trailing {
-        border-color: #cba6f7 !important;
-      }
-      .mat-mdc-floating-label {
-        color: #cba6f7 !important;
-      }
-    }
-  }
-
-  button.login-btn-color {
-    font-size: large;
-    width: 100%;
-    height: 48px;
-    border-radius: 12px;
-    background: var(--ctp-teal) !important;
-    color: var(--ctp-crust) !important;
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.75rem;
     font-weight: 700;
-    transition: all 0.3s ease;
-
-    &:hover:not(:disabled) {
-      filter: brightness(1.1);
-    }
-  }
-
-  button.login-btn-color:disabled {
-    color: #6c7086 !important;
-    background: #313244 !important;
-    cursor: not-allowed;
-    opacity: 0.6;
+    color: var(--ctp-text);
+    margin: 0 0 8px 0;
+    letter-spacing: 0.5px;
   }
 
   p {
-    text-align: center;
-    margin: 10px 0;
+    display: none; // Hide subtitle to match the clean reference look if preferred, or keep small
   }
+}
 
-  .toggle {
-    color: var(--ctp-text);
-    width: 100%;
-    text-align: center;
-    font-size: small;
-  }
-  .toggle span {
-    color: #89dceb;
-    font-weight: 900;
-    cursor: pointer;
-    &:hover {
-      text-decoration: underline;
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Customizing Angular Material Form Field to look like the design
+mat-form-field {
+  width: 100%;
+  // Ensure enough space for the label to float up without being cut off
+  margin-top: 8px; 
+
+  ::ng-deep {
+    .mdc-text-field--outlined {
+      background-color: var(--ctp-crust) !important;
+      border-radius: 12px !important;
+      height: 52px !important; // Comfortable height
+      padding-left: 12px !important;
+      overflow: visible !important; // Allow label to float out
+    }
+
+    // Remove borders
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border: none !important;
+    }
+
+    // Input text
+    .mat-mdc-input-element {
+      color: var(--ctp-text) !important;
+      caret-color: var(--ctp-pink) !important;
+      position: relative;
+      top: 0 !important;
+      
+      &::placeholder {
+        opacity: 0; // Hide placeholder so label is the primary guide
+      }
+    }
+
+    // Label styling - Smooth Floating Animation
+    .mat-mdc-floating-label {
+      top: 50% !important; // Start centered vertically
+      left: 16px !important;
+      color: var(--ctp-subtext0) !important;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem !important;
+      font-weight: 500;
+      pointer-events: none;
+      
+      // Reset default transforms and use our own for control
+      transform: translateY(-50%) !important;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
+                  color 0.25s ease, 
+                  font-size 0.25s ease !important;
+      
+      // Floating state (Focus or Has Value)
+      &.mdc-floating-label--float-above {
+        transform: translateY(-40px) scale(0.9) !important; // Float UP above the field
+        color: var(--ctp-text) !important; // Highlight color
+        font-weight: 600;
+      }
+    }
+
+    // Hide Focus overlay
+    .mat-mdc-form-field-focus-overlay {
+      background-color: transparent !important;
+    }
+    
+    // Error alignment
+    .mat-mdc-form-field-subscript-wrapper {
+        margin-top: 4px;
+        padding-left: 0;
     }
   }
+}
 
-  div.login-spacer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    line-height: 1.375rem;
-    color: #a2abb4;
-    font-family: 300;
-    margin-top: 1em;
-    margin-bottom: 1em;
-    width: 100%;
+.submit-btn {
+  width: 100%;
+  height: 48px; 
+  margin-top: 20px;
+  border: none;
+  border-radius: 12px;
+  
+  // Exact gradient from CodePen reference
+  background: linear-gradient(45deg, #cba6f7, #f38ba8, #f9e2af); 
+  background-size: 170%; 
+  
+  color: #11111b; 
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  
+  // Smooth transition for background position
+  transition: 0.5s ease;
+  box-shadow: 0 4px 15px rgba(243, 139, 168, 0.3);
+
+  &:hover {
+    background-position: 100% 0; // Shift gradient
+    box-shadow: 0 8px 25px rgba(243, 139, 168, 0.5);
+    // Removed transform/grow effect as requested
   }
 
-  div.login-spacer::after {
-    margin-left: 12px;
-    border-bottom: 1px solid #313244;
+  &:active {
+    box-shadow: 0 4px 15px rgba(243, 139, 168, 0.3);
   }
 
-  div.login-spacer::before {
-    margin-right: 12px;
-    border-bottom: 1px solid #313244;
+  &:disabled {
+    background: var(--ctp-surface1);
+    color: var(--ctp-subtext0);
+    box-shadow: none;
+    cursor: default;
   }
+}
 
-  *::before,
-  *::after {
-    flex-grow: 1;
-    height: 1px;
-    content: '';
-    box-sizing: border-box;
+.auth-footer {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--ctp-subtext0);
+  margin-top: 4px;
+
+  .toggle-link {
+    color: var(--ctp-sky);
+    font-weight: 700;
+    cursor: pointer;
+    margin-left: 4px;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+      color: var(--ctp-sapphire);
+    }
   }
+}
+
+.error-msg {
+  color: var(--ctp-red);
+  font-size: 0.85rem;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+// Media query for better mobile responsiveness
+@media (max-width: 480px) {
+    .login-card {
+        padding: 32px 24px;
+    }
 }

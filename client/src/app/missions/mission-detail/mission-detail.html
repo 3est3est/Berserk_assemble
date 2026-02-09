@@ -2,232 +2,157 @@
   @if (loading) {
     <div class="loading-state">
       <div class="spinner"></div>
-      <p>Synchronizing with Mission Room...</p>
+      <p>Synchronizing mission protocol...</p>
     </div>
   } @else if (isCountdownActive) {
     <div class="countdown-overlay">
-      <div class="countdown-box">
-        <span class="prepare">PREPARING TO DEPART</span>
-        <span class="timer">{{ countdownValue }}</span>
-        <span class="warning">GET READY, BRAWLERS!</span>
+      <div class="box">
+        <div class="prepare">PREPARING DEPARTURE</div>
+        <div class="timer">{{ countdownValue }}</div>
       </div>
     </div>
   } @else if (mission) {
-    <div class="mission-header">
+    <header class="page-header">
       <div class="info">
-        <div class="breadcrumb"><a routerLink="/chief">Missions</a> / {{ mission.name }}</div>
         <h1>{{ mission.name }}</h1>
         <p class="desc">{{ mission.description }}</p>
-
-        <div class="mission-logistics">
+        <div class="logistics">
           @if (mission.scheduled_at) {
-            <div class="logistics-item" title="Scheduled Time">
+            <div class="item">
               <mat-icon>schedule</mat-icon>
-              <span>{{ mission.scheduled_at | date: 'medium' }}</span>
-              @if (mission.status === 'Open') {
-                <span class="countdown-hint">({{ getRemainingTime(mission.scheduled_at) }})</span>
-              }
+              <span>{{ mission.scheduled_at | date: 'MMM d, h:mm a' }}</span>
             </div>
           }
           @if (mission.location) {
-            <div class="logistics-item" title="Location">
+            <div class="item">
               <mat-icon>place</mat-icon>
               <span>{{ mission.location }}</span>
             </div>
           }
         </div>
       </div>
-      <div class="status-badge" [class]="mission.status.toLowerCase()">
+      <div [class]="'status-badge ' + mission.status.toLowerCase()">
         {{ mission.status }}
       </div>
-    </div>
+    </header>
 
-    <div class="room-layout">
-      <!-- Left side: Crew -->
-      <div class="crew-section">
-        <div class="section-header">
-          <h3>Crew Members ({{ mission.crew_count }})</h3>
+    <div class="room-grid">
+      <!-- Left: Crew Panel -->
+      <aside class="panel">
+        <div class="panel-header">
+          <h3>Crew ({{ mission.crew_count }}/{{ mission.max_crew }})</h3>
         </div>
         <div class="crew-list">
-          <!-- Chief Member -->
-          <div
-            class="member-card chief-highlight"
-            [class.you-highlight]="mission.chief_id === currentUserId"
-          >
-            <img
-              [src]="
-                mission.chief_avatar_url ||
-                'https://ui-avatars.com/api/?name=' + mission.chief_display_name
-              "
-              class="avatar"
-              alt="avatar"
-            />
-            <div class="member-info">
+          <div class="member-card active-user" [class.chief]="mission.chief_id === currentUserId">
+            <img [src]="mission.chief_avatar_url || 'assets/default-avatar.png'" class="avatar" />
+            <div class="info">
               <span class="name">{{ mission.chief_display_name }}</span>
-              <span class="role chief-badge">Chief</span>
-              @if (mission.chief_id === currentUserId) {
-                <span class="you-badge">YOU</span>
-              }
+              <span class="role">Chief Officer</span>
             </div>
           </div>
 
-          <!-- Crew Members -->
           @for (member of crew; track member.id) {
-            @if (member.display_name !== mission.chief_display_name) {
-              <div class="member-card" [class.you-highlight]="member.id === currentUserId">
-                <img
-                  [src]="
-                    member.avatar_url || 'https://ui-avatars.com/api/?name=' + member.display_name
-                  "
-                  class="avatar"
-                  alt="avatar"
-                />
-                <div class="member-info">
+            @if (member.id !== mission.chief_id) {
+              <div class="member-card" [class.active-user]="member.id === currentUserId">
+                <img [src]="member.avatar_url || 'assets/default-avatar.png'" class="avatar" />
+                <div class="info">
                   <span class="name">{{ member.display_name }}</span>
-                  <div class="badges">
-                    <span class="role member-badge">Crew</span>
-                    @if (member.id === currentUserId) {
-                      <span class="you-badge">YOU</span>
-                    }
-                  </div>
+                  <span class="role">Mission Crew</span>
                 </div>
                 @if (isChief && mission.status === 'Open') {
                   <button class="kick-btn" (click)="onKick(member)">
-                    <mat-icon>person_remove</mat-icon>
+                    <mat-icon size="small">remove_circle</mat-icon>
                   </button>
                 }
               </div>
             }
-          } @empty {
-            @if (crew.length === 0) {
-              <p class="empty-msg">No crew members yet.</p>
-            }
           }
         </div>
-      </div>
+      </aside>
 
-      <!-- Right side: Chat & Actions -->
-      <div class="main-section">
-        <div class="chat-container">
-          <div class="chat-header">
-            <div class="title">
-              <mat-icon>forum</mat-icon>
-              <span>Mission Chat</span>
-            </div>
-            @if (isChief && comments.length > 0 && !isMissionDeleted) {
-              <button class="clear-btn" (click)="clearChat()" title="Clear Chat">
-                <mat-icon>delete_sweep</mat-icon>
-                <span>Clear</span>
-              </button>
-            }
-          </div>
-          <div class="chat-messages" #chatMessages>
-            @for (comment of comments; track comment.id) {
-              <div class="message" [class.own]="comment.brawler_id === currentUserId">
-                <img
-                  [src]="
-                    comment.brawler_avatar_url ||
-                    'https://ui-avatars.com/api/?name=' + comment.brawler_display_name
-                  "
-                  class="msg-avatar"
-                  alt="avatar"
-                />
-                <div class="msg-content">
-                  <div class="msg-header">
-                    <span class="msg-author">{{ comment.brawler_display_name }}</span>
-                    @if (comment.brawler_id === mission.chief_id) {
-                      <span class="role-badge chief">CHIEF</span>
-                    } @else {
-                      <span class="role-badge">CREW</span>
-                    }
-                    <span class="msg-time">{{ comment.created_at | date: 'shortTime' }}</span>
-                  </div>
-                  <div class="msg-text">{{ comment.content }}</div>
+      <!-- Center: Chat Panel -->
+      <main class="panel chat-panel">
+        <div class="panel-header">
+          <h3>Mission Briefing</h3>
+          @if (isChief && comments.length > 0) {
+            <button class="btn-text" (click)="clearChat()">Clear History</button>
+          }
+        </div>
+
+        <div class="messages" #chatMessages>
+          @for (comment of comments; track comment.id) {
+            <div class="message" [class.own]="comment.brawler_id === currentUserId">
+              <img
+                [src]="comment.brawler_avatar_url || 'assets/default-avatar.png'"
+                class="msg-avatar"
+              />
+              <div class="bubble">
+                <div class="header">
+                  <span class="author">{{ comment.brawler_display_name }}</span>
+                  <span class="time">{{ comment.created_at | date: 'h:mm a' }}</span>
                 </div>
+                <div class="text">{{ comment.content }}</div>
               </div>
-            } @empty {
-              <div class="system-msg">Welcome to the Mission Room.</div>
-            }
-          </div>
-
-          @if (isMissionDeleted) {
-            <div class="deleted-banner">
-              <mat-icon>no_accounts</mat-icon>
-              <div class="content">
-                <h4>This mission has been removed</h4>
-                <p>The chief has closed this room. You can no longer send messages.</p>
-              </div>
-              <button class="exit-btn" (click)="leaveMission()">
-                <mat-icon>exit_to_app</mat-icon> Exit Room
-              </button>
             </div>
-          } @else if (isKicked) {
-            <div class="deleted-banner kicked">
-              <mat-icon>person_remove</mat-icon>
-              <div class="content">
-                <h4>You are no longer in this mission</h4>
-                <p>The chief has removed you from the crew. Check other missions!</p>
-              </div>
-              <button class="exit-btn" routerLink="/my-crew">
-                <mat-icon>exit_to_app</mat-icon> Back to My Crew
+          } @empty {
+            <div class="empty-chat">Room established. Stand by for orders.</div>
+          }
+        </div>
+
+        <div class="input-area" [class.disabled]="isMissionDeleted || isKicked">
+          <input
+            type="text"
+            [placeholder]="
+              isMissionDeleted || isKicked ? 'Broadcast offline' : 'Send message to crew...'
+            "
+            [(ngModel)]="newCommentContent"
+            (keyup.enter)="sendComment()"
+            [disabled]="sendingComment || isMissionDeleted || isKicked"
+          />
+          <button (click)="sendComment()" [disabled]="sendingComment || !newCommentContent.trim()">
+            <mat-icon>{{ sendingComment ? 'sync' : 'send' }}</mat-icon>
+          </button>
+        </div>
+      </main>
+
+      <!-- Right: Command Panel -->
+      <aside class="panel command-panel">
+        <div class="panel-header">
+          <h3>Command Center</h3>
+        </div>
+        <div class="actions">
+          @if (isChief) {
+            @if (mission.status === 'Open') {
+              <button
+                class="btn-action start"
+                [disabled]="mission.crew_count === 0"
+                (click)="onStart()"
+              >
+                <mat-icon>play_circle</mat-icon> Execute Mission
               </button>
+            } @else if (mission.status === 'InProgress') {
+              <button class="btn-action complete" (click)="onComplete()">
+                <mat-icon>verified</mat-icon> Mark Success
+              </button>
+              <button class="btn-action fail" (click)="onFail()">
+                <mat-icon>error</mat-icon> Report Failure
+              </button>
+            } @else {
+              <p class="final-status">Operation Finalized</p>
+            }
+          } @else {
+            <div class="crew-brief">
+              <p>Stand by for Chief's command. Maintain communication.</p>
             </div>
           }
 
-          <div class="chat-input" [class.disabled]="isMissionDeleted || isKicked">
-            <input
-              type="text"
-              [placeholder]="
-                isMissionDeleted || isKicked ? 'Chat is disabled' : 'Type a message...'
-              "
-              [(ngModel)]="newCommentContent"
-              (keyup.enter)="sendComment()"
-              [disabled]="sendingComment || isMissionDeleted || isKicked"
-            />
-            <button
-              (click)="sendComment()"
-              [disabled]="
-                sendingComment || !newCommentContent.trim() || isMissionDeleted || isKicked
-              "
-            >
-              @if (sendingComment) {
-                <mat-icon class="spinning">sync</mat-icon>
-              } @else {
-                <mat-icon>send</mat-icon>
-              }
+          @if (isMissionDeleted || isKicked) {
+            <button class="btn-action fail" (click)="leaveMission()">
+              <mat-icon>logout</mat-icon> Exit Room
             </button>
-          </div>
+          }
         </div>
-
-        @if (isChief) {
-          <div class="chief-actions">
-            <h3>Command Center</h3>
-            <div class="btn-group">
-              @if (mission.status === 'Open') {
-                <button class="start-btn" [disabled]="mission.crew_count === 0" (click)="onStart()">
-                  <mat-icon>play_arrow</mat-icon> Start Mission
-                </button>
-              } @else if (mission.status === 'InProgress') {
-                <button class="complete-btn" (click)="onComplete()">
-                  <mat-icon>check_circle</mat-icon> Complete
-                </button>
-                <button class="fail-btn" (click)="onFail()">
-                  <mat-icon>cancel</mat-icon> Failed
-                </button>
-              } @else {
-                <p class="final-status">This mission has ended.</p>
-              }
-            </div>
-          </div>
-        }
-      </div>
-    </div>
-  } @else {
-    <div class="error-state">
-      <mat-icon>report_problem</mat-icon>
-      <h2>Mission Not Found</h2>
-      <p>We couldn't find the mission you're looking for. It might have been deleted.</p>
-      <button mat-flat-button color="primary" routerLink="/chief">Return to Manager</button>
+      </aside>
     </div>
   }
 </div>

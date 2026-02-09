@@ -1,21 +1,85 @@
-<div class="profile-page">
-  <div class="profile-card">
-    <div class="avatar-section">
-      <div class="avatar-container">
-        <img [src]="avatar_url()" alt="user-avatar" class="display-avatar" />
-        <div class="avatar-overlay" (click)="openDialog()">
-          <mat-icon>camera_alt</mat-icon>
-          <span>Update</span>
-        </div>
+<div class="profile-container">
+  <div class="identity-column">
+    <div class="identity-card">
+      <div class="avatar-wrapper">
+        <img [src]="avatar_url() || 'assets/default-avatar.png'" alt="avatar" class="avatar-lg" />
+        <button class="edit-avatar-btn" (click)="openAvatarDialog()">
+          <mat-icon>photo_camera</mat-icon>
+        </button>
       </div>
-      <h2 class="display-name">{{ display_name() }}</h2>
+
+      <h1 class="display-name">{{ display_name() }}</h1>
+
+      <div class="rank-badge" [class]="rank().toLowerCase()">{{ rank() }}</div>
+
+      <div class="contacts-box">
+        @if (instagram()) {
+          <div class="contact-item ig">
+            <mat-icon>photo_camera</mat-icon>
+            <span>{{ instagram() }}</span>
+          </div>
+        }
+        @if (facebook()) {
+          <div class="contact-item fb">
+            <mat-icon>public</mat-icon>
+            <span>{{ facebook() }}</span>
+          </div>
+        }
+        @if (discord_id()) {
+          <div class="contact-item discord">
+            <mat-icon>forum</mat-icon>
+            <span>{{ discord_id() }}</span>
+          </div>
+        }
+        @if (contact_email()) {
+          <div class="contact-item email">
+            <mat-icon>alternate_email</mat-icon>
+            <span>{{ contact_email() }}</span>
+          </div>
+        }
+      </div>
+
+      @if (bio()) {
+        <p class="bio-text">"{{ bio() }}"</p>
+      }
+
+      <button mat-flat-button class="edit-profile-btn" (click)="openEditProfileDialog()">
+        <mat-icon>edit_note</mat-icon> Edit Profile
+      </button>
+    </div>
+  </div>
+
+  <div class="stats-column">
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-value">{{ stats().hosted }}</div>
+        <div class="stat-label">Hosted Events</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value highlight">{{ stats().joined }}</div>
+        <div class="stat-label">Joined Events</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value">{{ stats().active }}</div>
+        <div class="stat-label">Active Now</div>
+      </div>
     </div>
 
-    <div class="actions">
-      <button class="primary-btn" (click)="openDialog()">
-        <mat-icon>edit_square</mat-icon>
-        Change Avatar
-      </button>
+    <div class="recent-activity-card">
+      <h3>Recent Operations</h3>
+      @if (missions().length > 0) {
+        <div class="mission-list">
+          @for (mission of missions().slice(0, 5); track mission.id) {
+            <div class="mission-row">
+              <div class="status-dot" [class]="mission.status.toLowerCase()"></div>
+              <span class="mission-name">{{ mission.name }}</span>
+              <span class="mission-date">{{ mission.created_at | date: 'MMM d, y' }}</span>
+            </div>
+          }
+        </div>
+      } @else {
+        <div class="empty-state">No operations recorded yet, soldier.</div>
+      }
     </div>
   </div>
 </div>

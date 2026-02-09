@@ -6,9 +6,11 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { getAvatarUrl } from '../_helpers/util';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationBell } from '../_components/notification-bell/notification-bell';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [
     MatToolbarModule,
     MatButtonModule,
@@ -16,6 +18,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
     MatIconModule,
     RouterLink,
     RouterLinkActive,
+    NotificationBell,
   ],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
