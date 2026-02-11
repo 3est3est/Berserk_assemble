@@ -1,0 +1,125 @@
+<div class="chat-wrapper" [class.opened]="isOpened()">
+  <!-- Chat Floating Button / Badge -->
+  <button mat-fab color="primary" class="main-toggle-btn" (click)="toggleChat()">
+    <mat-icon
+      [matBadge]="unreadCount()"
+      [matBadgeHidden]="unreadCount() === 0"
+      matBadgeColor="warn"
+      >{{ isOpened() ? 'close' : 'chat_bubble' }}</mat-icon
+    >
+  </button>
+
+  <!-- Chat Window -->
+  <div class="chat-window">
+    <div class="chat-header">
+      <div class="header-left">
+        @if (selectedUser) {
+          <button mat-icon-button (click)="closeChat()" class="back-btn">
+            <mat-icon>arrow_back_ios_new</mat-icon>
+          </button>
+          <div class="user-info">
+            <div class="status-indicator online"></div>
+            <span class="username">{{ selectedUser.display_name }}</span>
+          </div>
+        } @else {
+          <div class="list-title">
+            <mat-icon>chat_bubble</mat-icon>
+            <span>PRIVATE_CHATS</span>
+          </div>
+        }
+      </div>
+
+      <div class="header-actions">
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="unfriendCurrent()"
+          *ngIf="selectedUser"
+          title="Unfriend"
+        >
+          <mat-icon>person_remove</mat-icon>
+        </button>
+        <button mat-icon-button (click)="toggleChat()" class="close-win-btn">
+          <mat-icon>keyboard_double_arrow_right</mat-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Conversations List (When no user selected) -->
+    <div class="recent-list" *ngIf="!selectedUser">
+      <div class="search-area">
+        <mat-icon>search</mat-icon>
+        <input
+          type="text"
+          placeholder="Initiate connection..."
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+        />
+      </div>
+
+      <!-- Search Results Dropdown -->
+      <div class="search-results" *ngIf="searchQuery && filteredFriends.length > 0">
+        @for (friend of filteredFriends; track friend.id) {
+          <div class="search-result-item" (click)="startNewChat(friend)">
+            @if (friend.avatar_url) {
+              <img [src]="friend.avatar_url" class="avatar-sm" alt="U" />
+            } @else {
+              <mat-icon>person_pin</mat-icon>
+            }
+            <span>{{ friend.display_name }}</span>
+          </div>
+        }
+      </div>
+      <div class="search-results empty" *ngIf="searchQuery && filteredFriends.length === 0">
+        No active agents found.
+      </div>
+
+      <div class="list-header">Active Channels</div>
+      <div class="recent-items">
+        @for (chat of recentChats; track chat.id) {
+          <div class="recent-item" (click)="selectChat(chat)">
+            @if (chat.other_avatar) {
+              <img [src]="chat.other_avatar" class="avatar-img" alt="Avatar" />
+            } @else {
+              <div class="avatar-placeholder">{{ chat.other_name?.[0] || 'U' }}</div>
+            }
+            <div class="item-body">
+              <div class="item-top">
+                <span class="name">{{ chat.other_name }}</span>
+                <span class="time">{{ chat.created_at | date: 'shortTime' }}</span>
+              </div>
+              <p class="preview">{{ chat.content }}</p>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">Secure line ready. No active chats.</div>
+        }
+      </div>
+    </div>
+
+    <!-- Active Chat Content -->
+    <div class="chat-content" *ngIf="selectedUser" #scrollContainer>
+      @for (msg of messages; track msg.id) {
+        <div class="message" [class.sent]="msg.sender_id === currentUserId">
+          <div class="msg-bubble">
+            {{ msg.content }}
+            <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Message Input -->
+    <div class="chat-footer" *ngIf="selectedUser">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        (keyup.enter)="send()"
+        placeholder="Type a message..."
+      />
+      <button class="send-btn" (click)="send()" [disabled]="!newMessage.trim()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+  </div>
+</div>

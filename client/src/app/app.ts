@@ -6,17 +6,20 @@ import { WebsocketService } from './_services/websocket-service';
 import { ToastService } from './_services/toast-service';
 import { NotificationService } from './_services/notification-service';
 
+import { CommonModule } from '@angular/common';
+import { PrivateChat } from './_components/private-chat/private-chat';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar],
+  imports: [RouterOutlet, Navbar, PrivateChat, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
   protected readonly title = signal('Berserk Assemble');
 
-  private _passport = inject(PassportService);
+  public _passport = inject(PassportService);
   private _ws = inject(WebsocketService);
   private _toast = inject(ToastService);
   private _router = inject(Router);
@@ -56,41 +59,50 @@ export class App {
       msg.data?.mission_id,
     );
 
-    switch (msg.type) {
+    const data = msg.data || {};
+    let type = msg.type;
+
+    // If it's a generic notification, extract the specific type from data
+    if (type === 'notification' && data.type) {
+      type = data.type;
+    }
+
+    console.log(`[Notification] Processing type: ${type}`, data);
+
+    switch (type) {
       case 'new_crew_joined':
-        this._toast.success(`New crew joined mission: ${msg.data.mission_name}`);
+        this._toast.success(`New crew joined mission: ${data.mission_name}`);
         break;
       case 'mission_started':
-        this._toast.info(`Mission "${msg.data.mission_name}" has started! Time to fight!`);
+        this._toast.info(`Mission "${data.mission_name}" has started! Time to fight!`);
         break;
       case 'kicked_from_mission':
-        if (currentMissionId !== msg.data.mission_id) {
-          this._toast.warning(`You were kicked from: ${msg.data.mission_name}`);
+        if (currentMissionId !== data.mission_id) {
+          this._toast.warning(`You were kicked from: ${data.mission_name}`);
         }
         break;
       case 'new_chat_message':
-        // Don't show toast if user is already in that mission's chat room
-        if (currentMissionId !== msg.data.mission_id) {
-          this._toast.success(
-            `[${msg.data.mission_name}] ${msg.data.sender_name}: "${msg.data.content}"`,
-          );
-        } else {
-          console.log('⏭️ Skipping toast - user is in the mission room');
-        }
+        // No toast - handled by notification bell & badge
         break;
       case 'mission_deleted':
-        console.log('🗑️ Mission deleted notification received');
-        if (currentMissionId !== msg.data.mission_id) {
-          this._toast.warning(`Mission "${msg.data.mission_name}" has been removed by the chief.`);
+        if (currentMissionId !== data.mission_id) {
+          this._toast.warning(`Mission "${data.mission_name}" has been removed by the chief.`);
         }
         break;
       case 'crew_left':
-        if (currentMissionId !== msg.data.mission_id) {
-          this._toast.info(`A crew member left mission: ${msg.data.mission_name}`);
+        if (currentMissionId !== data.mission_id) {
+          this._toast.info(`A crew member left mission: ${data.mission_name}`);
         }
         break;
+      case 'private_message':
+        // No toast - handled by notification bell & badge
+        break;
+      case 'agent_online':
+      case 'agent_offline':
+        // Silently handle or minor log
+        break;
       default:
-        console.warn('Unknown notification type:', msg.type);
+        console.warn('Unknown notification type:', type);
     }
   }
 }

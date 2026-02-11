@@ -48,6 +48,24 @@
     }
   }
 
+  .badges {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+
+    .category-badge {
+      background: rgba(var(--ctp-mauve-rgb), 0.1);
+      color: var(--ctp-mauve);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid rgba(var(--ctp-mauve-rgb), 0.2);
+    }
+  }
+
   .status-badge {
     padding: 6px 16px;
     border-radius: 20px;
@@ -95,6 +113,31 @@
       color: var(--ctp-text);
       text-transform: uppercase;
       letter-spacing: 0.05em;
+    }
+
+    .icon-btn-danger {
+      width: auto;
+      height: 32px;
+      padding: 0 12px;
+      gap: 6px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--ctp-red);
+      background: rgba(var(--ctp-red-rgb), 0.1);
+      color: var(--ctp-red);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      
+      mat-icon { font-size: 18px; width: 18px; height: 18px; }
+      span { font-size: 0.8rem; font-weight: 700; }
+
+      &:hover {
+        background: var(--ctp-red);
+        color: var(--ctp-crust);
+        transform: scale(1.05);
+      }
     }
   }
 }

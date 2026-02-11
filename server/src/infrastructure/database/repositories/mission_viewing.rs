@@ -41,13 +41,14 @@ SELECT m.id,
        m.updated_at,
        m.scheduled_at,
        m.location,
-       m.deleted_at
+       m.deleted_at,
+       m.category
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
 WHERE m.id = $1
 GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
-         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location, m.deleted_at
+         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location, m.deleted_at, m.category
 LIMIT 1
         "#;
         let mut conn = Arc::clone(&self.db_pool).get()?;
@@ -59,7 +60,7 @@ LIMIT 1
     }
 
     async fn get_all(&self, filter: &MissionFilter) -> Result<Vec<MissionModel>> {
-        use diesel::sql_types::{Int4, Nullable, Varchar};
+        use diesel::sql_types::{Bool, Int4, Nullable, Varchar};
 
         let sql = r#"
 SELECT m.id,
@@ -75,7 +76,8 @@ SELECT m.id,
        m.updated_at,
        m.scheduled_at,
        m.location,
-       m.deleted_at
+       m.deleted_at,
+       m.category
 FROM missions m
 LEFT JOIN brawlers b ON b.id = m.chief_id
 LEFT JOIN crew_memberships cm ON cm.mission_id = m.id
@@ -83,24 +85,30 @@ WHERE m.deleted_at IS NULL
   AND ($1::varchar IS NULL OR m.status = $1)
   AND ($2::varchar IS NULL OR m.name ILIKE $2)
   AND ($3::int4 IS NULL OR m.chief_id != $3)
-  AND ($3::int4 IS NULL OR NOT EXISTS (
+  AND (($3::int4 IS NULL) OR (NOT EXISTS (
       SELECT 1 FROM crew_memberships cm2 
       WHERE cm2.mission_id = m.id AND cm2.brawler_id = $3
-  ))
+  )))
+  AND ($4::varchar IS NULL OR m.category = $4)
 GROUP BY m.id, b.display_name, b.avatar_url, m.name, m.description, m.status,
-         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location, m.deleted_at
+         m.chief_id, m.max_crew, m.created_at, m.updated_at, m.scheduled_at, m.location, m.deleted_at, m.category
+HAVING ($5::bool IS NULL OR ($5 = true AND COUNT(cm.brawler_id) < m.max_crew) OR ($5 = false AND COUNT(cm.brawler_id) >= m.max_crew))
 ORDER BY m.created_at DESC
         "#;
 
         let status_bind: Option<String> = filter.status.as_ref().map(|s| s.to_string());
         let name_bind: Option<String> = filter.name.as_ref().map(|n| format!("%{}%", n));
         let exclude_user_bind: Option<i32> = filter.exclude_user_id;
+        let category_bind: Option<String> = filter.category.clone();
+        let is_available_bind: Option<bool> = filter.is_available;
 
         let mut conn = Arc::clone(&self.db_pool).get()?;
         let rows = diesel::sql_query(sql)
             .bind::<Nullable<Varchar>, _>(status_bind)
             .bind::<Nullable<Varchar>, _>(name_bind)
             .bind::<Nullable<Int4>, _>(exclude_user_bind)
+            .bind::<Nullable<Varchar>, _>(category_bind)
+            .bind::<Nullable<Bool>, _>(is_available_bind)
             .load::<MissionModel>(&mut conn)?;
 
         Ok(rows)

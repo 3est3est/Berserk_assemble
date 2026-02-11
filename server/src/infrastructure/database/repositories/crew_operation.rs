@@ -100,7 +100,8 @@ SELECT m.id,
        m.updated_at,
        m.scheduled_at,
        m.location,
-       m.deleted_at
+       m.deleted_at,
+       m.category
 FROM missions m
 INNER JOIN crew_memberships cm ON cm.mission_id = m.id AND cm.brawler_id = $1
 LEFT JOIN brawlers b ON b.id = m.chief_id

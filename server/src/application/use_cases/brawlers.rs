@@ -67,6 +67,13 @@ where
         self.brawler_repository.get_missions(brawler_id).await
     }
 
+    pub async fn get_brawler_by_id(
+        &self,
+        brawler_id: i32,
+    ) -> Result<crate::domain::entities::brawlers::BrawlerEntity> {
+        self.brawler_repository.find_by_id(brawler_id).await
+    }
+
     pub async fn update_profile(
         &self,
         brawler_id: i32,

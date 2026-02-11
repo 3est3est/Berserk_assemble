@@ -1,0 +1,132 @@
+<div class="network-container">
+  <header class="page-header">
+    <h1>Global Network</h1>
+    <p>Manage your connections and discover other elite agents.</p>
+  </header>
+
+  <div class="network-nav">
+    <button [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
+      All Friends <span>({{ friends().length }})</span>
+    </button>
+    <button [class.active]="activeTab === 'online'" (click)="activeTab = 'online'">
+      Online Now <span>({{ onlineUsers().length }})</span>
+    </button>
+    <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">
+      Pending Requests
+      <span class="badge" *ngIf="pendingRequests().length > 0">{{ pendingRequests().length }}</span>
+    </button>
+  </div>
+
+  <div class="network-content">
+    @if (activeTab === 'all') {
+      <div class="agent-grid">
+        @for (friend of friends(); track friend.id) {
+          <div class="agent-card">
+            <div class="avatar-lg" [routerLink]="['/profile', friend.id]">
+              <img
+                [src]="
+                  friend.avatar_url ||
+                  'https://api.dicebear.com/7.x/bottts/svg?seed=' + friend.display_name
+                "
+                alt="avatar"
+              />
+            </div>
+            <div class="info">
+              <h3>{{ friend.display_name }}</h3>
+              <span class="rank">{{ friend.rank || 'Agent' }}</span>
+            </div>
+            <div class="actions">
+              <button mat-icon-button color="primary" (click)="openChat(friend)">
+                <mat-icon>chat</mat-icon>
+              </button>
+              <button mat-icon-button [routerLink]="['/profile', friend.id]" title="View Profile">
+                <mat-icon>person</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="onRemoveFriend(friend)"
+                title="Unfriend"
+              >
+                <mat-icon>person_remove</mat-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <mat-icon>group_off</mat-icon>
+            <p>Your network is empty. Start discovering missions to find allies.</p>
+            <a routerLink="/missions" class="browse-link">Discover Missions</a>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab === 'requests') {
+      <div class="requests-list">
+        @for (req of pendingRequests(); track req.id) {
+          <div class="request-item">
+            <div class="user" [routerLink]="['/profile', req.requester_id]" style="cursor: pointer">
+              @if (req.requester_avatar) {
+                <img [src]="req.requester_avatar" class="avatar-sm" alt="avatar" />
+              } @else {
+                <img
+                  [src]="'https://api.dicebear.com/7.x/bottts/svg?seed=' + req.requester_name"
+                  class="avatar-sm"
+                  alt="avatar"
+                />
+              }
+              <div class="user-info-text">
+                <span class="name">{{ req.requester_name }}</span>
+                <span class="desc">wants to join your network</span>
+              </div>
+            </div>
+            <div class="actions">
+              <button class="accept" (click)="onAccept(req.id)">Accept</button>
+              <button class="reject" (click)="onReject(req.id)">Ignore</button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <mat-icon>verified_user</mat-icon>
+            <p>No pending clearances. Your network is secure.</p>
+          </div>
+        }
+      </div>
+    }
+
+    @if (activeTab === 'online') {
+      <div class="agent-grid">
+        @for (user of onlineUsers(); track user.id) {
+          <div class="agent-card">
+            <div class="avatar-lg" [routerLink]="['/profile', user.id]">
+              <img
+                [src]="
+                  user.avatar_url ||
+                  'https://api.dicebear.com/7.x/bottts/svg?seed=' + user.display_name
+                "
+                alt="avatar"
+              />
+              <div class="status-indicator online"></div>
+            </div>
+            <div class="info">
+              <h3>{{ user.display_name }}</h3>
+              <span class="status">Currently Active</span>
+            </div>
+            <div class="actions">
+              <button mat-flat-button color="primary" (click)="openChat(user)">
+                <mat-icon>chat</mat-icon>
+                Message
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state">
+            <mat-icon>sensors_off</mat-icon>
+            <p>No agents currently detected on the network.</p>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -20,6 +20,7 @@ pub struct MissionEntity {
     pub deleted_at: Option<NaiveDateTime>,
     pub scheduled_at: Option<NaiveDateTime>,
     pub location: Option<String>,
+    pub category: String,
 }
 
 impl MissionEntity {
@@ -39,6 +40,7 @@ impl MissionEntity {
             scheduled_at: self.scheduled_at,
             location: self.location.clone(),
             deleted_at: self.deleted_at,
+            category: self.category.clone(),
         }
     }
 }
@@ -53,6 +55,7 @@ pub struct AddMissionEntity {
     pub max_crew: i32,
     pub scheduled_at: Option<NaiveDateTime>,
     pub location: Option<String>,
+    pub category: String,
 }
 
 #[derive(Debug, Clone, AsChangeset)]
@@ -64,4 +67,5 @@ pub struct EditMissionEntity {
     pub max_crew: Option<i32>,
     pub scheduled_at: Option<NaiveDateTime>,
     pub location: Option<String>,
+    pub category: Option<String>,
 }

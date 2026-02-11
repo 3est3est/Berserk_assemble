@@ -1,26 +1,93 @@
 <div class="home-container">
-  <div class="welcome-section">
-    <h1 class="greeting">
-      Welcome back, <span class="highlight">{{ display_name() }}</span>
-    </h1>
-    <p class="subtitle">Ready to manage your missions today?</p>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="status-badge"><span class="pulse"></span> SYSTEM ONLINE</div>
+      <h1 class="greeting">
+        Welcome back, <span class="highlight">{{ display_name() }}</span>
+      </h1>
+      <p class="subtitle">Ready to explore new activities today?</p>
+
+      <div class="hero-actions">
+        <button mat-flat-button color="primary" routerLink="/missions">
+          <mat-icon>explore</mat-icon> START MISSION
+        </button>
+        <button mat-stroked-button color="accent" routerLink="/network">
+          <mat-icon>groups</mat-icon> BROWSE CREW
+        </button>
+      </div>
+    </div>
   </div>
 
-  <!-- Floating Debug/Testing Zone (มุมขวาล่าง) -->
-  <div class="dev-tools">
-    <div class="tools-trigger">
-      <mat-icon>bug_report</mat-icon>
-      <span class="label">Testing</span>
+  <div class="dashboard-grid">
+    <!-- Active Members Card -->
+    <div class="activity-card online-agents glow">
+      <div class="card-header">
+        <mat-icon>sensors</mat-icon>
+        <div class="header-text">
+          <h3>Active Members</h3>
+          <span class="count">{{ onlineUsers().length }} online now</span>
+        </div>
+      </div>
+      <div class="agent-pills">
+        @for (user of onlineUsers(); track user.id) {
+          <a [routerLink]="['/profile', user.id]" class="agent-pill">
+            <img
+              [src]="
+                user.avatar_url ||
+                'https://api.dicebear.com/7.x/bottts/svg?seed=' + user.display_name
+              "
+              alt="avatar"
+            />
+            <div class="info">
+              <span class="name">{{ user.display_name }}</span>
+              <span class="status">ACTIVE</span>
+            </div>
+          </a>
+        } @empty {
+          <div class="empty-notif">
+            <mat-icon>notifications_paused</mat-icon>
+            <p>No active members online right now.</p>
+          </div>
+        }
+      </div>
     </div>
-    <div class="tools-panel">
-      <button (click)="MakeError(403)" class="tool-btn-403">
-        <mat-icon>lock</mat-icon>
-        <span>Test 403</span>
-      </button>
-      <button (click)="MakeError(500)" class="tool-btn-500">
-        <mat-icon>error</mat-icon>
-        <span>Test 500</span>
-      </button>
+
+    <!-- Pending Requests Card -->
+    <div
+      class="activity-card pending-clearance"
+      [class.has-requests]="pendingRequestsCount() > 0"
+      routerLink="/network"
+    >
+      <div class="card-header">
+        <mat-icon>person_add</mat-icon>
+        <div class="header-text">
+          <h3>Network Requests</h3>
+          <span>Security authorizations</span>
+        </div>
+      </div>
+      <div class="clearance-body">
+        <div class="status-circle" [class.active]="pendingRequestsCount() > 0">
+          <span class="number">{{ pendingRequestsCount() }}</span>
+        </div>
+        <div class="text">
+          <p class="main-text">
+            {{ pendingRequestsCount() === 0 ? 'System Secure.' : 'Pending Clearances' }}
+          </p>
+          <p class="sub-text">
+            {{
+              pendingRequestsCount() === 0
+                ? 'Your connections are authenticated.'
+                : 'New agents requesting network access.'
+            }}
+          </p>
+        </div>
+      </div>
+      <div class="footer-action">
+        <span>VIEW DETAILS</span>
+        <mat-icon>arrow_forward</mat-icon>
+      </div>
     </div>
   </div>
 </div>

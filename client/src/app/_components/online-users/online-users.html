@@ -1,0 +1,40 @@
+<button mat-icon-button [matMenuTriggerFor]="onlineMenu" class="online-btn" title="Online Agents">
+  <mat-icon
+    [matBadge]="onlineUsers().length"
+    [matBadgeHidden]="onlineUsers().length === 0"
+    matBadgeColor="accent"
+  >
+    person
+  </mat-icon>
+</button>
+
+<mat-menu #onlineMenu="matMenu" class="online-menu-panel">
+  <div class="menu-header" (click)="$event.stopPropagation()">
+    <h3>Active Agents</h3>
+    <span class="count">{{ onlineUsers().length }} Online</span>
+  </div>
+
+  <div class="user-list" (click)="$event.stopPropagation()">
+    @for (user of onlineUsers(); track user.id) {
+      <a [routerLink]="['/profile', user.id]" class="user-item">
+        <div class="avatar-box">
+          <img [src]="user.avatar_url || 'assets/default-avatar.png'" alt="avatar" />
+          <div class="status-dot"></div>
+        </div>
+        <div class="user-info">
+          <p class="name">{{ user.display_name }}</p>
+          <span class="status">Connected</span>
+        </div>
+      </a>
+    } @empty {
+      <div class="empty-state">
+        <mat-icon>diversity_3</mat-icon>
+        <p>No other agents online</p>
+      </div>
+    }
+  </div>
+
+  <div class="menu-footer" (click)="$event.stopPropagation()">
+    <p>Operational network is active.</p>
+  </div>
+</mat-menu>

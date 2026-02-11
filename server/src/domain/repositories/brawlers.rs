@@ -14,7 +14,9 @@ use async_trait::async_trait;
 #[async_trait]
 pub trait BrawlerRepository {
     async fn register(&self, register_brawler_entity: RegisterBrawlerEntity) -> Result<Passport>;
+    async fn find_by_id(&self, id: i32) -> Result<BrawlerEntity>;
     async fn find_by_username(&self, username: String) -> Result<BrawlerEntity>;
+    async fn find_many(&self, ids: Vec<i32>) -> Result<Vec<BrawlerEntity>>;
     async fn upload_base64img(
         &self,
         user_id: i32,

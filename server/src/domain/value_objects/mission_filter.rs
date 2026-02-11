@@ -7,4 +7,6 @@ pub struct MissionFilter {
     pub name: Option<String>,
     pub status: Option<MissionStatuses>,
     pub exclude_user_id: Option<i32>,
+    pub category: Option<String>,
+    pub is_available: Option<bool>,
 }

@@ -1,6 +1,7 @@
-import { Component, inject, OnDestroy } from '@angular/core';
+import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CrewService } from '../_services/crew-service';
+import { FriendshipService } from '../_services/friendship-service';
 import { Mission } from '../_models/mission';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { RouterModule, Router } from '@angular/router';
@@ -16,12 +17,14 @@ import { WebsocketService } from '../_services/websocket-service';
 })
 export class MyCrew implements OnDestroy {
   private _crewService = inject(CrewService);
+  private _friendshipService = inject(FriendshipService);
   private _router = inject(Router);
   private _toast = inject(ToastService);
   private _wsService = inject(WebsocketService);
 
   private _missionsSubject = new BehaviorSubject<Mission[]>([]);
   readonly myJoinedMissions$ = this._missionsSubject.asObservable();
+
   private _wsSubscription?: Subscription;
 
   constructor() {
@@ -35,14 +38,14 @@ export class MyCrew implements OnDestroy {
 
   private setupRealtimeUpdates() {
     this._wsSubscription = this._wsService.notifications$.subscribe((msg) => {
-      const types = [
+      const missionTypes = [
         'mission_started',
         'mission_completed',
         'mission_failed',
         'mission_deleted',
         'kicked_from_mission',
       ];
-      if (types.includes(msg.type)) {
+      if (missionTypes.includes(msg.type)) {
         console.log('[MyCrew] Real-time mission update received, reloading...');
         this.loadMyJoinedMissions();
       }

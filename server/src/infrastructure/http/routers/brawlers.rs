@@ -1,6 +1,6 @@
 use axum::{
     Extension, Json, Router,
-    extract::State,
+    extract::{Path, State},
     http::StatusCode as AxumStatusCode,
     response::IntoResponse,
     routing::{get, patch, post},
@@ -30,6 +30,7 @@ pub fn routes(db_pool: Arc<PgPoolSquad>) -> Router {
         .route("/avatar", post(upload_avatar))
         .route("/my-missions", get(get_missions))
         .route("/profile", patch(update_profile))
+        .route("/{id}", get(get_brawler_by_id))
         .route_layer(axum::middleware::from_fn(auth));
 
     Router::new()
@@ -98,6 +99,19 @@ where
     match user_case.update_profile(user_id, model).await {
         Ok(passport) => (AxumStatusCode::OK, Json(passport)).into_response(),
 
+        Err(e) => (AxumStatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
+    }
+}
+
+pub async fn get_brawler_by_id<T>(
+    State(user_case): State<Arc<BrawlersUseCase<T>>>,
+    Path(id): Path<i32>,
+) -> impl IntoResponse
+where
+    T: BrawlerRepository + Send + Sync,
+{
+    match user_case.get_brawler_by_id(id).await {
+        Ok(brawler) => (AxumStatusCode::OK, Json(brawler)).into_response(),
         Err(e) => (AxumStatusCode::INTERNAL_SERVER_ERROR, e.to_string()).into_response(),
     }
 }

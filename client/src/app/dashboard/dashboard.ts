@@ -1,11 +1,13 @@
-import { Component, inject, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { MissionService } from '../_services/mission-service';
 import { CrewService } from '../_services/crew-service';
+import { FriendshipService } from '../_services/friendship-service';
 import { Mission } from '../_models/mission';
 import { Subscription } from 'rxjs';
 import { WebsocketService } from '../_services/websocket-service';
+import { RouterModule, Router } from '@angular/router';
 
 interface MissionStats {
   open: number;
@@ -21,15 +23,17 @@ interface MissionStats {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule, RouterModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit, OnDestroy {
   private _missionService = inject(MissionService);
   private _crewService = inject(CrewService);
+  private _friendshipService = inject(FriendshipService);
   private _cdr = inject(ChangeDetectorRef);
   private _wsService = inject(WebsocketService);
+  private _router = inject(Router);
 
   private _wsSubscription?: Subscription;
 
@@ -45,11 +49,56 @@ export class Dashboard implements OnInit, OnDestroy {
   };
 
   recentMissions: Mission[] = [];
+  onlineUsers: any[] = [];
+  pendingRequests = signal<any[]>([]);
   isLoading = true;
 
   ngOnInit() {
     this.loadStats();
+    this.loadOnlineUsers();
+    this.loadPendingRequests();
     this.setupRealtimeUpdates();
+  }
+
+  async loadPendingRequests() {
+    try {
+      const reqs = await this._friendshipService.getPendingRequests();
+      this.pendingRequests.set(reqs);
+    } catch (e) {
+      console.error('Failed to load pending requests', e);
+    }
+  }
+
+  async onAccept(id: number) {
+    try {
+      await this._friendshipService.acceptRequest(id);
+      this.loadPendingRequests();
+      this.loadOnlineUsers();
+    } catch (e) {
+      console.error('Failed to accept request', e);
+    }
+  }
+
+  async onReject(id: number) {
+    try {
+      await this._friendshipService.rejectRequest(id);
+      this.loadPendingRequests();
+    } catch (e) {
+      console.error('Failed to reject request', e);
+    }
+  }
+
+  async loadOnlineUsers() {
+    try {
+      this.onlineUsers = await this._friendshipService.getOnlineUsers();
+      this._cdr.detectChanges();
+    } catch (e) {
+      console.error('Failed to load online users', e);
+    }
+  }
+
+  viewProfile(id: number) {
+    this._router.navigate(['/profile', id]);
   }
 
   ngOnDestroy(): void {
@@ -58,7 +107,7 @@ export class Dashboard implements OnInit, OnDestroy {
 
   private setupRealtimeUpdates() {
     this._wsSubscription = this._wsService.notifications$.subscribe((msg) => {
-      const types = [
+      const missionTypes = [
         'new_crew_joined',
         'crew_left',
         'mission_started',
@@ -67,9 +116,17 @@ export class Dashboard implements OnInit, OnDestroy {
         'mission_deleted',
         'kicked_from_mission',
       ];
-      if (types.includes(msg.type)) {
+
+      const networkTypes = ['agent_online', 'agent_offline', 'friend_request', 'friend_accepted'];
+
+      if (missionTypes.includes(msg.type)) {
         console.log('[Dashboard] Real-time stats update received, reloading...');
         this.loadStats();
+      }
+
+      if (networkTypes.includes(msg.type)) {
+        console.log('[Dashboard] Network update received, refreshing online list...');
+        this.loadOnlineUsers();
       }
     });
   }

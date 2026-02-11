@@ -1,0 +1,29 @@
+@if (active) {
+  <div class="onboarding-overlay" (click)="next()">
+    <div
+      class="spotlight"
+      [style.top.px]="spotlightTop"
+      [style.left.px]="spotlightLeft"
+      [style.width.px]="spotlightWidth"
+      [style.height.px]="spotlightHeight"
+    ></div>
+
+    <div
+      class="guide-card"
+      [class]="currentStep.position"
+      [style.top.px]="cardTop"
+      [style.left.px]="cardLeft"
+    >
+      <div class="card-content">
+        <h3>{{ currentStep.title }}</h3>
+        <p>{{ currentStep.content }}</p>
+      </div>
+      <div class="card-actions">
+        <span class="step-indicator">{{ currentIndex + 1 }} / {{ steps.length }}</span>
+        <button class="next-btn">
+          {{ currentIndex === steps.length - 1 ? 'Finish' : 'Next' }}
+        </button>
+      </div>
+    </div>
+  </div>
+}
