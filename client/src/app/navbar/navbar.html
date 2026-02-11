@@ -1,58 +1,111 @@
-<aside class="sidebar">
-  <div class="logo-section">
-    <a routerLink="/" class="logo-text">Berserk</a>
-  </div>
+<mat-sidenav-container class="drawer-container" autosize>
+  <mat-sidenav #drawer class="app-sidebar" mode="over">
+    <div class="sidebar-header">
+      <h3>MENU</h3>
+      <button mat-icon-button (click)="drawer.toggle()">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
 
-  <div class="nav-content">
-    <div class="section-label">MAIN MENU</div>
-    <nav class="nav-group">
-      <a
-        class="nav-item"
-        routerLink="/missions"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-      >
-        <mat-icon>rocket_launch</mat-icon>
-        <span>Discovery</span>
-      </a>
-
-      @if (display_name()) {
-        <a class="nav-item" routerLink="/chief" routerLinkActive="active">
-          <mat-icon>assignment_ind</mat-icon>
-          <span>Management</span>
+    <div class="nav-content">
+      <nav class="nav-group" (click)="drawer.close()">
+        <a
+          class="nav-item"
+          routerLink="/"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
         </a>
-        <a class="nav-item" routerLink="/my-crew" routerLinkActive="active">
-          <mat-icon>groups</mat-icon>
-          <span>My Crew</span>
-        </a>
-        <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
-          <mat-icon>dashboard</mat-icon>
-          <span>Analytics</span>
-        </a>
-      }
-    </nav>
-  </div>
 
-  @if (display_name()) {
-    <div class="user-control-panel">
-      <!-- User Info Row -->
-      <div class="user-info-row" routerLink="/profile">
-        <img [src]="avatar_url() || 'assets/default-avatar.png'" alt="avatar" class="avatar" />
-        <div class="meta">
-          <span class="name">{{ display_name() }}</span>
-          <span class="status-indicator"> <span class="dot"></span> Online </span>
-        </div>
-      </div>
+        @if (display_name()) {
+          <div class="section-label">MAIN</div>
+          <a class="nav-item" routerLink="/missions" routerLinkActive="active">
+            <mat-icon>explore</mat-icon>
+            <span>Explore</span>
+          </a>
+          <a class="nav-item" routerLink="/chief" routerLinkActive="active">
+            <mat-icon>event_available</mat-icon>
+            <span>My Activities</span>
+          </a>
 
-      <!-- Compact Actions Row -->
-      <div class="panel-actions">
-        <div class="action-btn-wrapper">
-          <app-notification-bell></app-notification-bell>
-        </div>
-        <button class="mini-btn logout" title="Logout" (click)="logout()">
-          <mat-icon>power_settings_new</mat-icon>
+          <div class="section-label">SOCIAL</div>
+          <a class="nav-item" routerLink="/my-crew" routerLinkActive="active">
+            <mat-icon>groups</mat-icon>
+            <span>My Crew</span>
+          </a>
+          <a class="nav-item" routerLink="/network" routerLinkActive="active">
+            <mat-icon>public</mat-icon>
+            <span>Members</span>
+          </a>
+          <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
+            <mat-icon>dashboard</mat-icon>
+            <span>Stats</span>
+          </a>
+        }
+      </nav>
+    </div>
+
+    @if (display_name()) {
+      <div class="sidebar-footer">
+        <button class="logout-btn" (click)="logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Logout</span>
         </button>
       </div>
-    </div>
-  }
-</aside>
+    }
+  </mat-sidenav>
+
+  <mat-sidenav-content class="app-content">
+    <mat-toolbar class="top-navbar">
+      <div class="left-section">
+        @if (display_name()) {
+          <!-- Always visible menu button for sidebar -->
+          <button mat-icon-button (click)="drawer.toggle()" class="menu-btn">
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
+        <a routerLink="/" class="logo-text">Vibe Assemble</a>
+
+        @if (display_name()) {
+          <nav class="desktop-nav">
+            <a routerLink="/missions" routerLinkActive="active" class="nav-link">
+              <mat-icon>explore</mat-icon> Explore
+            </a>
+            <a routerLink="/chief" routerLinkActive="active" class="nav-link">
+              <mat-icon>event_available</mat-icon> My Activities
+            </a>
+            <a routerLink="/my-crew" routerLinkActive="active" class="nav-link">
+              <mat-icon>groups</mat-icon> My Crew
+            </a>
+            <a routerLink="/network" routerLinkActive="active" class="nav-link">
+              <mat-icon>public</mat-icon> Members
+            </a>
+            <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
+              <mat-icon>dashboard</mat-icon> Dashboard
+            </a>
+          </nav>
+        }
+      </div>
+
+      <div class="spacer"></div>
+
+      @if (display_name()) {
+        <div class="right-section">
+          <app-online-users></app-online-users>
+          <app-notification-bell></app-notification-bell>
+
+          <div class="user-profile" [routerLink]="['/profile']">
+            <img [src]="avatar_url() || 'assets/default-avatar.png'" alt="avatar" />
+            <span class="user-name">{{ display_name() }}</span>
+            <mat-icon class="chevron-down">expand_more</mat-icon>
+          </div>
+        </div>
+      }
+    </mat-toolbar>
+
+    <!-- Content Projection -->
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

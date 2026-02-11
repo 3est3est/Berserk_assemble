@@ -3,7 +3,7 @@
     <div class="identity-card">
       <div class="avatar-wrapper">
         <img [src]="avatar_url() || 'assets/default-avatar.png'" alt="avatar" class="avatar-lg" />
-        <button class="edit-avatar-btn" (click)="openAvatarDialog()">
+        <button *ngIf="isOwnProfile()" class="edit-avatar-btn" (click)="openAvatarDialog()">
           <mat-icon>photo_camera</mat-icon>
         </button>
       </div>
@@ -12,22 +12,78 @@
 
       <div class="rank-badge" [class]="rank().toLowerCase()">{{ rank() }}</div>
 
+      <!-- Friendship Actions -->
+      <div class="friend-actions" *ngIf="!isOwnProfile()">
+        <button
+          *ngIf="!friendshipStatus()"
+          mat-flat-button
+          color="primary"
+          class="friend-btn"
+          (click)="addFriend()"
+        >
+          <mat-icon>person_add</mat-icon>
+          Add Friend
+        </button>
+
+        <button
+          *ngIf="friendshipStatus() === 'pending'"
+          mat-stroked-button
+          disabled
+          class="friend-btn pending"
+        >
+          <mat-icon>hourglass_empty</mat-icon>
+          Pending
+        </button>
+
+        @if (friendshipStatus() === 'accepted') {
+          <button mat-flat-button class="friend-btn accepted" [matMenuTriggerFor]="friendMenu">
+            <mat-icon>check</mat-icon>
+            Friends
+          </button>
+          <mat-menu #friendMenu="matMenu">
+            <button mat-menu-item (click)="unfriend()">
+              <mat-icon>person_remove</mat-icon>
+              Unfriend
+            </button>
+          </mat-menu>
+        }
+
+        <button mat-stroked-button class="friend-btn message" (click)="openChat()">
+          <mat-icon>chat</mat-icon>
+          Message
+        </button>
+      </div>
+
+      <button
+        *ngIf="isOwnProfile()"
+        mat-stroked-button
+        class="edit-btn"
+        (click)="openEditProfileDialog()"
+      >
+        <mat-icon>edit</mat-icon>
+        Edit Profile
+      </button>
+
+      @if (bio()) {
+        <p class="bio-text">"{{ bio() }}"</p>
+      }
+
       <div class="contacts-box">
         @if (instagram()) {
           <div class="contact-item ig">
-            <mat-icon>photo_camera</mat-icon>
+            <img src="/assets/icons/instagram.avif" alt="Instagram" class="contact-icon" />
             <span>{{ instagram() }}</span>
           </div>
         }
         @if (facebook()) {
           <div class="contact-item fb">
-            <mat-icon>public</mat-icon>
+            <img src="/assets/icons/facebook.avif" alt="Facebook" class="contact-icon" />
             <span>{{ facebook() }}</span>
           </div>
         }
         @if (discord_id()) {
           <div class="contact-item discord">
-            <mat-icon>forum</mat-icon>
+            <img src="/assets/icons/discord.jpg" alt="Discord" class="contact-icon" />
             <span>{{ discord_id() }}</span>
           </div>
         }
@@ -38,14 +94,6 @@
           </div>
         }
       </div>
-
-      @if (bio()) {
-        <p class="bio-text">"{{ bio() }}"</p>
-      }
-
-      <button mat-flat-button class="edit-profile-btn" (click)="openEditProfileDialog()">
-        <mat-icon>edit_note</mat-icon> Edit Profile
-      </button>
     </div>
   </div>
 
@@ -66,7 +114,7 @@
     </div>
 
     <div class="recent-activity-card">
-      <h3>Recent Operations</h3>
+      <h3>Recent Activities</h3>
       @if (missions().length > 0) {
         <div class="mission-list">
           @for (mission of missions().slice(0, 5); track mission.id) {
@@ -78,7 +126,7 @@
           }
         </div>
       } @else {
-        <div class="empty-state">No operations recorded yet, soldier.</div>
+        <div class="empty-state">No activities recorded yet.</div>
       }
     </div>
   </div>

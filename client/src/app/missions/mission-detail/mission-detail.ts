@@ -265,7 +265,7 @@ export class MissionDetail implements OnInit, OnDestroy {
 
     try {
       await this._missionService.kickMember(this.mission.id, member.id);
-      this._toast.success(`Kicked "${member.display_name}" from the mission.`);
+      // Removed redundant toast
       this.crew = await this._missionService.getCrew(this.mission.id);
       this.mission.crew_count--;
     } catch (e: any) {
@@ -277,34 +277,18 @@ export class MissionDetail implements OnInit, OnDestroy {
     if (!this.mission || !confirm('Are you sure you want to clear all messages?')) return;
     try {
       await this._missionService.clearComments(this.mission.id);
-      this._toast.success('Chat history cleared.');
       this.comments = [];
     } catch (e: any) {
       this._toast.error('Failed to clear chat: ' + (e.error || e.message));
     }
   }
 
-  getRemainingTime(scheduledAt: Date | string): string {
-    const target = new Date(scheduledAt).getTime();
-    const now = new Date().getTime();
-    const diff = target - now;
-
-    if (diff <= 0) return 'Gathering now...';
-
-    const minutes = Math.floor(diff / (1000 * 60));
-    const hours = Math.floor(minutes / 60);
-    const days = Math.floor(hours / 24);
-
-    if (days > 0) return `in ${days}d ${hours % 24}h`;
-    if (hours > 0) return `in ${hours}h ${minutes % 60}m`;
-    return `in ${minutes}m`;
-  }
+  // ...
 
   async leaveMission() {
     if (!this.mission) return;
     try {
       await this._crewService.leave(this.mission.id);
-      this._toast.success('You have left the mission.');
       this._router.navigate(['/my-crew']);
     } catch (e: any) {
       this._toast.error('Failed to leave: ' + (e.error || e.message));

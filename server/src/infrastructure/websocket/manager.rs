@@ -99,6 +99,11 @@ impl ConnectionManager {
             let _ = sender.send(message.clone());
         }
     }
+
+    pub async fn get_online_users(&self) -> Vec<i32> {
+        let user_channels = self.user_channels.read().await;
+        user_channels.keys().copied().collect()
+    }
 }
 
 impl Default for ConnectionManager {

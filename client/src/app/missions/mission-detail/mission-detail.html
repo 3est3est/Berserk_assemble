@@ -31,8 +31,15 @@
           }
         </div>
       </div>
-      <div [class]="'status-badge ' + mission.status.toLowerCase()">
-        {{ mission.status }}
+      <div class="badges">
+        @if (mission.category) {
+          <div class="category-badge">
+            {{ mission.category }}
+          </div>
+        }
+        <div [class]="'status-badge ' + mission.status.toLowerCase()">
+          {{ mission.status }}
+        </div>
       </div>
     </header>
 
@@ -44,9 +51,15 @@
         </div>
         <div class="crew-list">
           <div class="member-card active-user" [class.chief]="mission.chief_id === currentUserId">
-            <img [src]="mission.chief_avatar_url || 'assets/default-avatar.png'" class="avatar" />
+            <a [routerLink]="['/profile', mission.chief_id]">
+              <img [src]="mission.chief_avatar_url || 'assets/default-avatar.png'" class="avatar" />
+            </a>
             <div class="info">
-              <span class="name">{{ mission.chief_display_name }}</span>
+              <span class="name">
+                <a [routerLink]="['/profile', mission.chief_id]">{{
+                  mission.chief_display_name
+                }}</a>
+              </span>
               <span class="role">Chief Officer</span>
             </div>
           </div>
@@ -54,9 +67,13 @@
           @for (member of crew; track member.id) {
             @if (member.id !== mission.chief_id) {
               <div class="member-card" [class.active-user]="member.id === currentUserId">
-                <img [src]="member.avatar_url || 'assets/default-avatar.png'" class="avatar" />
+                <a [routerLink]="['/profile', member.id]">
+                  <img [src]="member.avatar_url || 'assets/default-avatar.png'" class="avatar" />
+                </a>
                 <div class="info">
-                  <span class="name">{{ member.display_name }}</span>
+                  <span class="name">
+                    <a [routerLink]="['/profile', member.id]">{{ member.display_name }}</a>
+                  </span>
                   <span class="role">Mission Crew</span>
                 </div>
                 @if (isChief && mission.status === 'Open') {
@@ -75,20 +92,29 @@
         <div class="panel-header">
           <h3>Mission Briefing</h3>
           @if (isChief && comments.length > 0) {
-            <button class="btn-text" (click)="clearChat()">Clear History</button>
+            <button class="icon-btn-danger" (click)="clearChat()" title="Clear History">
+              <mat-icon>delete</mat-icon>
+              <span>Clear</span>
+            </button>
           }
         </div>
 
         <div class="messages" #chatMessages>
           @for (comment of comments; track comment.id) {
             <div class="message" [class.own]="comment.brawler_id === currentUserId">
-              <img
-                [src]="comment.brawler_avatar_url || 'assets/default-avatar.png'"
-                class="msg-avatar"
-              />
+              <a [routerLink]="['/profile', comment.brawler_id]">
+                <img
+                  [src]="comment.brawler_avatar_url || 'assets/default-avatar.png'"
+                  class="msg-avatar"
+                />
+              </a>
               <div class="bubble">
                 <div class="header">
-                  <span class="author">{{ comment.brawler_display_name }}</span>
+                  <span class="author">
+                    <a [routerLink]="['/profile', comment.brawler_id]">{{
+                      comment.brawler_display_name
+                    }}</a>
+                  </span>
                   <span class="time">{{ comment.created_at | date: 'h:mm a' }}</span>
                 </div>
                 <div class="text">{{ comment.content }}</div>

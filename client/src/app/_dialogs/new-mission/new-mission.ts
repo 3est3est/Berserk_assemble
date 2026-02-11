@@ -5,6 +5,7 @@ import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
 import { AddMission } from '../../_models/add-mission';
 
 @Component({
@@ -16,6 +17,7 @@ import { AddMission } from '../../_models/add-mission';
     FormsModule,
     MatButtonModule,
     MatIconModule,
+    MatSelectModule,
   ],
   templateUrl: './new-mission.html',
   styleUrl: './new-mission.scss',
@@ -23,6 +25,16 @@ import { AddMission } from '../../_models/add-mission';
 export class NewMission {
   private readonly _dialogRef = inject(MatDialogRef<NewMission>);
   private readonly _data = inject(MAT_DIALOG_DATA, { optional: true });
+
+  categories = [
+    'Sports & Active',
+    'Social & Chill',
+    'Gaming & E-Sports',
+    'Entertainment',
+    'Travel & Trip',
+    'Lifestyle & Hobby',
+    'Other',
+  ];
 
   addMission: any = {
     name: this._data?.name || '',
@@ -32,6 +44,7 @@ export class NewMission {
       ? new Date(this._data.scheduled_at).toISOString().slice(0, 16)
       : '',
     location: this._data?.location || '',
+    category: this._data?.category || 'Other',
   };
 
   onSubmit() {
@@ -53,6 +66,7 @@ export class NewMission {
       max_crew: addMission.max_crew && addMission.max_crew > 0 ? addMission.max_crew : 5,
       scheduled_at: addMission.scheduled_at ? new Date(addMission.scheduled_at) : undefined,
       location: addMission.location?.trim() || undefined,
+      category: addMission.category || 'Other',
     };
 
     console.log('DEBUG: Payload ready to send:', result);

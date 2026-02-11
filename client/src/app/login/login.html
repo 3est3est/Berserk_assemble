@@ -1,9 +1,9 @@
 <div class="login-container">
   <div class="login-card">
     <header class="auth-header">
-      <h3>{{ mode === 'login' ? 'Login' : 'Join Crew' }}</h3>
+      <h3>{{ mode === 'login' ? 'Login' : 'Join Now' }}</h3>
       <p>
-        {{ mode === 'login' ? 'Welcome back, brawler.' : 'Establish your operational profile.' }}
+        {{ mode === 'login' ? 'Welcome back!' : 'Create your account to start vibing.' }}
       </p>
     </header>
 
@@ -15,7 +15,7 @@
           type="text"
           (input)="updateErrorMsg('username')"
           formControlName="username"
-          placeholder="Enter your handle"
+          placeholder="Enter your username"
         />
         @if (form.controls['username'].invalid && form.controls['username'].touched) {
           <mat-error>{{ errorMsg.username() }}</mat-error>
@@ -29,7 +29,7 @@
           type="password"
           (input)="updateErrorMsg('password')"
           formControlName="password"
-          placeholder="Secure passphrase"
+          placeholder="Enter password"
         />
         @if (form.controls['password'].invalid && form.controls['password'].touched) {
           <mat-error>{{ errorMsg.password() }}</mat-error>
@@ -44,7 +44,7 @@
             type="password"
             (input)="updateErrorMsg('cf_password')"
             formControlName="cf_password"
-            placeholder="Repeat passphrase"
+            placeholder="Confirm password"
           />
           @if (form.controls['cf_password'].invalid && form.controls['cf_password'].touched) {
             <mat-error>{{ errorMsg.cf_password() }}</mat-error>
@@ -58,7 +58,7 @@
             type="text"
             (input)="updateErrorMsg('displayname')"
             formControlName="display_name"
-            placeholder="Operational Alias"
+            placeholder="What should we call you?"
           />
           @if (form.controls['display_name'].invalid && form.controls['display_name'].touched) {
             <mat-error>{{ errorMsg.display_name() }}</mat-error>
@@ -67,7 +67,7 @@
       }
 
       <button type="submit" class="submit-btn" [disabled]="!form.valid">
-        {{ mode === 'login' ? 'Login' : 'Initialize Profile' }}
+        {{ mode === 'login' ? 'Login' : 'Create Account' }}
       </button>
 
       @if (errorMsg.server() !== '') {
@@ -77,10 +77,10 @@
 
     <footer class="auth-footer">
       @if (mode === 'login') {
-        <span>New to the brawler?</span>
+        <span>New here?</span>
         <span class="toggle-link" (click)="toggleMode()">Sign Up</span>
       } @else {
-        <span>Already a brawler?</span>
+        <span>Already have an account?</span>
         <span class="toggle-link" (click)="toggleMode()">Sign In</span>
       }
     </footer>

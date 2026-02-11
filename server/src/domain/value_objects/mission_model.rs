@@ -40,6 +40,8 @@ pub struct MissionModel {
     pub location: Option<String>,
     #[diesel(sql_type = Nullable<Timestamp>)]
     pub deleted_at: Option<NaiveDateTime>,
+    #[diesel(sql_type = Varchar)]
+    pub category: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -49,6 +51,7 @@ pub struct AddMissionModel {
     pub max_crew: Option<i32>,
     pub scheduled_at: Option<DateTime<Utc>>,
     pub location: Option<String>,
+    pub category: Option<String>,
 }
 
 impl AddMissionModel {
@@ -61,6 +64,7 @@ impl AddMissionModel {
             max_crew: self.max_crew.unwrap_or(5),
             scheduled_at: self.scheduled_at.map(|dt| dt.naive_utc()),
             location: self.location.clone(),
+            category: self.category.clone().unwrap_or("Other".to_string()),
         }
     }
 }
@@ -72,6 +76,7 @@ pub struct EditMissionModel {
     pub max_crew: Option<i32>,
     pub scheduled_at: Option<DateTime<Utc>>,
     pub location: Option<String>,
+    pub category: Option<String>,
 }
 
 impl EditMissionModel {
@@ -83,6 +88,7 @@ impl EditMissionModel {
             max_crew: self.max_crew,
             scheduled_at: self.scheduled_at.map(|dt| dt.naive_utc()),
             location: self.location.clone(),
+            category: self.category.clone(),
         }
     }
 }

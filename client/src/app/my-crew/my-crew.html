@@ -6,6 +6,7 @@
 <div class="data-table">
   <div class="table-header">
     <span>Mission</span>
+    <span>Category</span>
     <span>Description</span>
     <span>Chief</span>
     <span style="text-align: center">Crew</span>
@@ -14,10 +15,23 @@
   </div>
 
   @for (mission of myJoinedMissions$ | async; track mission.id) {
-    <div class="table-row" (click)="onManage(mission)">
-      <div class="name">{{ mission.name }}</div>
+    <div class="table-row">
+      <div class="name" (click)="onManage(mission)">{{ mission.name }}</div>
+      <div class="category">
+        <span
+          [class]="
+            'cat-pill ' +
+            (mission.category || 'other').toLowerCase().split(' & ').join('-').split(' ').join('-')
+          "
+          >{{ mission.category || 'Other' }}</span
+        >
+      </div>
       <div class="description" [title]="mission.description">{{ mission.description }}</div>
-      <div class="chief">{{ mission.chief_display_name }}</div>
+      <div class="chief">
+        <a [routerLink]="['/profile', mission.chief_id]" (click)="$event.stopPropagation()">
+          {{ mission.chief_display_name }}
+        </a>
+      </div>
       <div class="crew-count">{{ mission.crew_count }} / {{ mission.max_crew }}</div>
       <div>
         <span

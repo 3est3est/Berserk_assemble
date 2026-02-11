@@ -1,6 +1,7 @@
-<div class="container">
-  <app-navbar></app-navbar>
+<app-navbar>
   <div class="content">
     <router-outlet></router-outlet>
   </div>
-</div>
+</app-navbar>
+
+<app-private-chat id="chat-widget" *ngIf="_passport.isSignin()"></app-private-chat>

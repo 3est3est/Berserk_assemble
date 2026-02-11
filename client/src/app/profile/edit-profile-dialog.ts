@@ -28,34 +28,6 @@ import { MatIconModule } from '@angular/material/icon';
           <input matInput [(ngModel)]="displayName" placeholder="Enter your display name" />
         </mat-form-field>
 
-        <div class="section-label">Social & Contacts</div>
-
-        <div class="contact-grid">
-          <mat-form-field appearance="outline">
-            <mat-label>Instagram</mat-label>
-            <input matInput [(ngModel)]="instagram" placeholder="@username" />
-            <mat-icon matPrefix>photo_camera</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Facebook</mat-label>
-            <input matInput [(ngModel)]="facebook" placeholder="Profile name" />
-            <mat-icon matPrefix>public</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Discord ID</mat-label>
-            <input matInput [(ngModel)]="discordId" placeholder="username#0000" />
-            <mat-icon matPrefix>contacts</mat-icon>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Contact Email</mat-label>
-            <input matInput [(ngModel)]="contactEmail" placeholder="your@email.com" />
-            <mat-icon matPrefix>alternate_email</mat-icon>
-          </mat-form-field>
-        </div>
-
         <div class="section-label">Motto / Bio</div>
         <mat-form-field appearance="outline" class="w-full bio-field">
           <textarea
@@ -66,6 +38,34 @@ import { MatIconModule } from '@angular/material/icon';
             style="line-height: 1.4; resize: none;"
           ></textarea>
         </mat-form-field>
+
+        <div class="section-label">Social & Contacts</div>
+
+        <div class="contact-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>Instagram</mat-label>
+            <input matInput [(ngModel)]="instagram" placeholder="@username" />
+            <img matPrefix src="/assets/icons/instagram.avif" class="dialog-icon" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Facebook</mat-label>
+            <input matInput [(ngModel)]="facebook" placeholder="Profile name" />
+            <img matPrefix src="/assets/icons/facebook.avif" class="dialog-icon" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Discord ID</mat-label>
+            <input matInput [(ngModel)]="discordId" placeholder="username#0000" />
+            <img matPrefix src="/assets/icons/discord.jpg" class="dialog-icon" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Contact Email</mat-label>
+            <input matInput [(ngModel)]="contactEmail" placeholder="your@email.com" />
+            <mat-icon matPrefix>alternate_email</mat-icon>
+          </mat-form-field>
+        </div>
       </div>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
@@ -101,6 +101,12 @@ import { MatIconModule } from '@angular/material/icon';
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 0 12px;
+      }
+      .dialog-icon {
+        width: 18px;
+        height: 18px;
+        margin-right: 8px;
+        object-fit: contain;
       }
       .bio-field {
         margin-top: -4px;

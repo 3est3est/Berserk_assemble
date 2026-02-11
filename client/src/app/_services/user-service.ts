@@ -55,4 +55,9 @@ export class UserService {
     }
     return null;
   }
+
+  async getProfile(id: number): Promise<any> {
+    const url = `${this._base_url}/${id}`;
+    return firstValueFrom(this._http.get<any>(url));
+  }
 }

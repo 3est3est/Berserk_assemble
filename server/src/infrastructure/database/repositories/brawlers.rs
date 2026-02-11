@@ -45,6 +45,17 @@ impl BrawlerRepository for BrawlerPostgres {
         Passport::new(user_id, display_name, None, None, None, None, None, None)
     }
 
+    async fn find_by_id(&self, id: i32) -> Result<BrawlerEntity> {
+        let mut connection = Arc::clone(&self.db_pool).get()?;
+
+        let result = brawlers::table
+            .find(id)
+            .select(BrawlerEntity::as_select())
+            .first::<BrawlerEntity>(&mut connection)?;
+
+        Ok(result)
+    }
+
     async fn find_by_username(&self, username: String) -> Result<BrawlerEntity> {
         let mut connection = Arc::clone(&self.db_pool).get()?;
 
@@ -54,6 +65,17 @@ impl BrawlerRepository for BrawlerPostgres {
             .first::<BrawlerEntity>(&mut connection)?;
 
         Ok(result)
+    }
+
+    async fn find_many(&self, ids: Vec<i32>) -> Result<Vec<BrawlerEntity>> {
+        let mut connection = Arc::clone(&self.db_pool).get()?;
+
+        let results = brawlers::table
+            .filter(brawlers::id.eq_any(ids))
+            .select(BrawlerEntity::as_select())
+            .load::<BrawlerEntity>(&mut connection)?;
+
+        Ok(results)
     }
 
     async fn upload_base64img(
@@ -106,11 +128,19 @@ SELECT
     missions.updated_at,
     missions.scheduled_at,
     missions.location,
-    missions.deleted_at
+    missions.deleted_at,
+    missions.category
 FROM missions
 LEFT JOIN brawlers ON brawlers.id = missions.chief_id
 WHERE missions.deleted_at IS NULL
-    AND missions.chief_id = $1
+    AND (
+        missions.chief_id = $1 
+        OR EXISTS (
+            SELECT 1 FROM crew_memberships 
+            WHERE crew_memberships.mission_id = missions.id 
+            AND crew_memberships.brawler_id = $1
+        )
+    )
 ORDER BY missions.created_at DESC
         "#;
 

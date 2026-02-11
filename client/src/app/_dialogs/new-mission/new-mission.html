@@ -1,34 +1,43 @@
 <div class="new-mission-dialog">
-  <h2 mat-dialog-title>Create New Mission</h2>
+  <h2 mat-dialog-title>Create New Activity</h2>
 
   <mat-dialog-content>
     <div class="form-container">
       <mat-form-field appearance="outline">
-        <mat-label>Mission Name</mat-label>
-        <input matInput [(ngModel)]="addMission.name" placeholder="Enter mission name" required />
+        <mat-label>Activity Name</mat-label>
+        <input matInput [(ngModel)]="addMission.name" placeholder="Enter activity name" required />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Mission Description</mat-label>
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="addMission.category">
+          @for (cat of categories; track cat) {
+            <mat-option [value]="cat">{{ cat }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
         <textarea
           matInput
           [(ngModel)]="addMission.description"
-          placeholder="What is this mission about?"
+          placeholder="What's the plan? Give some details."
           rows="4"
         ></textarea>
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Max Crew Members</mat-label>
+        <mat-label>Max Participants</mat-label>
         <input
           matInput
           type="number"
           [(ngModel)]="addMission.max_crew"
-          placeholder="Limit of crew members"
+          placeholder="Max number of people"
           min="1"
           max="50"
         />
-        <mat-hint>Recommended: 5</mat-hint>
+        <mat-hint>Recommended: 5-10</mat-hint>
       </mat-form-field>
 
       <div class="custom-field">
@@ -58,7 +67,7 @@
       [disabled]="!addMission.name"
       class="create-btn"
     >
-      Create Mission
+      Create Activity
     </button>
   </mat-dialog-actions>
 </div>

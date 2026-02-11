@@ -1,38 +1,59 @@
 <header class="page-header">
-  <h1>Discovery</h1>
-  <p>Find and join open missions across the galaxy.</p>
+  <h1>Explore</h1>
+  <p>Find and join activities in the community.</p>
 </header>
 
 <div class="discovery-controls">
-  <div class="search-input">
-    <mat-icon>search</mat-icon>
-    <input
-      type="text"
-      [(ngModel)]="filter.name"
-      placeholder="Search by mission name..."
-      (keyup.enter)="onSubmit()"
-    />
+  <div class="search-row">
+    <div class="search-input" id="search-input">
+      <mat-icon>search</mat-icon>
+      <input
+        type="text"
+        [(ngModel)]="filter.name"
+        placeholder="Search activities..."
+        (keyup.enter)="onSubmit()"
+      />
+    </div>
   </div>
 
-  <select class="status-select" [(ngModel)]="filter.status">
-    <option value="">All Statuses</option>
-    <option value="Open">Open</option>
-    <option value="InProgress">In Progress</option>
-    <option value="Completed">Completed</option>
-    <option value="Failed">Failed</option>
-  </select>
+  <div class="filters-row" id="filters-area">
+    <select class="status-select" [(ngModel)]="filter.status">
+      <option value="">All Statuses</option>
+      <option value="Open">Open</option>
+      <option value="InProgress">In Progress</option>
+      <option value="Completed">Completed</option>
+      <option value="Failed">Cancelled</option>
+    </select>
 
-  <button class="filter-btn" (click)="onSubmit()">Filter</button>
+    <select class="category-select" [(ngModel)]="filter.category">
+      <option value="">All Categories</option>
+      @for (cat of categories; track cat) {
+        <option [value]="cat">{{ cat }}</option>
+      }
+    </select>
+
+    <select class="capacity-select" [(ngModel)]="filter.is_available">
+      <option [ngValue]="undefined">All</option>
+      <option [ngValue]="true">Available</option>
+      <option [ngValue]="false">Full</option>
+    </select>
+
+    <button class="filter-btn" (click)="onSubmit()">
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
+  </div>
 </div>
 
 <div class="data-table">
   @if ((missions$ | async)?.length) {
     <div class="table-header">
-      <span>Mission</span>
+      <span>Activity</span>
+      <span>Category</span>
       <span>Description</span>
-      <span>Chief</span>
+      <span>Host</span>
       <span>Status</span>
-      <span>Crew</span>
+      <span>Members</span>
       <span></span>
     </div>
 
@@ -53,15 +74,36 @@
           </div>
         </div>
 
+        <div class="category">
+          <span
+            [class]="
+              'cat-pill ' +
+              (mission.category || 'other')
+                .toLowerCase()
+                .split(' & ')
+                .join('-')
+                .split(' ')
+                .join('-')
+            "
+            >{{ mission.category || 'Other' }}</span
+          >
+        </div>
+
         <div class="description" [title]="mission.description">{{ mission.description }}</div>
 
         <div class="chief">
-          <div class="chief-circle">{{ mission.chief_display_name[0] | uppercase }}</div>
+          @if (mission.chief_avatar_url) {
+            <img [src]="mission.chief_avatar_url" class="chief-circle" alt="Avatar" />
+          } @else {
+            <div class="chief-circle">{{ mission.chief_display_name[0] | uppercase }}</div>
+          }
           <span>{{ mission.chief_display_name }}</span>
         </div>
 
         <div>
-          <span [class]="'status-badge ' + mission.status.toLowerCase()">{{ mission.status }}</span>
+          <span [class]="'status-badge ' + mission.status.toLowerCase()">{{
+            mission.status === 'Failed' ? 'Cancelled' : mission.status
+          }}</span>
         </div>
 
         <div class="crew-count">{{ mission.crew_count }} / {{ mission.max_crew }}</div>
@@ -72,9 +114,15 @@
               <button
                 class="action-btn"
                 (click)="onJoin(mission)"
-                [disabled]="mission.crew_count >= mission.max_crew"
+                [disabled]="
+                  mission.crew_count >= mission.max_crew || joiningMissionId === mission.id
+                "
               >
-                {{ mission.crew_count >= mission.max_crew ? 'Full' : 'Join' }}
+                @if (joiningMissionId === mission.id) {
+                  Joining...
+                } @else {
+                  {{ mission.crew_count >= mission.max_crew ? 'Full' : 'Join' }}
+                }
               </button>
             } @else {
               <span class="status-badge">Locked</span>
@@ -85,8 +133,15 @@
     }
   } @else {
     <div class="empty-state">
-      <mat-icon>rocket</mat-icon>
-      <p>No missions found matching your criteria.</p>
+      <mat-icon>event_busy</mat-icon>
+      <p>No activities found matching your criteria.</p>
     </div>
   }
 </div>
+
+<app-guide-overlay
+  *ngIf="showOnboarding && isSignin()"
+  [steps]="onboardingSteps"
+  (completed)="onOnboardingComplete()"
+>
+</app-guide-overlay>

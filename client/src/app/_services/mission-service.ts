@@ -44,6 +44,12 @@ export class MissionService {
     if (filter.exclude_user_id) {
       params.push(`exclude_user_id=${filter.exclude_user_id}`);
     }
+    if (filter.category) {
+      params.push(`category=${encodeURIComponent(filter.category)}`);
+    }
+    if (filter.is_available !== undefined) {
+      params.push(`is_available=${filter.is_available}`);
+    }
 
     return params.join('&');
   }

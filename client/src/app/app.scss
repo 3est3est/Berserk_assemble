@@ -1,15 +1,9 @@
-.container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100%;
-    // border: 1px solid red;
-}
-
+// Container styling removed as Navbar handles the layout shell
 .content {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    height: 100%;
     // border: 1px solid green;
 }
 

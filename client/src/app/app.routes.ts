@@ -9,12 +9,20 @@ import { Missions } from './missions/missions';
 import { MissionManager } from './missions/mission-manager/mission-manager';
 import { MyCrew } from './my-crew/my-crew';
 import { Dashboard } from './dashboard/dashboard';
+import { Network } from './network/network';
 
 export const routes: Routes = [
   { path: '', component: Home },
   { path: 'login', component: Login },
+  { path: 'network', component: Network, canActivate: [authGuard] },
   {
     path: 'profile',
+    component: Profile,
+    canActivate: [authGuard],
+    runGuardsAndResolvers: 'always',
+  },
+  {
+    path: 'profile/:id',
     component: Profile,
     canActivate: [authGuard],
     runGuardsAndResolvers: 'always',

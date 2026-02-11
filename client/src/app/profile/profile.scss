@@ -145,9 +145,12 @@
         justify-content: center;
     }
 
-    &.ig mat-icon { color: #E4405F; }
-    &.fb mat-icon { color: #1877F2; }
-    &.discord mat-icon { color: #89B4FA; }
+    .contact-icon {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+    }
+
     &.email mat-icon { color: var(--ctp-teal); }
   }
 
@@ -161,7 +164,7 @@
     max-width: 260px;
   }
 
-  .edit-profile-btn {
+  .edit-btn {
     width: 100%;
     height: 48px;
     border-radius: 12px;
@@ -171,8 +174,9 @@
     background-color: var(--ctp-surface0);
     color: var(--ctp-text);
     box-shadow: none;
-    border: 1px solid transparent;
+    border: 1px solid var(--ctp-surface2);
     transition: all 0.2s ease;
+    margin-bottom: 1.5rem !important;
 
     mat-icon { margin-right: 8px; }
 
@@ -181,6 +185,46 @@
       transform: translateY(-2px);
       border-color: var(--ctp-mauve);
       color: var(--ctp-mauve);
+    }
+  }
+
+  .friend-actions {
+    margin-bottom: 1.5rem;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .friend-btn {
+      width: 100%;
+      height: 48px;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+
+      &.pending {
+        background-color: rgba(249, 226, 175, 0.1); // yellow
+        color: var(--ctp-yellow);
+        border: 1px solid var(--ctp-yellow) !important;
+      }
+
+      &.accepted {
+        background-color: rgba(166, 227, 161, 0.15); // green
+        color: var(--ctp-green);
+        border: 1px solid transparent !important;
+        cursor: default;
+      }
+
+      &.message {
+        background-color: rgba(203, 166, 247, 0.1); // mauve
+        color: var(--ctp-mauve);
+        border: 1px solid var(--ctp-mauve) !important;
+
+        &:hover {
+          background-color: var(--ctp-mauve);
+          color: var(--ctp-crust);
+        }
+      }
     }
   }
 }

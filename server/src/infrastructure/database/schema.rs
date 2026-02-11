@@ -36,6 +36,18 @@ diesel::table! {
 }
 
 diesel::table! {
+    friendships (id) {
+        id -> Int4,
+        requester_id -> Int4,
+        receiver_id -> Int4,
+        #[max_length = 255]
+        status -> Varchar,
+        created_at -> Timestamp,
+        updated_at -> Timestamp,
+    }
+}
+
+diesel::table! {
     mission_comments (id) {
         id -> Int4,
         mission_id -> Int4,
@@ -61,6 +73,7 @@ diesel::table! {
         scheduled_at -> Nullable<Timestamp>,
         #[max_length = 255]
         location -> Nullable<Varchar>,
+        category -> Varchar,
     }
 }
 
@@ -78,6 +91,17 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    private_messages (id) {
+        id -> Int4,
+        sender_id -> Int4,
+        receiver_id -> Int4,
+        content -> Text,
+        is_read -> Bool,
+        created_at -> Timestamp,
+    }
+}
+
 diesel::joinable!(crew_memberships -> brawlers (brawler_id));
 diesel::joinable!(crew_memberships -> missions (mission_id));
 diesel::joinable!(mission_comments -> brawlers (brawler_id));
@@ -88,7 +112,9 @@ diesel::joinable!(notifications -> brawlers (brawler_id));
 diesel::allow_tables_to_appear_in_same_query!(
     brawlers,
     crew_memberships,
+    friendships,
     mission_comments,
     missions,
     notifications,
+    private_messages,
 );

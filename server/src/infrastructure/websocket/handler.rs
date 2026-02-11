@@ -75,6 +75,14 @@ async fn handle_global_socket(socket: WebSocket, user_id: i32, manager: Arc<Conn
     let (mut sender, mut receiver) = socket.split();
     let mut rx = manager.subscribe_user(user_id).await;
 
+    // Broadcast online status
+    manager
+        .broadcast_all(WSMessage {
+            msg_type: "agent_online".to_string(),
+            data: serde_json::json!({ "user_id": user_id }),
+        })
+        .await;
+
     let mut send_task = tokio::spawn(async move {
         while let Ok(msg) = rx.recv().await {
             let json_msg = serde_json::to_string(&msg).unwrap_or_default();
@@ -90,6 +98,14 @@ async fn handle_global_socket(socket: WebSocket, user_id: i32, manager: Arc<Conn
             // Keep connection alive, can handle client-to-server global msgs here
         }
         manager_clone.unsubscribe_user(user_id).await;
+
+        // Broadcast offline status
+        manager_clone
+            .broadcast_all(WSMessage {
+                msg_type: "agent_offline".to_string(),
+                data: serde_json::json!({ "user_id": user_id }),
+            })
+            .await;
     });
 
     tokio::select! {

@@ -30,8 +30,25 @@
           <mat-icon>{{ getNotificationIcon(notif.type) }}</mat-icon>
         </div>
         <div class="notif-body">
+          <div class="notif-meta">
+            <span class="type-tag" [class]="notif.type">
+              {{ notif.type === 'private_message' ? 'PRIVATE' : 'MISSION' }}
+            </span>
+            <span class="notif-time">{{ notif.created_at + 'Z' | date: 'short' }}</span>
+          </div>
           <p class="notif-text">{{ notif.content }}</p>
-          <span class="notif-time">{{ notif.created_at + 'Z' | date: 'short' }}</span>
+          @if (notif.type === 'friend_request') {
+            <div class="notif-actions" (click)="$event.stopPropagation()">
+              <button
+                mat-flat-button
+                color="primary"
+                class="sm-btn"
+                (click)="acceptFriendRequest(notif)"
+              >
+                Accept
+              </button>
+            </div>
+          }
         </div>
         @if (!notif.is_read) {
           <div class="unread-status"></div>

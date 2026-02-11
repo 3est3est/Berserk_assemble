@@ -77,6 +77,18 @@ fn api_serve(db_pool: Arc<PgPoolSquad>, manager: Arc<ConnectionManager>) -> Rout
             "/notifications",
             routers::notifications::routes(Arc::clone(&db_pool)),
         )
+        .nest(
+            "/friendship",
+            routers::friendships::routes(Arc::clone(&db_pool), Arc::clone(&manager)),
+        )
+        .nest(
+            "/messages",
+            routers::private_messages::routes(
+                Arc::new(crate::infrastructure::database::repositories::private_messages::PrivateMessagePostgres::new(Arc::clone(&db_pool))),
+                Arc::clone(&manager),
+                Arc::new(crate::infrastructure::database::repositories::notifications::NotificationPostgres::new(Arc::clone(&db_pool)))
+            ).route_layer(middleware::from_fn(auth)),
+        )
         .nest("/ws", ws_router)
         .fallback(|| async { (StatusCode::NOT_FOUND, "API not found") })
 }
