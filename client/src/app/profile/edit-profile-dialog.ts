@@ -45,13 +45,13 @@ import { MatIconModule } from '@angular/material/icon';
           <mat-form-field appearance="outline">
             <mat-label>Instagram</mat-label>
             <input matInput [(ngModel)]="instagram" placeholder="@username" />
-            <img matPrefix src="/assets/icons/instagram.avif" class="dialog-icon" />
+            <img matPrefix src="/assets/icons/instagram.jpg" class="dialog-icon" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Facebook</mat-label>
             <input matInput [(ngModel)]="facebook" placeholder="Profile name" />
-            <img matPrefix src="/assets/icons/facebook.avif" class="dialog-icon" />
+            <img matPrefix src="/assets/icons/facebook.png" class="dialog-icon" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">

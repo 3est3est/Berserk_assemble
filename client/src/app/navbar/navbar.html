@@ -86,6 +86,11 @@
               <mat-icon>dashboard</mat-icon> Dashboard
             </a>
           </nav>
+        } @else {
+          <!-- Guest Navigation: visible before login -->
+          <nav class="desktop-nav">
+            <a routerLink="/missions" class="nav-link"> <mat-icon>explore</mat-icon> Explore </a>
+          </nav>
         }
       </div>
 
@@ -97,10 +102,17 @@
           <app-notification-bell></app-notification-bell>
 
           <div class="user-profile" [routerLink]="['/profile']">
-            <img [src]="avatar_url() || 'assets/default-avatar.png'" alt="avatar" />
+            <img [src]="avatar_url()" alt="avatar" />
             <span class="user-name">{{ display_name() }}</span>
             <mat-icon class="chevron-down">expand_more</mat-icon>
           </div>
+        </div>
+      } @else {
+        <div class="right-section">
+          <a routerLink="/login" class="login-btn">
+            <mat-icon>login</mat-icon>
+            <span>Login</span>
+          </a>
         </div>
       }
     </mat-toolbar>

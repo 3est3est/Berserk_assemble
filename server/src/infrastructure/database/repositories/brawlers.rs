@@ -133,14 +133,7 @@ SELECT
 FROM missions
 LEFT JOIN brawlers ON brawlers.id = missions.chief_id
 WHERE missions.deleted_at IS NULL
-    AND (
-        missions.chief_id = $1 
-        OR EXISTS (
-            SELECT 1 FROM crew_memberships 
-            WHERE crew_memberships.mission_id = missions.id 
-            AND crew_memberships.brawler_id = $1
-        )
-    )
+    AND missions.chief_id = $1
 ORDER BY missions.created_at DESC
         "#;
 

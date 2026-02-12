@@ -152,6 +152,8 @@
     }
 
     &.email mat-icon { color: var(--ctp-teal); }
+    &.ig .contact-icon { filter: drop-shadow(0 0 2px rgba(225, 48, 108, 0.3)); }
+    &.fb .contact-icon { filter: drop-shadow(0 0 2px rgba(24, 119, 242, 0.3)); }
   }
 
   .bio-text {

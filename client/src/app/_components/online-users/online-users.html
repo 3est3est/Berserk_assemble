@@ -1,4 +1,4 @@
-<button mat-icon-button [matMenuTriggerFor]="onlineMenu" class="online-btn" title="Online Agents">
+<button mat-icon-button [matMenuTriggerFor]="onlineMenu" class="online-btn" title="Online Members">
   <mat-icon
     [matBadge]="onlineUsers().length"
     [matBadgeHidden]="onlineUsers().length === 0"
@@ -10,7 +10,7 @@
 
 <mat-menu #onlineMenu="matMenu" class="online-menu-panel">
   <div class="menu-header" (click)="$event.stopPropagation()">
-    <h3>Active Agents</h3>
+    <h3>Active Members</h3>
     <span class="count">{{ onlineUsers().length }} Online</span>
   </div>
 
@@ -18,7 +18,13 @@
     @for (user of onlineUsers(); track user.id) {
       <a [routerLink]="['/profile', user.id]" class="user-item">
         <div class="avatar-box">
-          <img [src]="user.avatar_url || 'assets/default-avatar.png'" alt="avatar" />
+          <img
+            [src]="
+              user.avatar_url ||
+              'https://ui-avatars.com/api/?name=' + user.display_name + '&background=random&size=64'
+            "
+            alt="avatar"
+          />
           <div class="status-dot"></div>
         </div>
         <div class="user-info">
@@ -29,7 +35,7 @@
     } @empty {
       <div class="empty-state">
         <mat-icon>diversity_3</mat-icon>
-        <p>No other agents online</p>
+        <p>No other members online</p>
       </div>
     }
   </div>

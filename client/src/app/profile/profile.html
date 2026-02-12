@@ -2,7 +2,7 @@
   <div class="identity-column">
     <div class="identity-card">
       <div class="avatar-wrapper">
-        <img [src]="avatar_url() || 'assets/default-avatar.png'" alt="avatar" class="avatar-lg" />
+        <img [src]="avatar_url()" alt="avatar" class="avatar-lg" />
         <button *ngIf="isOwnProfile()" class="edit-avatar-btn" (click)="openAvatarDialog()">
           <mat-icon>photo_camera</mat-icon>
         </button>
@@ -71,13 +71,13 @@
       <div class="contacts-box">
         @if (instagram()) {
           <div class="contact-item ig">
-            <img src="/assets/icons/instagram.avif" alt="Instagram" class="contact-icon" />
+            <img src="/assets/icons/instagram.jpg" alt="Instagram" class="contact-icon" />
             <span>{{ instagram() }}</span>
           </div>
         }
         @if (facebook()) {
           <div class="contact-item fb">
-            <img src="/assets/icons/facebook.avif" alt="Facebook" class="contact-icon" />
+            <img src="/assets/icons/facebook.png" alt="Facebook" class="contact-icon" />
             <span>{{ facebook() }}</span>
           </div>
         }

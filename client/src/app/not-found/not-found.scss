@@ -182,11 +182,12 @@ a {
 }
 
 .text {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: large;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  font-size: 1.25rem;
   margin-top: 5rem;
-  font-weight: 800;
-  color: var(--app-text);
+  font-weight: 600;
+  color: var(--ctp-subtext1);
+  letter-spacing: 0.02em;
 }
 
 .button {

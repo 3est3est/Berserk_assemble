@@ -36,7 +36,9 @@
             <img
               [src]="
                 user.avatar_url ||
-                'https://api.dicebear.com/7.x/bottts/svg?seed=' + user.display_name
+                'https://ui-avatars.com/api/?name=' +
+                  user.display_name +
+                  '&background=random&size=64'
               "
               alt="avatar"
             />

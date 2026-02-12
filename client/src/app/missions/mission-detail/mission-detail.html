@@ -52,7 +52,15 @@
         <div class="crew-list">
           <div class="member-card active-user" [class.chief]="mission.chief_id === currentUserId">
             <a [routerLink]="['/profile', mission.chief_id]">
-              <img [src]="mission.chief_avatar_url || 'assets/default-avatar.png'" class="avatar" />
+              <img
+                [src]="
+                  mission.chief_avatar_url ||
+                  'https://ui-avatars.com/api/?name=' +
+                    mission.chief_display_name +
+                    '&background=random&size=64'
+                "
+                class="avatar"
+              />
             </a>
             <div class="info">
               <span class="name">
@@ -68,7 +76,15 @@
             @if (member.id !== mission.chief_id) {
               <div class="member-card" [class.active-user]="member.id === currentUserId">
                 <a [routerLink]="['/profile', member.id]">
-                  <img [src]="member.avatar_url || 'assets/default-avatar.png'" class="avatar" />
+                  <img
+                    [src]="
+                      member.avatar_url ||
+                      'https://ui-avatars.com/api/?name=' +
+                        member.display_name +
+                        '&background=random&size=64'
+                    "
+                    class="avatar"
+                  />
                 </a>
                 <div class="info">
                   <span class="name">
@@ -104,7 +120,12 @@
             <div class="message" [class.own]="comment.brawler_id === currentUserId">
               <a [routerLink]="['/profile', comment.brawler_id]">
                 <img
-                  [src]="comment.brawler_avatar_url || 'assets/default-avatar.png'"
+                  [src]="
+                    comment.brawler_avatar_url ||
+                    'https://ui-avatars.com/api/?name=' +
+                      comment.brawler_display_name +
+                      '&background=random&size=64'
+                  "
                   class="msg-avatar"
                 />
               </a>

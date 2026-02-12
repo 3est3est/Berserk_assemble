@@ -39,7 +39,12 @@ export class Profile implements OnInit {
 
   avatar_url = computed(() => {
     if (this.isOwnProfile()) return this._passport.avatar();
-    return this.targetUser()?.avatar_url || 'assets/default-avatar.png';
+    const user = this.targetUser();
+    if (user?.avatar_url) return user.avatar_url;
+    if (user?.display_name) {
+      return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=random&size=128`;
+    }
+    return 'assets/default-avatar.png';
   });
 
   display_name = computed(() => {

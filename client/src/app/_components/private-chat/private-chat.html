@@ -64,14 +64,22 @@
             @if (friend.avatar_url) {
               <img [src]="friend.avatar_url" class="avatar-sm" alt="U" />
             } @else {
-              <mat-icon>person_pin</mat-icon>
+              <img
+                [src]="
+                  'https://ui-avatars.com/api/?name=' +
+                  friend.display_name +
+                  '&background=random&size=64'
+                "
+                class="avatar-sm"
+                alt="U"
+              />
             }
             <span>{{ friend.display_name }}</span>
           </div>
         }
       </div>
       <div class="search-results empty" *ngIf="searchQuery && filteredFriends.length === 0">
-        No active agents found.
+        No active members found.
       </div>
 
       <div class="list-header">Active Channels</div>
@@ -81,7 +89,15 @@
             @if (chat.other_avatar) {
               <img [src]="chat.other_avatar" class="avatar-img" alt="Avatar" />
             } @else {
-              <div class="avatar-placeholder">{{ chat.other_name?.[0] || 'U' }}</div>
+              <img
+                [src]="
+                  'https://ui-avatars.com/api/?name=' +
+                  chat.other_name +
+                  '&background=random&size=64'
+                "
+                class="avatar-img"
+                alt="Avatar"
+              />
             }
             <div class="item-body">
               <div class="item-top">

@@ -95,7 +95,15 @@
           @if (mission.chief_avatar_url) {
             <img [src]="mission.chief_avatar_url" class="chief-circle" alt="Avatar" />
           } @else {
-            <div class="chief-circle">{{ mission.chief_display_name[0] | uppercase }}</div>
+            <img
+              [src]="
+                'https://ui-avatars.com/api/?name=' +
+                mission.chief_display_name +
+                '&background=random&size=64'
+              "
+              class="chief-circle"
+              alt="Avatar"
+            />
           }
           <span>{{ mission.chief_display_name }}</span>
         </div>
