@@ -123,7 +123,6 @@ setupRealtime() {
 - แคป 4: ถ้าเข้าครั้งแรก จะมี Onboarding Guide (หน้าจอแนะนำ) โผล่ขึ้นมา
 
 ### ไฟล์โค้ดหน้าบ้าน
-
 - `client/src/app/missions/missions.ts` → Logic ค้นหา, กรอง, Join
 - `client/src/app/missions/missions.html` → หน้าตาการ์ดกิจกรรม
 - `client/src/app/_services/mission-service.ts` → Service เรียก API ภารกิจ

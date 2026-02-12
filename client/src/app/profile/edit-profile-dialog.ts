@@ -30,13 +30,7 @@ import { MatIconModule } from '@angular/material/icon';
 
         <div class="section-label">Motto / Bio</div>
         <mat-form-field appearance="outline" class="w-full bio-field">
-          <textarea
-            matInput
-            [(ngModel)]="bio"
-            placeholder="Tell us about yourself..."
-            rows="2"
-            style="line-height: 1.4; resize: none;"
-          ></textarea>
+          <textarea matInput [(ngModel)]="bio" placeholder="Tell us about yourself..."></textarea>
         </mat-form-field>
 
         <div class="section-label">Social & Contacts</div>
@@ -68,10 +62,10 @@ import { MatIconModule } from '@angular/material/icon';
         </div>
       </div>
     </mat-dialog-content>
-    <mat-dialog-actions align="end">
+    <mat-dialog-actions>
       <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button color="primary" (click)="save()" [disabled]="!displayName">
-        Save
+      <button mat-flat-button class="save-btn" (click)="save()" [disabled]="!displayName">
+        Save Changes
       </button>
     </mat-dialog-actions>
   `,
@@ -81,43 +75,70 @@ import { MatIconModule } from '@angular/material/icon';
         width: 100%;
       }
       mat-dialog-content {
-        min-width: 400px;
-        padding-top: 10px;
+        min-width: 440px;
+        padding-top: 10px !important;
       }
       .form-container {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 12px;
+        margin-top: 4px;
       }
       .section-label {
-        font-size: 0.75rem;
-        font-weight: 700;
+        font-size: 0.7rem;
+        font-weight: 800;
         text-transform: uppercase;
-        color: var(--ctp-subtext0);
-        letter-spacing: 1px;
-        margin: 12px 0 4px 0;
+        color: var(--ctp-mauve);
+        letter-spacing: 1.2px;
+        margin: 16px 0 2px 4px;
+        opacity: 0.9;
       }
       .contact-grid {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 0 12px;
+        gap: 4px 16px;
       }
       .dialog-icon {
-        width: 18px;
-        height: 18px;
-        margin-right: 8px;
+        width: 22px;
+        height: 22px;
+        margin-right: 12px;
         object-fit: contain;
+        border-radius: 4px;
       }
       .bio-field {
-        margin-top: -4px;
-        input,
         textarea {
-          color: var(--ctp-text) !important;
-          font-size: 1rem;
+          min-height: 80px;
+          line-height: 1.5;
         }
       }
-      ::ng-deep .bio-field .mat-mdc-text-field-wrapper {
-        min-height: 100px !important;
+
+      ::ng-deep .dark-modal-panel .mat-mdc-dialog-actions {
+        justify-content: flex-end;
+        gap: 12px;
+
+        button {
+          padding: 0 24px !important;
+          border-radius: 12px !important;
+          height: 44px !important;
+          font-weight: 600 !important;
+          font-family: 'Outfit', sans-serif !important;
+        }
+
+        .save-btn {
+          background-color: var(--ctp-mauve) !important;
+          color: var(--ctp-crust) !important;
+          transition: all 0.2s ease !important;
+
+          &:hover:not(:disabled) {
+            background-color: var(--ctp-pink) !important;
+            transform: translateY(-2px);
+          }
+
+          &:disabled {
+            background-color: var(--ctp-surface0) !important;
+            color: var(--ctp-overlay0) !important;
+          }
+        }
       }
     `,
   ],

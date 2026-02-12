@@ -103,3 +103,104 @@ body {
   background-color: rgba(0, 0, 0, 0.6) !important;
   backdrop-filter: blur(2px);
 }
+
+/* Dark Modal Panel for Dialogs */
+.dark-modal-panel {
+  .mat-mdc-dialog-container .mdc-dialog__surface {
+    background-color: var(--ctp-mantle) !important;
+    border: 1px solid var(--app-border) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .mat-mdc-dialog-title {
+    color: var(--ctp-text) !important;
+    font-family: 'Outfit', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    padding: 24px 24px 12px 24px !important;
+  }
+
+  .mat-mdc-dialog-content {
+    color: var(--ctp-subtext0) !important;
+    padding: 12px 24px !important;
+  }
+
+  .mat-mdc-dialog-actions {
+    padding: 12px 24px 24px 24px !important;
+    
+    button[mat-button] {
+        color: var(--ctp-overlay2) !important;
+    }
+  }
+
+  /* Form Field Theme Overrides */
+  .mat-mdc-form-field {
+    margin-bottom: 4px;
+
+    .mat-mdc-text-field-wrapper {
+      background-color: var(--ctp-base) !important;
+      border-radius: 14px !important;
+      transition: var(--transition-smooth);
+    }
+
+    /* Label and Outline */
+    .mdc-notched-outline__leading,
+    .mdc-notched-outline__notch,
+    .mdc-notched-outline__trailing {
+      border-color: var(--ctp-surface1) !important;
+    }
+
+    .mat-mdc-form-field-label {
+      color: var(--ctp-overlay1) !important;
+    }
+
+    /* Input text */
+    input.mat-mdc-input-element, 
+    textarea.mat-mdc-input-element {
+      color: var(--ctp-text) !important;
+      caret-color: var(--ctp-mauve) !important;
+    }
+
+    /* Focus State */
+    &.mat-focused {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: var(--ctp-mauve) !important;
+        border-width: 2px !important;
+      }
+
+      .mat-mdc-form-field-label {
+        color: var(--ctp-mauve) !important;
+      }
+    }
+
+    /* Notch fix for labels */
+    .mdc-notched-outline__notch {
+        border-right: none;
+    }
+    
+    .mat-mdc-form-field-label-wrapper {
+        top: -6px;
+        overflow: visible !important;
+    }
+
+    .mdc-floating-label {
+        background-color: transparent !important;
+        padding: 0 4px !important;
+    }
+    
+    /* Ensure text visibility */
+    .mat-mdc-input-element::placeholder {
+        color: var(--ctp-overlay0) !important;
+        opacity: 1;
+    }
+    
+    /* Prefix Icons/Images */
+    [matPrefix] {
+        margin-right: 12px !important;
+        opacity: 0.8;
+    }
+  }
+}
