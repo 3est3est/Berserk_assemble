@@ -1,123 +1,78 @@
-<mat-sidenav-container class="drawer-container" autosize>
-  <mat-sidenav #drawer class="app-sidebar" mode="over">
-    <div class="sidebar-header">
-      <h3>MENU</h3>
-      <button mat-icon-button (click)="drawer.toggle()">
-        <mat-icon>close</mat-icon>
-      </button>
+<div
+  class="fixed top-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none w-full flex justify-center px-6"
+>
+  <nav class="shuttle-nav h-14 flex items-center pointer-events-auto gap-1">
+    <!-- Branding -->
+    <a
+      routerLink="/"
+      class="flex items-center pl-3 pr-4 h-10 hover:bg-white/5 rounded-full transition-all group"
+    >
+      <div
+        class="w-7 h-7 bg-white rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+      >
+        <i class="pi pi-bolt text-black text-[12px]"></i>
+      </div>
+      <span class="text-[11px] font-black uppercase tracking-[0.1em] text-white">Vibe</span>
+    </a>
+
+    <!-- Divider -->
+    <div class="h-4 w-[1px] bg-white/10 mx-1"></div>
+
+    <!-- Main Navigation -->
+    <div class="flex items-center">
+      <a routerLink="/missions" routerLinkActive="active" class="nav-link">Explore</a>
+      <a routerLink="/chief" routerLinkActive="active" class="nav-link">Chief</a>
+      <a routerLink="/my-crew" routerLinkActive="active" class="nav-link">Crew</a>
+      <a routerLink="/network" routerLinkActive="active" class="nav-link">Network</a>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Stats</a>
     </div>
 
-    <div class="nav-content">
-      <nav class="nav-group" (click)="drawer.close()">
-        <a
-          class="nav-item"
-          routerLink="/"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <mat-icon>home</mat-icon>
-          <span>Home</span>
-        </a>
+    <!-- Divider -->
+    <div class="h-4 w-[1px] bg-white/10 mx-1"></div>
 
-        @if (display_name()) {
-          <div class="section-label">MAIN</div>
-          <a class="nav-item" routerLink="/missions" routerLinkActive="active">
-            <mat-icon>explore</mat-icon>
-            <span>Explore</span>
-          </a>
-          <a class="nav-item" routerLink="/chief" routerLinkActive="active">
-            <mat-icon>event_available</mat-icon>
-            <span>My Activities</span>
-          </a>
+    <!-- Global Controls -->
+    <div class="flex items-center pr-2">
+      <app-online-users></app-online-users>
+      <app-notification-bell></app-notification-bell>
 
-          <div class="section-label">SOCIAL</div>
-          <a class="nav-item" routerLink="/my-crew" routerLinkActive="active">
-            <mat-icon>groups</mat-icon>
-            <span>My Crew</span>
-          </a>
-          <a class="nav-item" routerLink="/network" routerLinkActive="active">
-            <mat-icon>public</mat-icon>
-            <span>Members</span>
-          </a>
-          <a class="nav-item" routerLink="/dashboard" routerLinkActive="active">
-            <mat-icon>dashboard</mat-icon>
-            <span>Stats</span>
-          </a>
-        }
-      </nav>
-    </div>
-
-    @if (display_name()) {
-      <div class="sidebar-footer">
-        <button class="logout-btn" (click)="logout()">
-          <mat-icon>logout</mat-icon>
-          <span>Logout</span>
-        </button>
-      </div>
-    }
-  </mat-sidenav>
-
-  <mat-sidenav-content class="app-content">
-    <mat-toolbar class="top-navbar">
-      <div class="left-section">
-        @if (display_name()) {
-          <!-- Always visible menu button for sidebar -->
-          <button mat-icon-button (click)="drawer.toggle()" class="menu-btn">
-            <mat-icon>menu</mat-icon>
-          </button>
-        }
-        <a routerLink="/" class="logo-text">Vibe Assemble</a>
-
-        @if (display_name()) {
-          <nav class="desktop-nav">
-            <a routerLink="/missions" routerLinkActive="active" class="nav-link">
-              <mat-icon>explore</mat-icon> Explore
-            </a>
-            <a routerLink="/chief" routerLinkActive="active" class="nav-link">
-              <mat-icon>event_available</mat-icon> My Activities
-            </a>
-            <a routerLink="/my-crew" routerLinkActive="active" class="nav-link">
-              <mat-icon>groups</mat-icon> My Crew
-            </a>
-            <a routerLink="/network" routerLinkActive="active" class="nav-link">
-              <mat-icon>public</mat-icon> Members
-            </a>
-            <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">
-              <mat-icon>dashboard</mat-icon> Dashboard
-            </a>
-          </nav>
-        } @else {
-          <!-- Guest Navigation: visible before login -->
-          <nav class="desktop-nav">
-            <a routerLink="/missions" class="nav-link"> <mat-icon>explore</mat-icon> Explore </a>
-          </nav>
-        }
-      </div>
-
-      <div class="spacer"></div>
+      <button
+        pButton
+        [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
+        (click)="toggleTheme()"
+        class="p-button-text p-button-sm w-9 h-9 p-0 opacity-40 hover:opacity-100 hover:bg-white/5"
+      ></button>
 
       @if (display_name()) {
-        <div class="right-section">
-          <app-online-users></app-online-users>
-          <app-notification-bell></app-notification-bell>
+        <!-- Profile Link -->
+        <a
+          [routerLink]="['/profile']"
+          class="flex items-center ml-1 px-1.5 py-1 rounded-full hover:bg-white/5 transition-all group"
+        >
+          <img
+            [src]="avatar_url()"
+            class="w-7 h-7 rounded-full object-cover border border-white/10 group-hover:border-white/40 transition-all"
+          />
+        </a>
 
-          <div class="user-profile" [routerLink]="['/profile']">
-            <img [src]="avatar_url()" alt="avatar" />
-            <span class="user-name">{{ display_name() }}</span>
-            <mat-icon class="chevron-down">expand_more</mat-icon>
-          </div>
-        </div>
+        <button
+          pButton
+          icon="pi pi-sign-out"
+          (click)="logout()"
+          class="p-button-text p-button-danger p-button-sm w-9 h-9 opacity-40 hover:opacity-100"
+        ></button>
       } @else {
-        <div class="right-section">
-          <a routerLink="/login" class="login-btn">
-            <mat-icon>login</mat-icon>
-            <span>Login</span>
-          </a>
-        </div>
+        <button
+          pButton
+          label="JOIN"
+          routerLink="/login"
+          class="p-button-primary h-9 px-4 rounded-full ml-2 text-[9px]"
+        ></button>
       }
-    </mat-toolbar>
+    </div>
+  </nav>
+</div>
 
-    <!-- Content Projection -->
-    <ng-content></ng-content>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<!-- Page Content padding -->
+<div class="pt-28">
+  <ng-content></ng-content>
+</div>

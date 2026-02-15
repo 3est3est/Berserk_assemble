@@ -1,46 +1,70 @@
-<button mat-icon-button [matMenuTriggerFor]="onlineMenu" class="online-btn" title="Online Members">
-  <mat-icon
-    [matBadge]="onlineUsers().length"
-    [matBadgeHidden]="onlineUsers().length === 0"
-    matBadgeColor="accent"
+<div class="relative">
+  <button
+    pButton
+    icon="pi pi-users"
+    class="p-button-text p-button-rounded w-10 h-10 relative"
+    (click)="op.toggle($event)"
   >
-    person
-  </mat-icon>
-</button>
-
-<mat-menu #onlineMenu="matMenu" class="online-menu-panel">
-  <div class="menu-header" (click)="$event.stopPropagation()">
-    <h3>Active Members</h3>
-    <span class="count">{{ onlineUsers().length }} Online</span>
-  </div>
-
-  <div class="user-list" (click)="$event.stopPropagation()">
-    @for (user of onlineUsers(); track user.id) {
-      <a [routerLink]="['/profile', user.id]" class="user-item">
-        <div class="avatar-box">
-          <img
-            [src]="
-              user.avatar_url ||
-              'https://ui-avatars.com/api/?name=' + user.display_name + '&background=random&size=64'
-            "
-            alt="avatar"
-          />
-          <div class="status-dot"></div>
-        </div>
-        <div class="user-info">
-          <p class="name">{{ user.display_name }}</p>
-          <span class="status">Connected</span>
-        </div>
-      </a>
-    } @empty {
-      <div class="empty-state">
-        <mat-icon>diversity_3</mat-icon>
-        <p>No other members online</p>
-      </div>
+    @if (onlineUsers().length > 0) {
+      <span class="absolute top-1 right-1 flex h-2 w-2">
+        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+      </span>
     }
-  </div>
+  </button>
 
-  <div class="menu-footer" (click)="$event.stopPropagation()">
-    <p>Operational network is active.</p>
-  </div>
-</mat-menu>
+  <p-popover #op styleClass="glass-surface p-0 overflow-hidden" [style]="{ width: '280px' }">
+    <div class="flex flex-col">
+      <!-- Header -->
+      <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between bg-white/5">
+        <h3 class="text-[10px] font-black uppercase tracking-widest opacity-60">Active Network</h3>
+        <span class="text-[10px] font-black text-green-400 uppercase tracking-tighter"
+          >{{ onlineUsers().length }} Active</span
+        >
+      </div>
+
+      <!-- List -->
+      <div class="max-h-[320px] overflow-y-auto">
+        @for (user of onlineUsers(); track user.id) {
+          <a
+            [routerLink]="['/profile', user.id]"
+            (click)="op.hide()"
+            class="flex items-center gap-3 px-4 py-3 hover:bg-white/5 transition-all group border-b border-white/5 last:border-0"
+          >
+            <div class="relative">
+              <img
+                [src]="
+                  user.avatar_url ||
+                  'https://ui-avatars.com/api/?name=' + user.display_name + '&background=random'
+                "
+                class="w-8 h-8 rounded-xl object-cover ring-2 ring-transparent group-hover:ring-green-500 transition-all"
+              />
+              <div
+                class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 border-2 border-black rounded-full"
+              ></div>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-[11px] font-black uppercase tracking-tight">{{
+                user.display_name
+              }}</span>
+              <span class="text-[8px] font-bold text-green-400 uppercase tracking-widest opacity-80"
+                >Online</span
+              >
+            </div>
+          </a>
+        } @empty {
+          <div class="py-10 flex flex-col items-center justify-center opacity-40">
+            <i class="pi pi-user-minus text-2xl mb-2"></i>
+            <p class="text-[9px] font-black uppercase tracking-widest">No Signals detected</p>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="px-4 py-2 bg-white/5 opacity-40">
+        <p class="text-[8px] font-black uppercase tracking-[0.2em] text-center">
+          Encrypted Mesh Protocol Active
+        </p>
+      </div>
+    </div>
+  </p-popover>
+</div>

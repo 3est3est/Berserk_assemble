@@ -1,74 +1,95 @@
-<button mat-icon-button [matMenuTriggerFor]="notifMenu" class="bell-btn" title="Notifications">
-  <mat-icon
-    [matBadge]="notificationService.unreadCount()"
-    [matBadgeHidden]="notificationService.unreadCount() === 0"
-    matBadgeColor="warn"
-    aria-hidden="false"
+<div class="relative">
+  <button
+    pButton
+    icon="pi pi-bell"
+    class="p-button-text p-button-rounded w-10 h-10 relative"
+    (click)="op.toggle($event)"
   >
-    notifications
-  </mat-icon>
-</button>
-
-<mat-menu #notifMenu="matMenu" class="notification-menu">
-  <div class="notification-header" (click)="$event.stopPropagation()">
-    <h3>Notifications</h3>
     @if (notificationService.unreadCount() > 0) {
-      <button mat-button color="primary" (click)="notificationService.markAllAsRead()">
-        Mark all read
-      </button>
+      <span class="absolute top-1 right-1 flex h-2 w-2">
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+        ></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+      </span>
     }
-  </div>
+  </button>
 
-  <div class="notification-list" (click)="$event.stopPropagation()">
-    @for (notif of notificationService.notifications(); track notif.id) {
-      <div
-        class="notification-item"
-        [class.unread]="!notif.is_read"
-        (click)="onNotificationClick(notif)"
-      >
-        <div class="notif-icon-box" [class]="notif.type">
-          <mat-icon>{{ getNotificationIcon(notif.type) }}</mat-icon>
-        </div>
-        <div class="notif-body">
-          <div class="notif-meta">
-            <span class="type-tag" [class]="notif.type">
-              {{ notif.type === 'private_message' ? 'PRIVATE' : 'MISSION' }}
-            </span>
-            <span class="notif-time">{{ notif.created_at + 'Z' | date: 'short' }}</span>
-          </div>
-          <p class="notif-text">{{ notif.content }}</p>
-          @if (notif.type === 'friend_request') {
-            <div class="notif-actions" (click)="$event.stopPropagation()">
-              <button
-                mat-flat-button
-                color="primary"
-                class="sm-btn"
-                (click)="acceptFriendRequest(notif)"
-              >
-                Accept
-              </button>
-            </div>
-          }
-        </div>
-        @if (!notif.is_read) {
-          <div class="unread-status"></div>
+  <p-popover #op styleClass="glass-surface p-0 overflow-hidden" [style]="{ width: '320px' }">
+    <div class="flex flex-col">
+      <!-- Header -->
+      <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
+        <h3 class="text-xs font-black uppercase tracking-widest opacity-60">Notifications</h3>
+        @if (notificationService.unreadCount() > 0) {
+          <button
+            (click)="notificationService.markAllAsRead()"
+            class="text-[9px] font-black text-indigo-400 uppercase hover:underline"
+          >
+            Mark all read
+          </button>
         }
       </div>
-    } @empty {
-      <div class="empty-notifs">
-        <mat-icon>notifications_paused</mat-icon>
-        <p>No notifications yet</p>
-      </div>
-    }
-  </div>
 
-  <div class="notification-footer" (click)="$event.stopPropagation()">
-    @if (notificationService.notifications().length > 0) {
-      <button mat-button class="clear-btn" (click)="notificationService.clearAll()">
-        Clear All History
-      </button>
-    } @else {
-      <span>Stay alerts, Brawler!</span>
-    }
-  </div>
-</mat-menu>
+      <!-- List -->
+      <div class="max-h-[380px] overflow-y-auto">
+        @for (notif of notificationService.notifications(); track notif.id) {
+          <div
+            class="px-4 py-3 hover:bg-white/5 transition-colors cursor-pointer border-b border-white/5 group relative"
+            [class.bg-indigo-500/5]="!notif.is_read"
+            (click)="onNotificationClick(notif); op.hide()"
+          >
+            <div class="flex gap-3">
+              <div
+                class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[10px]"
+              >
+                <i [class]="getNotificationIcon(notif.type)"></i>
+              </div>
+              <div class="flex-grow min-w-0">
+                <div class="flex items-center justify-between mb-0.5">
+                  <span class="text-[9px] font-black uppercase tracking-tight text-indigo-400">{{
+                    notif.type.split('_').join(' ')
+                  }}</span>
+                  <span class="text-[8px] opacity-40">{{
+                    notif.created_at + 'Z' | date: 'shortTime'
+                  }}</span>
+                </div>
+                <p class="text-[11px] leading-snug font-medium opacity-90 truncate">
+                  {{ notif.content }}
+                </p>
+
+                @if (notif.type === 'friend_request') {
+                  <button
+                    pButton
+                    label="ACCEPT"
+                    class="p-button-primary p-button-sm h-7 mt-2"
+                    (click)="acceptFriendRequest(notif); $event.stopPropagation()"
+                  ></button>
+                }
+              </div>
+            </div>
+            @if (!notif.is_read) {
+              <div
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-indigo-500 rounded-full"
+              ></div>
+            }
+          </div>
+        } @empty {
+          <div class="py-12 flex flex-col items-center justify-center opacity-40">
+            <i class="pi pi-bell-slash text-2xl mb-2"></i>
+            <p class="text-[10px] font-black uppercase tracking-widest">No Signals</p>
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      @if (notificationService.notifications().length > 0) {
+        <button
+          (click)="notificationService.clearAll(); op.hide()"
+          class="w-full py-3 text-[9px] font-black uppercase tracking-[0.2em] opacity-40 hover:opacity-100 hover:bg-red-500/10 hover:text-red-400 transition-all"
+        >
+          Clear History
+        </button>
+      }
+    </div>
+  </p-popover>
+</div>

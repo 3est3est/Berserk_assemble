@@ -1,32 +1,31 @@
 import { Component, Signal, computed, inject, signal, OnInit } from '@angular/core';
-import { getAvatarUrl } from '../_helpers/util';
+import { CommonModule } from '@angular/common';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 import { PassportService } from '../_services/passport-service';
-import { MatDialog } from '@angular/material/dialog';
+import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
+import { MenuModule } from 'primeng/menu';
 import { UploadImg } from '../_dialogs/upload-img/upload-img';
 import { EditProfileDialog } from './edit-profile-dialog';
 import { UserService } from '../_services/user-service';
 import { MissionService } from '../_services/mission-service';
 import { FriendshipService } from '../_services/friendship-service';
-import { Mission } from '../_models/mission';
-import { ActivatedRoute } from '@angular/router';
-
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
-import { MatMenuModule } from '@angular/material/menu';
 import { ChatService } from '../_services/chat-service';
+import { Mission } from '../_models/mission';
+
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [MatIconModule, MatButtonModule, CommonModule, MatMenuModule],
+  imports: [CommonModule, RouterModule, ButtonModule, MenuModule, DynamicDialogModule],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',
 })
 export class Profile implements OnInit {
   private _chat = inject(ChatService);
   private _passport = inject(PassportService);
-  private _dialog = inject(MatDialog);
+  private _dialog = inject(DialogService);
   private _user = inject(UserService);
   private _missionService = inject(MissionService);
   private _friendshipService = inject(FriendshipService);
@@ -167,8 +166,14 @@ export class Profile implements OnInit {
   }
 
   openAvatarDialog() {
-    const ref = this._dialog.open(UploadImg);
-    ref.afterClosed().subscribe(async (file) => {
+    const ref = (this._dialog as any).open(UploadImg, {
+      header: 'Upload Avatar',
+      width: '400px',
+      modal: true,
+      showHeader: false,
+      styleClass: 'void-dialog',
+    });
+    ref.onClose.subscribe(async (file: any) => {
       if (file) {
         const error = await this._user.uploadAvatarImg(file);
         if (error) {
@@ -179,8 +184,7 @@ export class Profile implements OnInit {
   }
 
   openEditProfileDialog() {
-    const dialogRef = this._dialog.open(EditProfileDialog, {
-      width: '460px',
+    const ref = (this._dialog as any).open(EditProfileDialog, {
       data: {
         displayName: this.display_name() || '',
         bio: this.bio(),
@@ -189,10 +193,12 @@ export class Profile implements OnInit {
         facebook: this.facebook(),
         contactEmail: this.contact_email(),
       },
-      panelClass: 'dark-modal-panel',
+      width: '460px',
+      modal: true,
+      showHeader: false,
+      styleClass: 'void-dialog',
     });
-
-    dialogRef.afterClosed().subscribe((result) => {
+    ref.onClose.subscribe((result: any) => {
       if (result) {
         // UI refreshes via signals
       }

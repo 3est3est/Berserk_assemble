@@ -1,43 +1,45 @@
 import { inject, Injectable } from '@angular/core';
-import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
+import { MessageService } from 'primeng/api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToastService {
-  private _snackBar = inject(MatSnackBar);
+  private _messageService = inject(MessageService);
 
-  private readonly _config: MatSnackBarConfig = {
-    duration: 3000,
-    horizontalPosition: 'right',
-    verticalPosition: 'top',
-  };
-
-  success(message: string) {
-    this._snackBar.open(message, 'OK', {
-      ...this._config,
-      panelClass: ['toast-success'],
+  success(message: string, summary: string = 'Success') {
+    this._messageService.add({
+      severity: 'success',
+      summary: summary,
+      detail: message,
+      life: 3000,
     });
   }
 
-  error(message: string) {
-    this._snackBar.open(message, 'OK', {
-      ...this._config,
-      panelClass: ['toast-error'],
+  error(message: string, summary: string = 'Error') {
+    this._messageService.add({
+      severity: 'error',
+      summary: summary,
+      detail: message,
+      life: 5000,
     });
   }
 
-  info(message: string) {
-    this._snackBar.open(message, 'OK', {
-      ...this._config,
-      panelClass: ['toast-info'],
+  info(message: string, summary: string = 'Information') {
+    this._messageService.add({
+      severity: 'info',
+      summary: summary,
+      detail: message,
+      life: 3000,
     });
   }
 
-  warning(message: string) {
-    this._snackBar.open(message, 'OK', {
-      ...this._config,
-      panelClass: ['toast-warning'],
+  warning(message: string, summary: string = 'Warning') {
+    this._messageService.add({
+      severity: 'warn',
+      summary: summary,
+      detail: message,
+      life: 4000,
     });
   }
 }

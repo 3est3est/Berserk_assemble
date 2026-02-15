@@ -1,141 +1,169 @@
 <div class="chat-wrapper" [class.opened]="isOpened()">
-  <!-- Chat Floating Button / Badge -->
-  <button mat-fab color="primary" class="main-toggle-btn" (click)="toggleChat()">
-    <mat-icon
-      [matBadge]="unreadCount()"
-      [matBadgeHidden]="unreadCount() === 0"
-      matBadgeColor="warn"
-      >{{ isOpened() ? 'close' : 'chat_bubble' }}</mat-icon
-    >
+  <!-- Shuttle Toggle Button -->
+  <button
+    pButton
+    [icon]="isOpened() ? 'pi pi-times' : 'pi pi-comments'"
+    class="main-toggle-btn group"
+    (click)="toggleChat()"
+  >
+    @if (unreadCount() > 0) {
+      <span class="absolute -top-1 -right-1 flex h-6 w-6">
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
+        ></span>
+        <span
+          class="relative inline-flex rounded-full h-6 w-6 bg-red-500 border-2 border-black text-[10px] font-black items-center justify-center text-white"
+        >
+          {{ unreadCount() }}
+        </span>
+      </span>
+    }
   </button>
 
-  <!-- Chat Window -->
+  <!-- Shuttle Chat Window -->
   <div class="chat-window">
     <div class="chat-header">
       <div class="header-left">
-        @if (selectedUser) {
-          <button mat-icon-button (click)="closeChat()" class="back-btn">
-            <mat-icon>arrow_back_ios_new</mat-icon>
-          </button>
-          <div class="user-info">
-            <div class="status-indicator online"></div>
-            <span class="username">{{ selectedUser.display_name }}</span>
-          </div>
-        } @else {
-          <div class="list-title">
-            <mat-icon>chat_bubble</mat-icon>
-            <span>PRIVATE_CHATS</span>
-          </div>
-        }
+        <div class="header-icon">
+          <i [class]="selectedUser ? 'pi pi-user' : 'pi pi-th-large'"></i>
+        </div>
+        <span class="title">{{ selectedUser ? selectedUser.display_name : 'Signal Network' }}</span>
       </div>
-
-      <div class="header-actions">
+      <div class="flex items-center gap-2">
+        @if (selectedUser) {
+          <button
+            pButton
+            icon="pi pi-chevron-left"
+            (click)="closeChat()"
+            class="p-button-text p-button-sm w-8 h-8 opacity-40 hover:opacity-100"
+          ></button>
+        }
         <button
-          mat-icon-button
-          color="warn"
-          (click)="unfriendCurrent()"
-          *ngIf="selectedUser"
-          title="Unfriend"
-        >
-          <mat-icon>person_remove</mat-icon>
-        </button>
-        <button mat-icon-button (click)="toggleChat()" class="close-win-btn">
-          <mat-icon>keyboard_double_arrow_right</mat-icon>
-        </button>
+          pButton
+          icon="pi pi-times"
+          (click)="toggleChat()"
+          class="p-button-text p-button-sm w-8 h-8 opacity-40 hover:opacity-100"
+        ></button>
       </div>
     </div>
 
-    <!-- Conversations List (When no user selected) -->
+    <!-- 1. Discovery / Recent List View -->
     <div class="recent-list" *ngIf="!selectedUser">
       <div class="search-area">
-        <mat-icon>search</mat-icon>
-        <input
-          type="text"
-          placeholder="Initiate connection..."
-          [(ngModel)]="searchQuery"
-          (input)="onSearchChange()"
-        />
+        <label for="chat-search">Name or Signal ID</label>
+        <div class="input-wrapper">
+          <input
+            id="chat-search"
+            type="text"
+            placeholder="Search for agents..."
+            [(ngModel)]="searchQuery"
+            (input)="onSearchChange()"
+            autocomplete="off"
+          />
+          <i class="pi pi-search"></i>
+        </div>
       </div>
 
-      <!-- Search Results Dropdown -->
-      <div class="search-results" *ngIf="searchQuery && filteredFriends.length > 0">
-        @for (friend of filteredFriends; track friend.id) {
-          <div class="search-result-item" (click)="startNewChat(friend)">
-            @if (friend.avatar_url) {
-              <img [src]="friend.avatar_url" class="avatar-sm" alt="U" />
-            } @else {
+      <div class="list-content">
+        <!-- Search Results -->
+        @if (searchQuery && filteredFriends.length > 0) {
+          <div class="section-label">Search Results</div>
+          @for (friend of filteredFriends; track friend.id) {
+            <div class="chat-item animate-in" (click)="startNewChat(friend)">
               <img
                 [src]="
-                  'https://ui-avatars.com/api/?name=' +
-                  friend.display_name +
-                  '&background=random&size=64'
+                  friend.avatar_url || 'https://ui-avatars.com/api/?name=' + friend.display_name
                 "
-                class="avatar-sm"
-                alt="U"
+                class="avatar"
               />
-            }
-            <span>{{ friend.display_name }}</span>
+              <div class="item-info">
+                <span class="name">{{ friend.display_name }}</span>
+                <span class="preview">Operative ID: #{{ friend.id }}</span>
+              </div>
+              <div class="item-meta">
+                <span class="role-badge">Member</span>
+              </div>
+            </div>
+          }
+        } @else if (searchQuery) {
+          <div
+            class="p-12 text-center opacity-30 text-[10px] font-black uppercase tracking-widest italic"
+          >
+            Signal lost. No match found.
           </div>
         }
-      </div>
-      <div class="search-results empty" *ngIf="searchQuery && filteredFriends.length === 0">
-        No active members found.
-      </div>
 
-      <div class="list-header">Active Channels</div>
-      <div class="recent-items">
-        @for (chat of recentChats; track chat.id) {
-          <div class="recent-item" (click)="selectChat(chat)">
-            @if (chat.other_avatar) {
-              <img [src]="chat.other_avatar" class="avatar-img" alt="Avatar" />
-            } @else {
+        <!-- Recent Chats -->
+        @if (!searchQuery) {
+          <div class="section-label">Active Connections</div>
+          @for (chat of recentChats; track chat.id) {
+            <div class="chat-item animate-in" (click)="selectChat(chat)">
               <img
-                [src]="
-                  'https://ui-avatars.com/api/?name=' +
-                  chat.other_name +
-                  '&background=random&size=64'
-                "
-                class="avatar-img"
-                alt="Avatar"
+                [src]="chat.other_avatar || 'https://ui-avatars.com/api/?name=' + chat.other_name"
+                class="avatar"
               />
-            }
-            <div class="item-body">
-              <div class="item-top">
+              <div class="item-info">
                 <span class="name">{{ chat.other_name }}</span>
-                <span class="time">{{ chat.created_at | date: 'shortTime' }}</span>
+                <span class="preview">{{ chat.content }}</span>
               </div>
-              <p class="preview">{{ chat.content }}</p>
+              <div class="item-meta">
+                <span class="time">{{ chat.created_at | date: 'HH:mm' }}</span>
+              </div>
             </div>
+          } @empty {
+            <div
+              class="p-12 text-center opacity-20 text-[10px] font-black uppercase tracking-[0.2em]"
+            >
+              Secure line idle. No active pulse.
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- 2. Active Chat View -->
+    <div class="chat-view" *ngIf="selectedUser">
+      <div class="messages-container" #scrollContainer>
+        @for (msg of messages; track msg.id) {
+          <div class="message-group animate-in" [class.sent]="msg.sender_id === currentUserId">
+            <div class="bubble">
+              {{ msg.content }}
+            </div>
+            <span class="time">{{ msg.created_at | date: 'shortTime' }}</span>
           </div>
         } @empty {
-          <div class="empty-state">Secure line ready. No active chats.</div>
+          <div
+            class="h-full flex flex-col items-center justify-center opacity-20 text-center px-10"
+          >
+            <i class="pi pi-shield text-4xl mb-6"></i>
+            <p class="text-[10px] font-black uppercase tracking-[0.3em]">
+              End-to-End Encryption Active
+            </p>
+            <p
+              class="text-[9px] mt-2 font-medium opacity-60 uppercase tracking-widest leading-loose"
+            >
+              Messages are secured through the private Vibe network protocol.
+            </p>
+          </div>
         }
       </div>
-    </div>
 
-    <!-- Active Chat Content -->
-    <div class="chat-content" *ngIf="selectedUser" #scrollContainer>
-      @for (msg of messages; track msg.id) {
-        <div class="message" [class.sent]="msg.sender_id === currentUserId">
-          <div class="msg-bubble">
-            {{ msg.content }}
-            <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
-          </div>
-        </div>
-      }
-    </div>
-
-    <!-- Message Input -->
-    <div class="chat-footer" *ngIf="selectedUser">
-      <input
-        type="text"
-        [(ngModel)]="newMessage"
-        (keyup.enter)="send()"
-        placeholder="Type a message..."
-      />
-      <button class="send-btn" (click)="send()" [disabled]="!newMessage.trim()">
-        <mat-icon>send</mat-icon>
-      </button>
+      <div class="chat-footer">
+        <input
+          type="text"
+          class="input-box"
+          [(ngModel)]="newMessage"
+          (keyup.enter)="send()"
+          placeholder="Secure transmit..."
+        />
+        <button
+          pButton
+          icon="pi pi-send"
+          [disabled]="!newMessage.trim()"
+          (click)="send()"
+          class="send-btn"
+        ></button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,33 +1,41 @@
-<h2 mat-dialog-title class="dialog-title">Change Avatar</h2>
-<mat-dialog-content class="dialog-content">
+<div class="glass-surface border border-white/10 rounded-2xl overflow-hidden min-w-[320px]">
+  <div class="px-6 py-4 border-b border-white/5 bg-white/5">
+    <h2 class="text-xs font-black uppercase tracking-[0.2em] opacity-60 m-0 text-white">
+      Protocol: Avatar Uplink
+    </h2>
+  </div>
   <div class="upload-area" (click)="filePicker.click()" [class.has-image]="imgPreview()">
     @if (imgPreview()) {
       <div class="image-preview">
         <img [src]="imgPreview()" alt="upload image" />
         <div class="change-hint">
-          <mat-icon>cached</mat-icon>
+          <i class="pi pi-sync"></i>
           <span>Change image</span>
         </div>
       </div>
     } @else {
       <div class="upload-placeholder">
-        <mat-icon>cloud_upload</mat-icon>
-        <p>Click to select an image</p>
-        <span>Supports JPG, PNG</span>
+        <div class="upload-placeholder">
+          <i class="pi pi-cloud-upload text-3xl mb-2 opacity-40"></i>
+          <p class="text-[10px] uppercase font-black tracking-widest">Select Signal Source</p>
+          <span class="text-[8px] opacity-40">JPG, PNG ACCEPTED</span>
+        </div>
       </div>
     }
   </div>
 
   @if (imgFile) {
-    <div class="file-info">
-      <mat-icon>insert_drive_file</mat-icon>
-      <span class="file-name">{{ imgFile.name }}</span>
+    <div
+      class="file-info flex items-center gap-2 px-4 py-2 bg-white/5 rounded-lg border border-white/5 mt-4 mx-6"
+    >
+      <i class="pi pi-file text-indigo-400"></i>
+      <span class="file-name text-[10px] font-bold">{{ imgFile.name }}</span>
     </div>
   }
 
   @if (errorMsg()) {
-    <p class="error-msg">
-      <mat-icon>error_outline</mat-icon>
+    <p class="error-msg text-red-400 text-[10px] font-bold mt-2 mx-6 flex items-center gap-1">
+      <i class="pi pi-exclamation-triangle"></i>
       {{ errorMsg() }}
     </p>
   }
@@ -39,12 +47,21 @@
     accept=".jpg, .png"
     style="display: none"
   />
-</mat-dialog-content>
 
-<div class="dialog-actions">
-  <button class="cancel-btn" (click)="_dialogRef.close()">Cancel</button>
-  <button class="submit-btn" (click)="onSubmit()" [disabled]="!imgFile">
-    <mat-icon>upload</mat-icon>
-    Update Avatar
-  </button>
+  <div class="px-6 py-4 bg-white/5 border-t border-white/5 flex justify-end gap-3">
+    <button
+      pButton
+      label="ABORT"
+      (click)="_ref.close()"
+      class="p-button-text p-button-sm text-[9px] font-black tracking-widest"
+    ></button>
+    <button
+      pButton
+      label="UPLINK IMAGE"
+      icon="pi pi-upload"
+      (click)="onSubmit()"
+      [disabled]="!imgFile"
+      class="p-button-primary h-10 px-6 text-[9px] font-black tracking-widest"
+    ></button>
+  </div>
 </div>

@@ -1,148 +1,161 @@
-<header class="page-header">
-  <h1>Explore</h1>
-  <p>Find and join activities in the community.</p>
-</header>
-
-<div class="discovery-controls">
-  <div class="search-row">
-    <div class="search-input" id="search-input">
-      <mat-icon>search</mat-icon>
-      <input
-        type="text"
-        [(ngModel)]="filter.name"
-        placeholder="Search activities..."
-        (keyup.enter)="onSubmit()"
-      />
-    </div>
-  </div>
-
-  <div class="filters-row" id="filters-area">
-    <select class="status-select" [(ngModel)]="filter.status">
-      <option value="">All Statuses</option>
-      <option value="Open">Open</option>
-      <option value="InProgress">In Progress</option>
-      <option value="Completed">Completed</option>
-      <option value="Failed">Cancelled</option>
-    </select>
-
-    <select class="category-select" [(ngModel)]="filter.category">
-      <option value="">All Categories</option>
-      @for (cat of categories; track cat) {
-        <option [value]="cat">{{ cat }}</option>
-      }
-    </select>
-
-    <select class="capacity-select" [(ngModel)]="filter.is_available">
-      <option [ngValue]="undefined">All</option>
-      <option [ngValue]="true">Available</option>
-      <option [ngValue]="false">Full</option>
-    </select>
-
-    <button class="filter-btn" (click)="onSubmit()">
-      <mat-icon>filter_list</mat-icon>
-      Filter
-    </button>
-  </div>
-</div>
-
-<div class="data-table">
-  @if ((missions$ | async)?.length) {
-    <div class="table-header">
-      <span>Activity</span>
-      <span>Category</span>
-      <span>Description</span>
-      <span>Host</span>
-      <span>Status</span>
-      <span>Members</span>
-      <span></span>
+<div class="max-w-7xl mx-auto px-6 py-12 animate-in">
+  <!-- Discovery Header -->
+  <header class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+    <div class="animate-in">
+      <div class="glass-pill mb-4 text-indigo-400">Tactical Discovery</div>
+      <h1 class="text-5xl font-black tracking-tighter uppercase">
+        Explore <span class="vibe-gradient">Missions</span>
+      </h1>
+      <p
+        class="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--text-secondary)] opacity-60 mt-2"
+      >
+        Sector scan complete. Active deployments identified.
+      </p>
     </div>
 
-    @for (mission of missions$ | async; track mission.id) {
-      <div class="table-row">
-        <div class="mission-info">
-          <span class="name">{{ mission.name }}</span>
-          <div class="meta">
-            @if (mission.scheduled_at) {
-              <span
-                ><mat-icon>schedule</mat-icon>
-                {{ mission.scheduled_at | date: 'MMM d, h:mm a' }}</span
-              >
-            }
-            @if (mission.location) {
-              <span><mat-icon>place</mat-icon> {{ mission.location }}</span>
-            }
-          </div>
-        </div>
-
-        <div class="category">
-          <span
-            [class]="
-              'cat-pill ' +
-              (mission.category || 'other')
-                .toLowerCase()
-                .split(' & ')
-                .join('-')
-                .split(' ')
-                .join('-')
-            "
-            >{{ mission.category || 'Other' }}</span
-          >
-        </div>
-
-        <div class="description" [title]="mission.description">{{ mission.description }}</div>
-
-        <div class="chief">
-          @if (mission.chief_avatar_url) {
-            <img [src]="mission.chief_avatar_url" class="chief-circle" alt="Avatar" />
-          } @else {
-            <img
-              [src]="
-                'https://ui-avatars.com/api/?name=' +
-                mission.chief_display_name +
-                '&background=random&size=64'
-              "
-              class="chief-circle"
-              alt="Avatar"
-            />
-          }
-          <span>{{ mission.chief_display_name }}</span>
-        </div>
-
-        <div>
-          <span [class]="'status-badge ' + mission.status.toLowerCase()">{{
-            mission.status === 'Failed' ? 'Cancelled' : mission.status
-          }}</span>
-        </div>
-
-        <div class="crew-count">{{ mission.crew_count }} / {{ mission.max_crew }}</div>
-
-        <div class="action-cell">
-          @if (isSignin()) {
-            @if (mission.status === 'Open') {
-              <button
-                class="action-btn"
-                (click)="onJoin(mission)"
-                [disabled]="
-                  mission.crew_count >= mission.max_crew || joiningMissionId === mission.id
-                "
-              >
-                @if (joiningMissionId === mission.id) {
-                  Joining...
-                } @else {
-                  {{ mission.crew_count >= mission.max_crew ? 'Full' : 'Join' }}
-                }
-              </button>
-            } @else {
-              <span class="status-badge">Locked</span>
-            }
-          }
-        </div>
+    <!-- Search & Filters -->
+    <div class="animate-in flex items-center gap-3" style="animation-delay: 0.1s">
+      <div class="relative group">
+        <input
+          type="text"
+          [(ngModel)]="filter.name"
+          (keyup.enter)="onSubmit()"
+          placeholder="Sector search..."
+          class="bg-white/5 border border-white/5 focus:border-indigo-500/50 rounded-2xl pl-11 pr-4 py-3 w-72 text-sm font-bold placeholder:opacity-30 outline-none transition-all"
+        />
+        <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 opacity-30 text-xs"></i>
       </div>
-    }
+      <button
+        pButton
+        icon="pi pi-filter"
+        (click)="onSubmit()"
+        class="p-button-text p-button-sm h-12 w-12 border border-white/5 rounded-2xl"
+      ></button>
+    </div>
+  </header>
+
+  <!-- Missions Grid -->
+  @if ((missions$ | async)?.length) {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      @for (mission of missions$ | async; track mission.id; let i = $index) {
+        <div
+          class="mission-card animate-in flex flex-col p-8"
+          [style.animation-delay]="i * 0.05 + 's'"
+          [ngClass]="getZone(mission.category)"
+        >
+          <!-- Card Header -->
+          <div class="flex justify-between items-start mb-10">
+            <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-40 italic"
+              >#{{ mission.id }} / {{ mission.category || 'GENERIC' }}</span
+            >
+            <div
+              [class]="
+                'w-2 h-2 rounded-full shadow-lg ' +
+                (mission.status === 'Open'
+                  ? 'bg-green-500 shadow-green-500/50'
+                  : 'bg-red-500 shadow-red-500/50')
+              "
+            ></div>
+          </div>
+
+          <!-- Mission Core -->
+          <div class="flex-grow mb-12">
+            <h3
+              class="text-2xl font-black uppercase tracking-tighter mb-4 group-hover:text-indigo-400 transition-colors"
+            >
+              {{ mission.name }}
+            </h3>
+            <p
+              class="text-xs text-[var(--text-secondary)] font-medium leading-[1.8] opacity-60 line-clamp-2"
+            >
+              {{
+                mission.description ||
+                  'Secure communication frequency. Tactical briefing pending deployment approval.'
+              }}
+            </p>
+          </div>
+
+          <!-- Meta Grid (High Contrast) -->
+          <div
+            class="grid grid-cols-2 gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5 mb-8"
+          >
+            <div class="bg-black/20 p-4">
+              <span class="text-[8px] font-black uppercase tracking-widest opacity-30 block mb-2"
+                >Squad Link</span
+              >
+              <div class="flex items-center gap-2">
+                <i class="pi pi-users text-indigo-400 text-[10px]"></i>
+                <span class="text-[11px] font-black"
+                  >{{ mission.crew_count
+                  }}<span class="opacity-30"> / {{ mission.max_crew }}</span></span
+                >
+              </div>
+            </div>
+            <div class="bg-black/20 p-4">
+              <span class="text-[8px] font-black uppercase tracking-widest opacity-30 block mb-2"
+                >Chief Signal</span
+              >
+              <div class="flex items-center gap-2">
+                <img
+                  [src]="
+                    mission.chief_avatar_url ||
+                    'https://ui-avatars.com/api/?name=' + mission.chief_display_name
+                  "
+                  class="w-4 h-4 rounded-md"
+                />
+                <span class="text-[10px] font-black uppercase truncate opacity-80">{{
+                  mission.chief_display_name
+                }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interaction Hub -->
+          @if (isSignin()) {
+            <button
+              pButton
+              [label]="
+                joiningMissionId === mission.id
+                  ? 'ESTABLISHING...'
+                  : mission.crew_count >= mission.max_crew
+                    ? 'CAPACITY REACHED'
+                    : 'JOIN THE CREW'
+              "
+              [loading]="joiningMissionId === mission.id"
+              class="w-full h-12 text-[10px] font-black tracking-[0.1em]"
+              [class]="
+                mission.crew_count >= mission.max_crew ? 'p-button-secondary' : 'p-button-primary'
+              "
+              [disabled]="mission.crew_count >= mission.max_crew || joiningMissionId === mission.id"
+              (click)="onJoin(mission)"
+            ></button>
+          } @else {
+            <button
+              pButton
+              label="PROTOCOL AUTH REQUIRED"
+              icon="pi pi-lock"
+              class="w-full h-12 text-[10px] font-black tracking-[0.1em] p-button-text border border-white/10"
+              routerLink="/login"
+            ></button>
+          }
+        </div>
+      }
+    </div>
   } @else {
-    <div class="empty-state">
-      <mat-icon>event_busy</mat-icon>
-      <p>No activities found matching your criteria.</p>
+    <div
+      class="py-40 flex flex-col items-center justify-center mission-card opacity-50 text-center animate-in"
+    >
+      <div
+        class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-8 border border-white/10"
+      >
+        <i class="pi pi-search text-3xl opacity-20"></i>
+      </div>
+      <h3 class="text-xl font-black uppercase tracking-tight mb-4">No Signals Detected</h3>
+      <p
+        class="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 max-w-xs leading-loose"
+      >
+        The sector appears silent. Modify your tracking parameters to find active signals.
+      </p>
     </div>
   }
 </div>

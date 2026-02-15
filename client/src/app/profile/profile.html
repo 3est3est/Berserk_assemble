@@ -1,133 +1,222 @@
-<div class="profile-container">
-  <div class="identity-column">
-    <div class="identity-card">
-      <div class="avatar-wrapper">
-        <img [src]="avatar_url()" alt="avatar" class="avatar-lg" />
-        <button *ngIf="isOwnProfile()" class="edit-avatar-btn" (click)="openAvatarDialog()">
-          <mat-icon>photo_camera</mat-icon>
-        </button>
-      </div>
+<div class="relative min-h-screen bg-black pb-32 selection:bg-indigo-500/30">
+  <div class="bg-mesh"></div>
 
-      <h1 class="display-name">{{ display_name() }}</h1>
+  <!-- Immersive Header -->
+  <div class="relative h-[45vh] min-h-[400px] overflow-hidden">
+    <div
+      class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"
+    ></div>
 
-      <div class="rank-badge" [class]="rank().toLowerCase()">{{ rank() }}</div>
-
-      <!-- Friendship Actions -->
-      <div class="friend-actions" *ngIf="!isOwnProfile()">
-        <button
-          *ngIf="!friendshipStatus()"
-          mat-flat-button
-          color="primary"
-          class="friend-btn"
-          (click)="addFriend()"
-        >
-          <mat-icon>person_add</mat-icon>
-          Add Friend
-        </button>
-
-        <button
-          *ngIf="friendshipStatus() === 'pending'"
-          mat-stroked-button
-          disabled
-          class="friend-btn pending"
-        >
-          <mat-icon>hourglass_empty</mat-icon>
-          Pending
-        </button>
-
-        @if (friendshipStatus() === 'accepted') {
-          <button mat-flat-button class="friend-btn accepted" [matMenuTriggerFor]="friendMenu">
-            <mat-icon>check</mat-icon>
-            Friends
-          </button>
-          <mat-menu #friendMenu="matMenu">
-            <button mat-menu-item (click)="unfriend()">
-              <mat-icon>person_remove</mat-icon>
-              Unfriend
+    <div class="max-w-7xl mx-auto px-6 h-full flex items-end pb-16 relative z-20">
+      <div class="flex flex-col md:flex-row items-end gap-12 animate-in">
+        <!-- Avatar Uplink -->
+        <div class="relative group">
+          <img
+            [src]="avatar_url()"
+            class="w-44 h-44 md:w-60 md:h-60 rounded-[3rem] border-4 border-white/5 shadow-2xl object-cover glass-surface group-hover:border-indigo-500/50 transition-all duration-500"
+          />
+          @if (isOwnProfile()) {
+            <button
+              (click)="openAvatarDialog()"
+              class="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-all rounded-[3rem] backdrop-blur-sm"
+            >
+              <i class="pi pi-camera text-4xl text-white/80"></i>
             </button>
-          </mat-menu>
-        }
+          }
+        </div>
 
-        <button mat-stroked-button class="friend-btn message" (click)="openChat()">
-          <mat-icon>chat</mat-icon>
-          Message
-        </button>
-      </div>
+        <div class="flex-grow pb-4">
+          <div class="glass-pill mb-6 text-indigo-400">Tactical Operative</div>
+          <h1 class="text-7xl font-black uppercase tracking-tighter mb-6 leading-none">
+            {{ display_name() }}
+          </h1>
+          <div class="flex items-center gap-8">
+            <div class="flex items-center gap-3">
+              <div
+                class="w-1.5 h-1.5 bg-indigo-500 rounded-full shadow-[0_0_10px_rgba(99,102,241,0.5)]"
+              ></div>
+              <span class="text-[10px] font-black uppercase tracking-[0.3em] opacity-60">{{
+                rank()
+              }}</span>
+            </div>
+            <div class="flex items-center gap-3 opacity-20">
+              <i class="pi pi-shield text-xs"></i>
+              <span class="text-[10px] font-black uppercase tracking-[0.3em]"
+                >Protocol Verified</span
+              >
+            </div>
+          </div>
+        </div>
 
-      <button
-        *ngIf="isOwnProfile()"
-        mat-stroked-button
-        class="edit-btn"
-        (click)="openEditProfileDialog()"
-      >
-        <mat-icon>edit</mat-icon>
-        Edit Profile
-      </button>
-
-      @if (bio()) {
-        <p class="bio-text">"{{ bio() }}"</p>
-      }
-
-      <div class="contacts-box">
-        @if (instagram()) {
-          <div class="contact-item ig">
-            <img src="/assets/icons/instagram.jpg" alt="Instagram" class="contact-icon" />
-            <span>{{ instagram() }}</span>
-          </div>
-        }
-        @if (facebook()) {
-          <div class="contact-item fb">
-            <img src="/assets/icons/facebook.png" alt="Facebook" class="contact-icon" />
-            <span>{{ facebook() }}</span>
-          </div>
-        }
-        @if (discord_id()) {
-          <div class="contact-item discord">
-            <img src="/assets/icons/discord.jpg" alt="Discord" class="contact-icon" />
-            <span>{{ discord_id() }}</span>
-          </div>
-        }
-        @if (contact_email()) {
-          <div class="contact-item email">
-            <mat-icon>alternate_email</mat-icon>
-            <span>{{ contact_email() }}</span>
-          </div>
-        }
+        <!-- Action Grid -->
+        <div class="flex gap-4 pb-4">
+          @if (isOwnProfile()) {
+            <button
+              pButton
+              label="SYNC PROTOCOL"
+              icon="pi pi-bolt"
+              (click)="openEditProfileDialog()"
+              class="p-button-primary h-14 px-10 text-[10px]"
+            ></button>
+          } @else {
+            @if (friendshipStatus() === 'accepted') {
+              <button
+                pButton
+                label="ESTABLISH SIGNAL"
+                icon="pi pi-comments"
+                (click)="openChat()"
+                class="p-button-primary h-14 px-10 text-[10px]"
+              ></button>
+              <button
+                pButton
+                icon="pi pi-user-minus"
+                (click)="unfriend()"
+                class="p-button-text h-14 w-14 border border-white/5 bg-white/5 hover:border-red-500/30"
+              ></button>
+            } @else if (friendshipStatus() === 'pending') {
+              <button
+                pButton
+                label="PULSE PENDING"
+                icon="pi pi-clock"
+                disabled
+                class="p-button-text h-14 px-10 text-[10px] border border-white/10 opacity-40"
+              ></button>
+            } @else {
+              <button
+                pButton
+                label="LINK SIGNAL"
+                icon="pi pi-user-plus"
+                (click)="addFriend()"
+                class="p-button-primary h-14 px-10 text-[10px]"
+              ></button>
+            }
+          }
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="stats-column">
-    <div class="stats-grid">
-      <div class="stat-item">
-        <div class="stat-value">{{ stats().hosted }}</div>
-        <div class="stat-label">Hosted Events</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value highlight">{{ stats().joined }}</div>
-        <div class="stat-label">Joined Events</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-value">{{ stats().active }}</div>
-        <div class="stat-label">Active Now</div>
-      </div>
-    </div>
-
-    <div class="recent-activity-card">
-      <h3>Recent Activities</h3>
-      @if (missions().length > 0) {
-        <div class="mission-list">
-          @for (mission of missions().slice(0, 5); track mission.id) {
-            <div class="mission-row">
-              <div class="status-dot" [class]="mission.status.toLowerCase()"></div>
-              <span class="mission-name">{{ mission.name }}</span>
-              <span class="mission-date">{{ mission.created_at | date: 'MMM d, y' }}</span>
-            </div>
-          }
+  <div class="max-w-7xl mx-auto px-6 mt-16">
+    <div class="grid grid-cols-12 gap-8 animate-in" style="animation-delay: 0.2s">
+      <!-- Operational Bio -->
+      <div
+        class="col-span-12 lg:col-span-8 bento-card min-h-[280px] flex flex-col justify-between p-12"
+      >
+        <div class="text-[9px] font-black uppercase tracking-[0.4em] opacity-20 mb-8">
+          / Briefing Summary
         </div>
-      } @else {
-        <div class="empty-state">No activities recorded yet.</div>
-      }
+        <p class="text-2xl font-black leading-tight tracking-tight opacity-70">
+          "{{
+            bio() || 'Secure communication link active. Deployment summary pending authorization.'
+          }}"
+        </p>
+        <div class="mt-12 flex gap-4">
+          <div
+            class="px-4 py-2 rounded-xl bg-white/5 border border-white/5 text-[9px] font-black uppercase tracking-widest opacity-40"
+          >
+            #VibeActive
+          </div>
+          <div
+            class="px-4 py-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-[9px] font-black uppercase tracking-widest text-indigo-400"
+          >
+            Class Alpha
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="col-span-12 lg:col-span-4 grid grid-cols-2 gap-8">
+        <div
+          class="bento-card flex flex-col items-center justify-center text-center p-8 bg-indigo-600/5 border-indigo-500/10"
+        >
+          <div class="text-6xl font-black vibe-gradient leading-none">
+            {{ stats().hosted + stats().joined }}
+          </div>
+          <p class="text-[8px] font-black uppercase tracking-[0.3em] opacity-30 mt-4">Total Ops</p>
+        </div>
+        <div class="bento-card flex flex-col items-center justify-center text-center p-8">
+          <div class="text-3xl font-black text-white/50">{{ stats().hosted }}</div>
+          <p class="text-[8px] font-black uppercase tracking-[0.3em] opacity-30 mt-4">Commanded</p>
+        </div>
+      </div>
+
+      <!-- Tactical Socials -->
+      <div class="col-span-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <!-- Discord -->
+        <div
+          class="bento-card p-8 group border-transparent hover:border-indigo-500/30 transition-all duration-500"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 rounded-2xl bg-[#5865F2]/10 border border-[#5865F2]/20 flex items-center justify-center"
+            >
+              <i class="pi pi-discord text-[#5865F2] text-xl"></i>
+            </div>
+            <div>
+              <div class="text-[8px] font-black uppercase tracking-widest opacity-30 mb-1">
+                Discord Hub
+              </div>
+              <div class="text-sm font-black">{{ discord_id() || 'HIDDEN' }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- Instagram -->
+        <div
+          class="bento-card p-8 group border-transparent hover:border-pink-500/30 transition-all duration-500"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 rounded-2xl bg-[#E4405F]/10 border border-[#E4405F]/20 flex items-center justify-center"
+            >
+              <i class="pi pi-instagram text-[#E4405F] text-xl"></i>
+            </div>
+            <div>
+              <div class="text-[8px] font-black uppercase tracking-widest opacity-30 mb-1">
+                Visual Feed
+              </div>
+              <div class="text-sm font-black">{{ instagram() || 'HIDDEN' }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- Facebook -->
+        <div
+          class="bento-card p-8 group border-transparent hover:border-blue-500/30 transition-all duration-500"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 rounded-2xl bg-[#1877F2]/10 border border-[#1877F2]/20 flex items-center justify-center"
+            >
+              <i class="pi pi-facebook text-[#1877F2] text-xl"></i>
+            </div>
+            <div>
+              <div class="text-[8px] font-black uppercase tracking-widest opacity-30 mb-1">
+                Public Net
+              </div>
+              <div class="text-sm font-black">{{ facebook() || 'HIDDEN' }}</div>
+            </div>
+          </div>
+        </div>
+        <!-- Mail -->
+        <div
+          class="bento-card p-8 group border-transparent hover:border-white/20 transition-all duration-500"
+        >
+          <div class="flex items-center gap-6">
+            <div
+              class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center"
+            >
+              <i class="pi pi-envelope text-white/50 text-xl"></i>
+            </div>
+            <div>
+              <div class="text-[8px] font-black uppercase tracking-widest opacity-30 mb-1">
+                Secure Mail
+              </div>
+              <div class="text-sm font-black truncate max-w-[120px]">
+                {{ contact_email() || 'HIDDEN' }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

@@ -1,109 +1,133 @@
-<div class="dashboard-container">
-  <header class="page-header">
-    <h1>Analytics</h1>
-    <p>Operational overview and tactical mission intelligence.</p>
-  </header>
+<div class="relative min-h-screen bg-black">
+  <div class="bg-mesh"></div>
 
-  <section class="summary-grid">
-    <div class="stat-card primary">
-      <span class="label">Total Missions</span>
-      <span class="value">{{ stats.total }}</span>
-    </div>
-    <div class="stat-card info">
-      <span class="label">InProgress</span>
-      <span class="value">{{ stats.inProgress }}</span>
-    </div>
-    <div class="stat-card success">
-      <span class="label">Completed</span>
-      <span class="value">{{ stats.completed }}</span>
-    </div>
-    <div class="stat-card warning">
-      <span class="label">Success Rate</span>
-      <span class="value">{{ stats.successRate }}%</span>
-    </div>
-    <div class="stat-card danger">
-      <span class="label">XP Accumulated</span>
-      <span class="value">{{ stats.totalExp }}</span>
-    </div>
-  </section>
+  <div class="max-w-7xl mx-auto px-6 py-12 animate-in">
+    <!-- Dashboard Header -->
+    <header class="mb-16">
+      <div class="glass-pill mb-4 text-indigo-400">Tactical Intelligence</div>
+      <h1 class="text-5xl font-black uppercase tracking-tighter">
+        Command <span class="vibe-gradient">Overview</span>
+      </h1>
+      <p class="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mt-2">
+        Real-time telemetry and mission integrity analysis.
+      </p>
+    </header>
 
-  <div class="dashboard-content">
-    <section class="section-card">
-      <h3 class="section-title">
-        <mat-icon>history</mat-icon>
-        Recent Activity
-      </h3>
-
-      <div class="activity-list">
-        @for (mission of recentMissions; track mission.id) {
-          <div class="activity-item">
-            <div [class]="'status-dot ' + mission.status.toLowerCase()"></div>
-            <div class="info">
-              <span class="name">{{ mission.name }}</span>
-              <span class="timestamp">{{ mission.updated_at | date: 'MMM d, h:mm a' }}</span>
-            </div>
-            <span class="badge">{{ mission.status }}</span>
-          </div>
-        } @empty {
-          <div class="empty-state">
-            <p>No recent activity detected.</p>
-          </div>
-        }
-      </div>
-    </section>
-
-    <aside class="dashboard-sidebar">
-      <section
-        class="section-card network-teaser"
-        routerLink="/network"
-        style="cursor: pointer; border-color: var(--ctp-mauve)"
+    <div class="grid grid-cols-12 gap-8">
+      <!-- Efficiency Ring (SVG Performance Optimized) -->
+      <div
+        class="col-span-12 lg:col-span-4 bento-card flex flex-col items-center justify-center py-12"
       >
-        <h3 class="section-title">
-          <mat-icon>public</mat-icon>
-          Global Network
-        </h3>
-        <p style="font-size: 0.85rem; color: var(--ctp-subtext0); margin: 0">
-          Connect with members and manage your team.
-        </p>
-        <div style="margin-top: 12px; color: var(--ctp-mauve); font-weight: 700; font-size: 0.8rem">
-          VIEW CONNECTIONS →
-        </div>
-      </section>
-
-      <section class="section-card">
-        <h3 class="section-title">
-          <mat-icon>analytics</mat-icon>
-          Efficiency
-        </h3>
-
-        <div class="performance-grid">
-          <div class="progress-stat">
-            <div class="label-group">
-              <span class="label">Integrity</span>
-              <span class="value">{{ stats.successRate }}%</span>
-            </div>
-            <div class="progress-bg">
-              <div class="progress-fill" [style.width.%]="stats.successRate"></div>
-            </div>
-          </div>
-
-          <div class="progress-stat">
-            <div class="label-group">
-              <span class="label">Avg Crew</span>
-              <span class="value">{{ stats.avgCrewSize | number: '1.1-1' }}</span>
-            </div>
-            <div class="progress-bg">
-              <div class="progress-fill" [style.width.%]="(stats.avgCrewSize / 10) * 100"></div>
-            </div>
+        <div class="relative w-48 h-48 mb-8">
+          <svg class="w-full h-full transform -rotate-90">
+            <circle
+              cx="96"
+              cy="96"
+              r="88"
+              stroke="currentColor"
+              stroke-width="8"
+              fill="transparent"
+              class="text-white/5"
+            ></circle>
+            <circle
+              cx="96"
+              cy="96"
+              r="88"
+              stroke="currentColor"
+              stroke-width="8"
+              fill="transparent"
+              class="text-indigo-500"
+              stroke-dasharray="552.92"
+              stroke-dashoffset="138.23"
+              stroke-linecap="round"
+            ></circle>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center">
+            <span class="text-5xl font-black vibe-gradient leading-none">75%</span>
+            <span class="text-[8px] font-black uppercase tracking-widest opacity-40 mt-2"
+              >Success Rate</span
+            >
           </div>
         </div>
-      </section>
-
-      <div class="exp-widget">
-        <span class="label">Total Capacity</span>
-        <div class="value">{{ stats.totalExp }}</div>
-        <span class="label">EXP</span>
+        <div class="text-center">
+          <h3 class="text-lg font-black uppercase tracking-tighter mb-1">Operational Efficiency</h3>
+          <p class="text-[10px] font-black uppercase tracking-widest opacity-30 italic">
+            High performance detected
+          </p>
+        </div>
       </div>
-    </aside>
+
+      <!-- Live Operations Bento -->
+      <div class="col-span-12 lg:col-span-8 grid grid-cols-2 gap-8">
+        <div class="bento-card bg-white/1">
+          <div class="text-[9px] font-black uppercase tracking-widest opacity-30 mb-8">
+            Completed Missions
+          </div>
+          <div class="text-7xl font-black text-white/20">00</div>
+          <div class="mt-8 pt-8 border-t border-white/5 flex items-center justify-between">
+            <span class="text-[9px] font-black uppercase tracking-widest text-indigo-400"
+              >Target Reached</span
+            >
+            <i class="pi pi-check-circle opacity-20"></i>
+          </div>
+        </div>
+
+        <div class="bento-card flex flex-col justify-between">
+          <div>
+            <div class="text-[9px] font-black uppercase tracking-widest opacity-30 mb-8">
+              Active Personnel
+            </div>
+            <div class="flex items-center gap-4">
+              <div class="flex -space-x-3">
+                <div class="w-10 h-10 rounded-full bg-indigo-500 border-4 border-black"></div>
+                <div class="w-10 h-10 rounded-full bg-pink-500 border-4 border-black"></div>
+                <div
+                  class="w-10 h-10 rounded-full bg-white/20 border-4 border-black flex items-center justify-center"
+                >
+                  <i class="pi pi-plus text-[10px]"></i>
+                </div>
+              </div>
+              <span class="text-2xl font-black">0</span>
+            </div>
+          </div>
+          <button
+            pButton
+            label="SIGNAL NETWORK"
+            routerLink="/network"
+            class="p-button-text border border-white/5 h-12 w-full mt-8"
+          ></button>
+        </div>
+      </div>
+
+      <!-- Activity Timeline -->
+      <div class="col-span-12 bento-card">
+        <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-40 mb-12">
+          Tactical Pulse History
+        </h3>
+        <div class="space-y-12">
+          @for (i of [1, 2, 3]; track i) {
+            <div class="flex gap-8 group opacity-40 hover:opacity-100 transition-opacity">
+              <div
+                class="w-5 h-5 rounded-full border border-indigo-500/50 mt-1 flex items-center justify-center"
+              >
+                <div class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+              </div>
+              <div class="flex-grow">
+                <div class="flex justify-between items-center mb-2">
+                  <span class="text-[11px] font-black uppercase tracking-tight"
+                    >System Initialization</span
+                  >
+                  <span class="text-[9px] font-black opacity-20 uppercase">Now</span>
+                </div>
+                <p class="text-xs font-medium text-white/40 leading-relaxed">
+                  Central command node successfully linked with primary Vibe network. Ready for
+                  transmission.
+                </p>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
   </div>
 </div>

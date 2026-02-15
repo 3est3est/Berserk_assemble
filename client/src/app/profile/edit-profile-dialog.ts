@@ -1,144 +1,148 @@
-import { Component, Inject, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { DynamicDialogRef, DynamicDialogConfig } from 'primeng/dynamicdialog';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../_services/user-service';
-import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
+
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
 
 @Component({
   selector: 'app-edit-profile-dialog',
   standalone: true,
-  imports: [
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    FormsModule,
-    MatIconModule,
-  ],
+  imports: [CommonModule, FormsModule, ButtonModule, InputTextModule, TextareaModule],
   template: `
-    <h2 mat-dialog-title>Edit Profile</h2>
-    <mat-dialog-content>
-      <div class="form-container">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Display Name (AKA)</mat-label>
-          <input matInput [(ngModel)]="displayName" placeholder="Enter your display name" />
-        </mat-form-field>
+    <div class="glass-surface border border-white/10 rounded-2xl overflow-hidden min-w-[460px]">
+      <!-- Header -->
+      <div class="px-6 py-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
+        <h2 class="text-xs font-black uppercase tracking-[0.2em] opacity-60 m-0">
+          Protocol: Edit Profile
+        </h2>
+        <i
+          class="pi pi-times cursor-pointer opacity-40 hover:opacity-100 transition-all"
+          (click)="ref.close()"
+        ></i>
+      </div>
 
-        <div class="section-label">Motto / Bio</div>
-        <mat-form-field appearance="outline" class="w-full bio-field">
-          <textarea matInput [(ngModel)]="bio" placeholder="Tell us about yourself..."></textarea>
-        </mat-form-field>
+      <!-- Body -->
+      <div class="p-6 flex flex-col gap-6">
+        <div class="flex flex-col gap-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+            >Display Name</label
+          >
+          <input
+            pInputText
+            [(ngModel)]="displayName"
+            class="w-full bg-white/5 border-white/10 h-11 text-sm font-medium focus:border-indigo-500/50 transition-all"
+          />
+        </div>
 
-        <div class="section-label">Social & Contacts</div>
+        <div class="flex flex-col gap-2">
+          <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+            >Biological Directive / Motto</label
+          >
+          <textarea
+            pTextarea
+            [(ngModel)]="bio"
+            [autoResize]="true"
+            rows="3"
+            class="w-full bg-white/5 border-white/10 text-sm font-medium focus:border-indigo-500/50 transition-all"
+          ></textarea>
+        </div>
 
-        <div class="contact-grid">
-          <mat-form-field appearance="outline">
-            <mat-label>Instagram</mat-label>
-            <input matInput [(ngModel)]="instagram" placeholder="@username" />
-            <img matPrefix src="/assets/icons/instagram.jpg" class="dialog-icon" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Facebook</mat-label>
-            <input matInput [(ngModel)]="facebook" placeholder="Profile name" />
-            <img matPrefix src="/assets/icons/facebook.png" class="dialog-icon" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Discord ID</mat-label>
-            <input matInput [(ngModel)]="discordId" placeholder="username#0000" />
-            <img matPrefix src="/assets/icons/discord.jpg" class="dialog-icon" />
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Contact Email</mat-label>
-            <input matInput [(ngModel)]="contactEmail" placeholder="your@email.com" />
-            <mat-icon matPrefix>alternate_email</mat-icon>
-          </mat-form-field>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+              >Instagram</label
+            >
+            <div class="relative w-full">
+              <i
+                class="pi pi-instagram absolute left-3 top-1/2 -translate-y-1/2 text-[10px] opacity-40"
+              ></i>
+              <input
+                pInputText
+                [(ngModel)]="instagram"
+                placeholder="@user"
+                class="w-full bg-white/5 border-white/10 h-10 text-[11px] pl-8"
+              />
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+              >Facebook</label
+            >
+            <div class="relative w-full">
+              <i
+                class="pi pi-facebook absolute left-3 top-1/2 -translate-y-1/2 text-[10px] opacity-40"
+              ></i>
+              <input
+                pInputText
+                [(ngModel)]="facebook"
+                placeholder="Name"
+                class="w-full bg-white/5 border-white/10 h-10 text-[11px] pl-8"
+              />
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+              >Discord ID</label
+            >
+            <div class="relative w-full">
+              <i
+                class="pi pi-discord absolute left-3 top-1/2 -translate-y-1/2 text-[10px] opacity-40"
+              ></i>
+              <input
+                pInputText
+                [(ngModel)]="discordId"
+                placeholder="user#0000"
+                class="w-full bg-white/5 border-white/10 h-10 text-[11px] pl-8"
+              />
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+              >Email Reference</label
+            >
+            <div class="relative w-full">
+              <i
+                class="pi pi-envelope absolute left-3 top-1/2 -translate-y-1/2 text-[10px] opacity-40"
+              ></i>
+              <input
+                pInputText
+                [(ngModel)]="contactEmail"
+                placeholder="your@email.com"
+                class="w-full bg-white/5 border-white/10 h-10 text-[11px] pl-8"
+              />
+            </div>
+          </div>
         </div>
       </div>
-    </mat-dialog-content>
-    <mat-dialog-actions>
-      <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-flat-button class="save-btn" (click)="save()" [disabled]="!displayName">
-        Save Changes
-      </button>
-    </mat-dialog-actions>
+
+      <!-- Footer -->
+      <div class="px-6 py-4 bg-white/5 border-t border-white/5 flex justify-end gap-3">
+        <button
+          pButton
+          label="ABORT"
+          (click)="ref.close()"
+          class="p-button-text p-button-sm text-[9px] font-black tracking-widest"
+        ></button>
+        <button
+          pButton
+          label="SYNCHRONIZE"
+          (click)="save()"
+          [disabled]="!displayName"
+          class="p-button-primary h-10 px-6 text-[9px] font-black tracking-widest shadow-lg shadow-indigo-500/20"
+        ></button>
+      </div>
+    </div>
   `,
   styles: [
     `
-      .w-full {
-        width: 100%;
-      }
-      mat-dialog-content {
-        min-width: 440px;
-        padding-top: 10px !important;
-      }
-      .form-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-        margin-top: 4px;
-      }
-      .section-label {
-        font-size: 0.7rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        color: var(--ctp-mauve);
-        letter-spacing: 1.2px;
-        margin: 16px 0 2px 4px;
-        opacity: 0.9;
-      }
-      .contact-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4px 16px;
-      }
-      .dialog-icon {
-        width: 22px;
-        height: 22px;
-        margin-right: 12px;
-        object-fit: contain;
-        border-radius: 4px;
-      }
-      .bio-field {
-        textarea {
-          min-height: 80px;
-          line-height: 1.5;
-        }
-      }
-
-      ::ng-deep .dark-modal-panel .mat-mdc-dialog-actions {
-        justify-content: flex-end;
-        gap: 12px;
-
-        button {
-          padding: 0 24px !important;
-          border-radius: 12px !important;
-          height: 44px !important;
-          font-weight: 600 !important;
-          font-family: 'Outfit', sans-serif !important;
-        }
-
-        .save-btn {
-          background-color: var(--ctp-mauve) !important;
-          color: var(--ctp-crust) !important;
-          transition: all 0.2s ease !important;
-
-          &:hover:not(:disabled) {
-            background-color: var(--ctp-pink) !important;
-            transform: translateY(-2px);
-          }
-
-          &:disabled {
-            background-color: var(--ctp-surface0) !important;
-            color: var(--ctp-overlay0) !important;
-          }
-        }
+      :host {
+        display: block;
+        background: transparent;
       }
     `,
   ],
@@ -152,19 +156,11 @@ export class EditProfileDialog {
   contactEmail: string = '';
 
   private _user = inject(UserService);
+  public ref = inject(DynamicDialogRef);
+  public config = inject(DynamicDialogConfig);
 
-  constructor(
-    public dialogRef: MatDialogRef<EditProfileDialog>,
-    @Inject(MAT_DIALOG_DATA)
-    public data: {
-      displayName: string;
-      bio?: string;
-      discordId?: string;
-      instagram?: string;
-      facebook?: string;
-      contactEmail?: string;
-    },
-  ) {
+  constructor() {
+    const data = this.config.data;
     this.displayName = data.displayName;
     this.bio = data.bio || '';
     this.discordId = data.discordId || '';
@@ -183,7 +179,7 @@ export class EditProfileDialog {
       this.facebook,
     );
     if (!error) {
-      this.dialogRef.close(true);
+      this.ref.close(true);
     } else {
       console.error(error);
     }

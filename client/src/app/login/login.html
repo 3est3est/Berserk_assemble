@@ -1,88 +1,129 @@
-<div class="login-container">
-  <div class="login-card">
-    <header class="auth-header">
-      <h3>{{ mode === 'login' ? 'Login' : 'Sign up' }}</h3>
-      <p>
-        {{ mode === 'login' ? 'Welcome back!' : 'Create your account to start vibing.' }}
+<div class="relative min-h-screen bg-black flex items-center justify-center p-6">
+  <div class="bg-mesh"></div>
+
+  <div class="mission-card max-w-md w-full p-10 animate-in">
+    <header class="mb-12 text-center">
+      <div
+        class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-2xl"
+      >
+        <i class="pi pi-bolt text-black text-2xl"></i>
+      </div>
+      <h2 class="text-4xl font-black uppercase tracking-tighter mb-4">
+        {{ mode === 'login' ? 'Protocol' : 'Citizen' }}
+        <span class="vibe-gradient">{{ mode === 'login' ? 'Auth' : 'Enroll' }}</span>
+      </h2>
+      <p class="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">
+        {{
+          mode === 'login'
+            ? 'Authorize your signal for network access.'
+            : 'Initialize your presence in the Vibe sector.'
+        }}
       </p>
     </header>
 
-    <form (ngSubmit)="onSubmit()" [formGroup]="form" autocomplete="off">
-      <mat-form-field appearance="outline">
-        <mat-label>Username</mat-label>
-        <input
-          matInput
-          type="text"
-          (input)="updateErrorMsg('username')"
-          formControlName="username"
-          placeholder="Enter your username"
-        />
-        @if (form.controls['username'].invalid && form.controls['username'].touched) {
-          <mat-error>{{ errorMsg.username() }}</mat-error>
-        }
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Password</mat-label>
-        <input
-          matInput
-          type="password"
-          (input)="updateErrorMsg('password')"
-          formControlName="password"
-          placeholder="Enter password"
-        />
-        @if (form.controls['password'].invalid && form.controls['password'].touched) {
-          <mat-error>{{ errorMsg.password() }}</mat-error>
-        }
-      </mat-form-field>
-
-      @if (mode !== 'login') {
-        <mat-form-field appearance="outline">
-          <mat-label>Confirm Password</mat-label>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form" class="space-y-6">
+      <!-- Username -->
+      <div class="space-y-2">
+        <label class="text-[9px] font-black uppercase tracking-widest opacity-30 px-1"
+          >Signal ID</label
+        >
+        <div class="relative group">
           <input
-            matInput
+            type="text"
+            formControlName="username"
+            (input)="updateErrorMsg('username')"
+            placeholder="Enter username..."
+            class="w-full h-14 bg-white/5 border border-white/5 group-hover:border-white/10 focus:border-indigo-500/50 rounded-xl px-4 text-sm font-bold transition-all outline-none"
+          />
+          <i class="pi pi-user absolute right-4 top-1/2 -translate-y-1/2 opacity-20"></i>
+        </div>
+        @if (form.controls['username'].invalid && form.controls['username'].touched) {
+          <p class="text-[9px] font-black uppercase text-red-400 px-1">{{ errorMsg.username() }}</p>
+        }
+      </div>
+
+      <!-- Password -->
+      <div class="space-y-2">
+        <label class="text-[9px] font-black uppercase tracking-widest opacity-30 px-1"
+          >Access Key</label
+        >
+        <div class="relative group">
+          <input
             type="password"
-            (input)="updateErrorMsg('cf_password')"
+            formControlName="password"
+            (input)="updateErrorMsg('password')"
+            placeholder="••••••••"
+            class="w-full h-14 bg-white/5 border border-white/5 group-hover:border-white/10 focus:border-indigo-500/50 rounded-xl px-4 text-sm font-bold transition-all outline-none"
+          />
+          <i class="pi pi-lock absolute right-4 top-1/2 -translate-y-1/2 opacity-20"></i>
+        </div>
+        @if (form.controls['password'].invalid && form.controls['password'].touched) {
+          <p class="text-[9px] font-black uppercase text-red-400 px-1">{{ errorMsg.password() }}</p>
+        }
+      </div>
+
+      <!-- Register Fields -->
+      @if (mode !== 'login') {
+        <div class="space-y-2 animate-in">
+          <label class="text-[9px] font-black uppercase tracking-widest opacity-30 px-1"
+            >Confirm Key</label
+          >
+          <input
+            type="password"
             formControlName="cf_password"
-            placeholder="Confirm password"
+            (input)="updateErrorMsg('cf_password')"
+            class="w-full h-14 bg-white/5 border border-white/5 rounded-xl px-4 text-sm font-bold outline-none"
           />
           @if (form.controls['cf_password'].invalid && form.controls['cf_password'].touched) {
-            <mat-error>{{ errorMsg.cf_password() }}</mat-error>
+            <p class="text-[9px] font-black uppercase text-red-400 px-1">
+              {{ errorMsg.cf_password() }}
+            </p>
           }
-        </mat-form-field>
+        </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Display Name</mat-label>
+        <div class="space-y-2 animate-in">
+          <label class="text-[9px] font-black uppercase tracking-widest opacity-30 px-1"
+            >Display Name</label
+          >
           <input
-            matInput
             type="text"
-            (input)="updateErrorMsg('displayname')"
             formControlName="display_name"
-            placeholder="What should we call you?"
+            (input)="updateErrorMsg('display_name')"
+            placeholder="Avatar name..."
+            class="w-full h-14 bg-white/5 border border-white/5 rounded-xl px-4 text-sm font-bold outline-none"
           />
           @if (form.controls['display_name'].invalid && form.controls['display_name'].touched) {
-            <mat-error>{{ errorMsg.display_name() }}</mat-error>
+            <p class="text-[9px] font-black uppercase text-red-400 px-1">
+              {{ errorMsg.display_name() }}
+            </p>
           }
-        </mat-form-field>
+        </div>
       }
 
-      <button type="submit" class="submit-btn" [disabled]="!form.valid">
-        {{ mode === 'login' ? 'Login' : 'Create Account' }}
-      </button>
+      <button
+        type="submit"
+        pButton
+        [label]="mode === 'login' ? 'INITIALIZE LINK' : 'CREATE PROTOCOL'"
+        [disabled]="!form.valid"
+        class="w-full h-14 p-button-primary mt-4"
+      ></button>
 
-      @if (errorMsg.server() !== '') {
-        <div class="error-msg">{{ errorMsg.server() }}</div>
+      @if (errorMsg.server()) {
+        <div
+          class="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-[10px] font-black uppercase text-red-400 text-center animate-pulse"
+        >
+          {{ errorMsg.server() }}
+        </div>
       }
     </form>
 
-    <footer class="auth-footer">
-      @if (mode === 'login') {
-        <span>New here?</span>
-        <span class="toggle-link" (click)="toggleMode()">Sign Up</span>
-      } @else {
-        <span>Already have an account?</span>
-        <span class="toggle-link" (click)="toggleMode()">Sign In</span>
-      }
+    <footer class="mt-12 text-center">
+      <p class="text-[10px] font-black uppercase tracking-widest opacity-30">
+        {{ mode === 'login' ? 'New operative?' : 'Existing signal?' }}
+        <span class="text-indigo-400 cursor-pointer hover:underline ml-2" (click)="toggleMode()">
+          {{ mode === 'login' ? 'Request Enrollment' : 'Authorize Link' }}
+        </span>
+      </p>
     </footer>
   </div>
 </div>
