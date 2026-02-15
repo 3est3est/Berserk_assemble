@@ -7,26 +7,15 @@ import {
   Validators,
 } from '@angular/forms';
 import { passwordMatchValidator, PasswordValidator } from '../_helpers/password-validator';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { PassportService } from '../_services/passport-service';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { ButtonModule } from 'primeng/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatCardModule,
-    MatButtonModule,
-    MatIconModule,
-  ],
+  imports: [FormsModule, ReactiveFormsModule, ButtonModule, CommonModule],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })

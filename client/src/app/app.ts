@@ -9,10 +9,12 @@ import { NotificationService } from './_services/notification-service';
 import { CommonModule } from '@angular/common';
 import { PrivateChat } from './_components/private-chat/private-chat';
 
+import { ToastModule } from 'primeng/toast';
+
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, PrivateChat, CommonModule],
+  imports: [RouterOutlet, Navbar, PrivateChat, CommonModule, ToastModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })

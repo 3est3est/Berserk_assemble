@@ -1,140 +1,202 @@
-<div class="network-container">
-  <header class="page-header">
-    <h1>Global Network</h1>
-    <p>Manage your connections and discover other elite members.</p>
+<div class="max-w-7xl mx-auto px-6 py-12 animate-in pb-32">
+  <!-- Network Header -->
+  <header class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+    <div class="animate-in">
+      <div class="glass-pill mb-4 text-indigo-400">Collaborative Grid</div>
+      <h1 class="text-5xl font-black uppercase tracking-tighter">
+        Signal <span class="vibe-gradient">Network</span>
+      </h1>
+      <p
+        class="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--text-secondary)] opacity-60 mt-2"
+      >
+        Manage operative connections and authorization pulses.
+      </p>
+    </div>
   </header>
 
-  <div class="network-nav">
-    <button [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
-      All Friends <span>({{ friends().length }})</span>
-    </button>
-    <button [class.active]="activeTab === 'online'" (click)="activeTab = 'online'">
-      Online Now <span>({{ onlineUsers().length }})</span>
-    </button>
-    <button [class.active]="activeTab === 'requests'" (click)="activeTab = 'requests'">
-      Pending Requests
-      <span class="badge" *ngIf="pendingRequests().length > 0">{{ pendingRequests().length }}</span>
-    </button>
+  <!-- Shuttle Navigation Tabs -->
+  <div class="flex justify-center mb-16">
+    <div class="glass-pill bg-black/20 p-1 flex gap-1 border-white/5 h-14">
+      <button [class.active-tab]="activeTab === 'all'" (click)="activeTab = 'all'" class="tab-btn">
+        All Friends <span class="ml-2 opacity-40">({{ friends().length }})</span>
+      </button>
+      <button
+        [class.active-tab]="activeTab === 'online'"
+        (click)="activeTab = 'online'"
+        class="tab-btn"
+      >
+        Online Now <span class="ml-2 opacity-40">({{ onlineUsers().length }})</span>
+      </button>
+      <button
+        [class.active-tab]="activeTab === 'requests'"
+        (click)="activeTab = 'requests'"
+        class="tab-btn relative"
+      >
+        Pending Clearances
+        @if (pendingRequests().length > 0) {
+          <span
+            class="absolute -top-1 -right-1 w-2 h-2 bg-indigo-500 rounded-full animate-pulse"
+          ></span>
+        }
+      </button>
+    </div>
   </div>
 
-  <div class="network-content">
-    @if (activeTab === 'all') {
-      <div class="agent-grid">
-        @for (friend of friends(); track friend.id) {
-          <div class="agent-card">
-            <div class="avatar-lg" [routerLink]="['/profile', friend.id]">
+  <div class="animate-in" style="animation-delay: 0.1s">
+    <!-- Active Grid View -->
+    <div class="agent-grid">
+      @if (activeTab === 'all' || activeTab === 'online') {
+        @for (
+          user of activeTab === 'all' ? friends() : onlineUsers();
+          track user.id;
+          let i = $index
+        ) {
+          <div
+            class="mission-card flex items-center gap-6 p-6 group"
+            [style.animation-delay]="i * 0.05 + 's'"
+          >
+            <div class="relative">
               <img
-                [src]="
-                  friend.avatar_url ||
-                  'https://ui-avatars.com/api/?name=' +
-                    friend.display_name +
-                    '&background=random&size=128'
-                "
-                alt="avatar"
+                [src]="user.avatar_url || 'https://ui-avatars.com/api/?name=' + user.display_name"
+                class="w-14 h-14 rounded-2xl border border-white/10 group-hover:border-indigo-500/50 transition-all object-cover"
               />
-            </div>
-            <div class="info">
-              <h3>{{ friend.display_name }}</h3>
-              <span class="rank">{{ friend.rank || 'Member' }}</span>
-            </div>
-            <div class="actions">
-              <button mat-icon-button color="primary" (click)="openChat(friend)">
-                <mat-icon>chat</mat-icon>
-              </button>
-              <button mat-icon-button [routerLink]="['/profile', friend.id]" title="View Profile">
-                <mat-icon>person</mat-icon>
-              </button>
-              <button
-                mat-icon-button
-                color="warn"
-                (click)="onRemoveFriend(friend)"
-                title="Unfriend"
-              >
-                <mat-icon>person_remove</mat-icon>
-              </button>
-            </div>
-          </div>
-        } @empty {
-          <div class="empty-state">
-            <mat-icon>group_off</mat-icon>
-            <p>Your network is empty. Start discovering missions to find allies.</p>
-            <a routerLink="/missions" class="browse-link">Discover Missions</a>
-          </div>
-        }
-      </div>
-    }
-
-    @if (activeTab === 'requests') {
-      <div class="requests-list">
-        @for (req of pendingRequests(); track req.id) {
-          <div class="request-item">
-            <div class="user" [routerLink]="['/profile', req.requester_id]" style="cursor: pointer">
-              @if (req.requester_avatar) {
-                <img [src]="req.requester_avatar" class="avatar-sm" alt="avatar" />
-              } @else {
-                <img
-                  [src]="
-                    'https://ui-avatars.com/api/?name=' +
-                    req.requester_name +
-                    '&background=random&size=64'
-                  "
-                  class="avatar-sm"
-                  alt="avatar"
-                />
+              @if (activeTab === 'online' || user.is_online) {
+                <div
+                  class="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-black"
+                ></div>
               }
-              <div class="user-info-text">
-                <span class="name">{{ req.requester_name }}</span>
-                <span class="desc">wants to join your network</span>
+            </div>
+
+            <div class="flex-grow">
+              <h3
+                class="text-lg font-black uppercase tracking-tight mb-1 group-hover:text-indigo-400 transition-colors"
+              >
+                {{ user.display_name }}
+              </h3>
+              <div class="text-[9px] font-black uppercase tracking-widest opacity-40">
+                {{ user.rank || 'Junior Operative' }}
               </div>
             </div>
-            <div class="actions">
-              <button class="accept" (click)="onAccept(req.id)">Accept</button>
-              <button class="reject" (click)="onReject(req.id)">Ignore</button>
+
+            <div class="flex items-center gap-2">
+              <button
+                pButton
+                icon="pi pi-comments"
+                (click)="openChat(user)"
+                class="p-button-text p-button-sm w-10 h-10 border border-white/5 hover:bg-white/5 opacity-40 hover:opacity-100 transition-all"
+              ></button>
+              <button
+                pButton
+                icon="pi pi-user"
+                [routerLink]="['/profile', user.id]"
+                class="p-button-text p-button-sm w-10 h-10 border border-white/5 hover:bg-white/5 opacity-40 hover:opacity-100 transition-all"
+              ></button>
+              @if (activeTab === 'all') {
+                <button
+                  pButton
+                  icon="pi pi-user-minus"
+                  (click)="onRemoveFriend(user)"
+                  class="p-button-text p-button-danger p-button-sm w-10 h-10 border border-white/5 opacity-20 hover:opacity-100 transition-all"
+                ></button>
+              }
             </div>
           </div>
         } @empty {
-          <div class="empty-state">
-            <mat-icon>verified_user</mat-icon>
-            <p>No pending clearances. Your network is secure.</p>
+          <div class="col-span-full py-24 text-center mission-card opacity-30">
+            <i class="pi pi-wifi-off text-4xl mb-6"></i>
+            <p class="text-[10px] font-black uppercase tracking-widest">
+              No signals detected in this sector.
+            </p>
           </div>
         }
-      </div>
-    }
+      }
 
-    @if (activeTab === 'online') {
-      <div class="agent-grid">
-        @for (user of onlineUsers(); track user.id) {
-          <div class="agent-card">
-            <div class="avatar-lg" [routerLink]="['/profile', user.id]">
+      @if (activeTab === 'requests') {
+        @for (req of pendingRequests(); track req.id; let i = $index) {
+          <div
+            class="mission-card flex items-center justify-between p-8 group animate-in"
+            [style.animation-delay]="i * 0.05 + 's'"
+          >
+            <div class="flex items-center gap-6">
               <img
                 [src]="
-                  user.avatar_url ||
-                  'https://ui-avatars.com/api/?name=' +
-                    user.display_name +
-                    '&background=random&size=128'
+                  req.requester_avatar || 'https://ui-avatars.com/api/?name=' + req.requester_name
                 "
-                alt="avatar"
+                class="w-14 h-14 rounded-2xl border border-white/10"
               />
-              <div class="status-indicator online"></div>
+              <div>
+                <h3 class="text-xl font-black uppercase tracking-tight mb-1">
+                  {{ req.requester_name }}
+                </h3>
+                <p
+                  class="text-[9px] font-black uppercase tracking-widest text-indigo-400 opacity-60"
+                >
+                  Requesting Signal Encryption
+                </p>
+              </div>
             </div>
-            <div class="info">
-              <h3>{{ user.display_name }}</h3>
-              <span class="status">Currently Active</span>
-            </div>
-            <div class="actions">
-              <button mat-flat-button color="primary" (click)="openChat(user)">
-                <mat-icon>chat</mat-icon>
-                Message
-              </button>
+            <div class="flex gap-3">
+              <button
+                pButton
+                label="AUTHORIZE"
+                (click)="onAccept(req.id)"
+                class="p-button-primary h-12 px-6 text-[9px]"
+              ></button>
+              <button
+                pButton
+                label="REJECT"
+                (click)="onReject(req.id)"
+                class="p-button-text p-button-danger border border-red-500/20 h-12 px-6 text-[9px]"
+              ></button>
             </div>
           </div>
         } @empty {
-          <div class="empty-state">
-            <mat-icon>sensors_off</mat-icon>
-            <p>No members currently detected on the network.</p>
+          <div class="col-span-full py-32 text-center mission-card opacity-40">
+            <i class="pi pi-verified text-5xl mb-6 text-indigo-400"></i>
+            <h3 class="text-xl font-black uppercase tracking-tight mb-2">Network Clean</h3>
+            <p class="text-[10px] font-black uppercase tracking-widest opacity-40">
+              No pending clearance requests detected.
+            </p>
           </div>
         }
-      </div>
-    }
+      }
+    </div>
   </div>
 </div>
+
+<style>
+  .tab-btn {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    opacity: 0.4;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex;
+    align-items: center;
+    height: 100%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    &:hover {
+      opacity: 0.8;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    &.active-tab {
+      opacity: 1;
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 1.5rem;
+  }
+</style>

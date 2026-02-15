@@ -46,6 +46,7 @@
           "options": {
             "browser": "src/main.ts",
             "tsConfig": "tsconfig.app.json",
+            "polyfills": ["zone.js"],
             "assets": [
               {
                 "glob": "**/*",
@@ -53,7 +54,6 @@
               }
             ],
             "styles": [
-              "src/material-theme.scss",
               "src/styles.scss"
             ],
             "outputMode": "static",

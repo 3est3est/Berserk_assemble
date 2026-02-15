@@ -9,20 +9,39 @@ import { CommonModule } from '@angular/common';
 import { CrewService } from '../_services/crew-service';
 import { getUserIdFromToken } from '../_helpers/util';
 import { ToastService } from '../_services/toast-service';
-import { MatIconModule } from '@angular/material/icon';
 import { WebsocketService } from '../_services/websocket-service';
 
 import { OnboardingService, GuideStep } from '../_services/onboarding-service';
 import { GuideOverlay } from '../_components/guide-overlay/guide-overlay';
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { TagModule } from 'primeng/tag';
 
 @Component({
   selector: 'app-missions',
   standalone: true,
-  imports: [FormsModule, CommonModule, MatIconModule, GuideOverlay],
+  imports: [
+    FormsModule,
+    CommonModule,
+    GuideOverlay,
+    ButtonModule,
+    InputTextModule,
+    SelectButtonModule,
+    TagModule,
+  ],
   templateUrl: './missions.html',
   styleUrl: './missions.scss',
 })
 export class Missions implements OnDestroy {
+  getZone(category?: string): string {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('sport') || cat.includes('gaming')) return 'zone-action';
+    if (cat.includes('social') || cat.includes('entertainment')) return 'zone-sunset';
+    if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
+    return 'zone-tech';
+  }
   private _onboarding = inject(OnboardingService);
 
   onboardingSteps: GuideStep[] = [

@@ -1,95 +1,92 @@
-<div class="home-container">
+<div class="relative min-h-screen overflow-hidden bg-black selection:bg-indigo-500/30">
+  <!-- Cinematic Mesh Background -->
+  <div class="bg-mesh"></div>
+
   <!-- Hero Section -->
-  <div class="hero-section">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <div class="status-badge"><span class="pulse"></span> SYSTEM ONLINE</div>
-      <h1 class="greeting">
-        Welcome back, <span class="highlight">{{ display_name() }}</span>
-      </h1>
-      <p class="subtitle">Ready to explore new activities today?</p>
-
-      <div class="hero-actions">
-        <button mat-flat-button color="primary" routerLink="/missions">
-          <mat-icon>explore</mat-icon> START MISSION
-        </button>
-        <button mat-stroked-button color="accent" routerLink="/network">
-          <mat-icon>groups</mat-icon> BROWSE CREW
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div class="dashboard-grid">
-    <!-- Active Members Card -->
-    <div class="activity-card online-agents glow">
-      <div class="card-header">
-        <mat-icon>sensors</mat-icon>
-        <div class="header-text">
-          <h3>Active Members</h3>
-          <span class="count">{{ onlineUsers().length }} online now</span>
-        </div>
-      </div>
-      <div class="agent-pills">
-        @for (user of onlineUsers(); track user.id) {
-          <a [routerLink]="['/profile', user.id]" class="agent-pill">
-            <img
-              [src]="
-                user.avatar_url ||
-                'https://ui-avatars.com/api/?name=' +
-                  user.display_name +
-                  '&background=random&size=64'
-              "
-              alt="avatar"
-            />
-            <div class="info">
-              <span class="name">{{ user.display_name }}</span>
-              <span class="status">ACTIVE</span>
-            </div>
-          </a>
-        } @empty {
-          <div class="empty-notif">
-            <mat-icon>notifications_paused</mat-icon>
-            <p>No active members online right now.</p>
-          </div>
-        }
+  <section
+    class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center"
+  >
+    <div class="animate-in mb-8">
+      <div class="glass-pill border-indigo-500/30 text-indigo-400">
+        Operational Protocol V2.5 Active
       </div>
     </div>
 
-    <!-- Pending Requests Card -->
-    <div
-      class="activity-card pending-clearance"
-      [class.has-requests]="pendingRequestsCount() > 0"
-      routerLink="/network"
+    <h1 class="text-godly mb-8 animate-in" style="animation-delay: 0.1s">
+      Vibe <span class="vibe-gradient">Assemble</span>
+    </h1>
+
+    <p
+      class="max-w-2xl text-[11px] font-black uppercase tracking-[0.5em] text-white/40 mb-16 leading-loose animate-in"
+      style="animation-delay: 0.2s"
     >
-      <div class="card-header">
-        <mat-icon>person_add</mat-icon>
-        <div class="header-text">
-          <h3>Network Requests</h3>
-          <span>Security authorizations</span>
+      The ultimate tactical coordination hub for elite operatives. <br />
+      Initialize missions. Command your squad. Master the grid.
+    </p>
+
+    <div class="flex flex-wrap justify-center gap-6 animate-in" style="animation-delay: 0.3s">
+      <button
+        pButton
+        label="INITIALIZE MISSION"
+        routerLink="/missions"
+        class="p-button-primary h-14 px-10 rounded-2xl"
+      ></button>
+      <button
+        pButton
+        label="COMMAND CENTER"
+        routerLink="/dashboard"
+        class="p-button-text h-14 px-10 border border-white/5 bg-white/5"
+      ></button>
+    </div>
+  </section>
+
+  <!-- Bento Stats & Operations -->
+  <section class="max-w-7xl mx-auto px-6 pb-32 animate-in" style="animation-delay: 0.4s">
+    <div class="grid grid-cols-12 gap-6">
+      <!-- Current Ops -->
+      <div class="col-span-12 lg:col-span-8 bento-card flex flex-col min-h-[400px]">
+        <div class="flex justify-between items-center mb-10">
+          <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-40">
+            Active Deployments
+          </h3>
+          <button
+            pButton
+            label="VIEW ALL"
+            icon="pi pi-arrow-right"
+            iconPos="right"
+            routerLink="/missions"
+            class="p-button-text text-[9px] h-8"
+          ></button>
+        </div>
+
+        <div class="flex-grow flex flex-col justify-center items-center opacity-20 text-center">
+          <i class="pi pi-bolt text-5xl mb-6"></i>
+          <p class="text-[10px] font-black uppercase tracking-[0.3em]">
+            Stand by for tactical updates
+          </p>
         </div>
       </div>
-      <div class="clearance-body">
-        <div class="status-circle" [class.active]="pendingRequestsCount() > 0">
-          <span class="number">{{ pendingRequestsCount() }}</span>
+
+      <!-- Quick Metrics -->
+      <div class="col-span-12 lg:col-span-4 grid grid-rows-2 gap-6">
+        <div class="bento-card border-none bg-indigo-600/10 flex flex-col justify-center">
+          <div class="text-[9px] font-black uppercase tracking-widest opacity-40 mb-4">
+            Active Agents
+          </div>
+          <div class="text-6xl font-black vibe-gradient leading-none">0</div>
         </div>
-        <div class="text">
-          <p class="main-text">
-            {{ pendingRequestsCount() === 0 ? 'System Secure.' : 'Pending Clearances' }}
-          </p>
-          <p class="sub-text">
-            {{
-              pendingRequestsCount() === 0
-                ? 'Your connections are authenticated.'
-                : 'New agents requesting network access.'
-            }}
-          </p>
+        <div class="bento-card flex flex-col justify-center">
+          <div class="text-[9px] font-black uppercase tracking-widest opacity-40 mb-4">
+            Network Status
+          </div>
+          <div class="flex items-center gap-3">
+            <div
+              class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.5)]"
+            ></div>
+            <span class="text-xl font-black uppercase tracking-tighter">Synchronized</span>
+          </div>
         </div>
-      </div>
-      <div class="footer-action">
-        <span>VIEW DETAILS</span>
-        <mat-icon>arrow_forward</mat-icon>
       </div>
     </div>
-  </div>
+  </section>
 </div>

@@ -17,13 +17,13 @@ import { WebsocketService } from '../_services/websocket-service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [MatIconModule, CommonModule, RouterModule, MatButtonModule],
+  imports: [CommonModule, RouterModule, ButtonModule],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

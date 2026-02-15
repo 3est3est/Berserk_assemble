@@ -10,18 +10,18 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';
 import { ChatService, PrivateMessage } from '../../_services/chat-service';
 import { FriendshipService } from '../../_services/friendship-service';
 import { getUserIdFromToken } from '../../_helpers/util';
 import { Subscription } from 'rxjs';
 
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+
 @Component({
   selector: 'app-private-chat',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatIconModule, MatButtonModule, MatBadgeModule],
+  imports: [CommonModule, FormsModule, ButtonModule],
   templateUrl: './private-chat.html',
   styleUrl: './private-chat.scss',
 })
@@ -209,14 +209,7 @@ export class PrivateChat implements OnInit, OnDestroy {
     this.newMessage = '';
 
     this._chatService.sendMessage(this.selectedUser.id, payload).subscribe((msg) => {
-      // Find temp msg and update it, or just reload to be safe and avoid dups.
-      // Easiest is to replace the last msg if it matches or just let the socket/subscription handle it.
-      // But we already pushed it. Let's just fix the ID if needed or do nothing since socket will come.
-
-      // Remove temp msg to avoid duplication when real one comes via socket or response
       this.messages = this.messages.filter((m) => m.id !== -1);
-
-      // Check if real msg already exists via socket
       const exists = this.messages.some((m) => m.id === msg.id);
       if (!exists) {
         this.messages.push(msg);
@@ -244,16 +237,11 @@ export class PrivateChat implements OnInit, OnDestroy {
 
     try {
       await this._friendshipService.removeFriend(this.selectedUser.id);
-
-      // Close chat and refresh lists
       this.closeChat();
       this.loadFriends();
       this.loadRecentChats();
-
-      // Optional: Show feedback (but we don't have Toast service here yet, maybe console or alert if failed)
     } catch (err) {
       console.error('Error removing friend:', err);
-      // alert('Failed to remove friend.');
     }
   }
 
@@ -263,6 +251,6 @@ export class PrivateChat implements OnInit, OnDestroy {
         this.scrollContainer.nativeElement.scrollTop =
           this.scrollContainer.nativeElement.scrollHeight;
       }
-    }, 100); // Small delay to ensure DOM is updated
+    }, 100);
   }
 }

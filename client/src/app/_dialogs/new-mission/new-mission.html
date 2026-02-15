@@ -1,73 +1,120 @@
-<div class="new-mission-dialog">
-  <h2 mat-dialog-title>Create New Activity</h2>
+<div class="glass-surface border border-white/10 rounded-2xl overflow-hidden min-w-[480px]">
+  <!-- Header -->
+  <div class="px-6 py-4 border-b border-white/5 bg-white/5">
+    <h2 class="text-xs font-black uppercase tracking-[0.2em] opacity-60 m-0">
+      Protocol: Initialize Mission
+    </h2>
+  </div>
 
-  <mat-dialog-content>
-    <div class="form-container">
-      <mat-form-field appearance="outline">
-        <mat-label>Activity Name</mat-label>
-        <input matInput [(ngModel)]="addMission.name" placeholder="Enter activity name" required />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Category</mat-label>
-        <mat-select [(ngModel)]="addMission.category">
-          @for (cat of categories; track cat) {
-            <mat-option [value]="cat">{{ cat }}</mat-option>
-          }
-        </mat-select>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <textarea
-          matInput
-          [(ngModel)]="addMission.description"
-          placeholder="What's the plan? Give some details."
-          rows="4"
-        ></textarea>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Max Participants</mat-label>
-        <input
-          matInput
-          type="number"
-          [(ngModel)]="addMission.max_crew"
-          placeholder="Max number of people"
-          min="1"
-          max="50"
-        />
-        <mat-hint>Recommended: 5-10</mat-hint>
-      </mat-form-field>
-
-      <div class="custom-field">
-        <label>Scheduled Time</label>
-        <input
-          class="native-datetime-input"
-          type="datetime-local"
-          [(ngModel)]="addMission.scheduled_at"
-          placeholder="When will this happen?"
-        />
-      </div>
-
-      <mat-form-field appearance="outline">
-        <mat-label>Location</mat-label>
-        <input matInput [(ngModel)]="addMission.location" placeholder="Where will this happen?" />
-        <mat-icon matSuffix>place</mat-icon>
-      </mat-form-field>
+  <!-- Body -->
+  <div class="p-6 flex flex-col gap-5">
+    <!-- Mission Name -->
+    <div class="flex flex-col gap-2">
+      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+        >Codename / Mission Name</label
+      >
+      <input
+        pInputText
+        [(ngModel)]="addMission.name"
+        placeholder="Enter activity name"
+        class="w-full bg-white/5 border-white/10 h-11 text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+      />
     </div>
-  </mat-dialog-content>
 
-  <mat-dialog-actions align="end">
-    <button mat-button mat-dialog-close class="cancel-btn">Cancel</button>
+    <!-- Category -->
+    <div class="flex flex-col gap-2">
+      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+        >Operational Category</label
+      >
+      <p-select
+        [(ngModel)]="addMission.category"
+        [options]="categories"
+        optionLabel="label"
+        optionValue="value"
+        placeholder="Select Type"
+        styleClass="w-full bg-white/5 border-white/10 h-11 flex items-center text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+      ></p-select>
+    </div>
+
+    <!-- Description -->
+    <div class="flex flex-col gap-2">
+      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+        >Mission Intelligence / Briefing</label
+      >
+      <textarea
+        pTextarea
+        [(ngModel)]="addMission.description"
+        [autoResize]="true"
+        rows="3"
+        class="w-full bg-white/5 border-white/10 text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+      ></textarea>
+    </div>
+
+    <!-- Stats & Time -->
+    <div class="grid grid-cols-2 gap-4">
+      <div class="flex flex-col gap-2">
+        <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+          >Max Crew</label
+        >
+        <p-inputNumber
+          [(ngModel)]="addMission.max_crew"
+          [min]="1"
+          [max]="50"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          decrementButtonClass="p-button-text p-button-secondary h-full border-0"
+          incrementButtonClass="p-button-text p-button-secondary h-full border-0"
+          styleClass="w-full h-11 bg-white/5 border-white/10 overflow-hidden"
+          inputClass="flex-grow bg-transparent border-0 text-center text-sm font-bold h-full"
+        ></p-inputNumber>
+      </div>
+      <div class="flex flex-col gap-2">
+        <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+          >Extraction Schedule</label
+        >
+        <p-datepicker
+          [(ngModel)]="addMission.scheduled_at"
+          [showTime]="true"
+          [hourFormat]="'12'"
+          appendTo="body"
+          styleClass="w-full bg-white/5 border-white/10 h-11 focus:border-indigo-500/50 transition-all shadow-inner"
+          inputClass="w-full h-full bg-transparent border-0 px-3 text-sm font-medium cursor-pointer"
+        ></p-datepicker>
+      </div>
+    </div>
+
+    <!-- Location -->
+    <div class="flex flex-col gap-2">
+      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
+        >Deployment Coordinates / Location</label
+      >
+      <span class="p-input-icon-left w-full">
+        <i class="pi pi-map-marker text-indigo-400/50"></i>
+        <input
+          pInputText
+          [(ngModel)]="addMission.location"
+          placeholder="Where?"
+          class="w-full bg-white/5 border-white/10 h-11 text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+        />
+      </span>
+    </div>
+  </div>
+
+  <!-- Footer Action -->
+  <div class="px-6 py-4 bg-white/5 border-t border-white/5 flex justify-end gap-3">
     <button
-      mat-raised-button
-      color="primary"
+      pButton
+      label="ABORT"
+      (click)="_ref.close()"
+      class="p-button-text p-button-sm text-[9px] font-black tracking-widest"
+    ></button>
+    <button
+      pButton
+      label="LEGALIZE MISSION"
+      icon="pi pi-check-circle"
       (click)="onSubmit()"
       [disabled]="!addMission.name"
-      class="create-btn"
-    >
-      Create Activity
-    </button>
-  </mat-dialog-actions>
+      class="p-button-primary h-10 px-8 text-[9px] font-black tracking-widest shadow-xl shadow-indigo-500/20"
+    ></button>
+  </div>
 </div>

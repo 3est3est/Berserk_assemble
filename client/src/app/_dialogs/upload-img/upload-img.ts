@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { fileTypeFromBlob } from 'file-type';
+import { CommonModule } from '@angular/common';
 
-import { MatIconModule } from '@angular/material/icon';
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'app-upload-img',
-  imports: [MatDialogContent, MatDialogTitle, MatButtonModule, MatIconModule],
+  standalone: true,
+  imports: [ButtonModule, CommonModule],
   templateUrl: './upload-img.html',
   styleUrl: './upload-img.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -17,10 +19,10 @@ export class UploadImg {
   imgFile: File | undefined;
   imgPreview = signal<string | undefined>(undefined);
   errorMsg = signal<string | undefined>(undefined);
-  public readonly _dialogRef = inject(MatDialogRef<UploadImg>);
+  public readonly _ref = inject(DynamicDialogRef);
 
   onSubmit() {
-    this._dialogRef.close(this.imgFile);
+    this._ref.close(this.imgFile);
   }
 
   async onImgPicked(event: Event) {

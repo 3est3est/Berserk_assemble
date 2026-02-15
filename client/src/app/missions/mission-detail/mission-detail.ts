@@ -7,17 +7,18 @@ import { Mission } from '../../_models/mission';
 import { PassportService } from '../../_services/passport-service';
 import { ToastService } from '../../_services/toast-service';
 import { WebsocketService } from '../../_services/websocket-service';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MissionComment } from '../../_models/mission-comment';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+
 @Component({
   selector: 'app-mission-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule, MatIconModule, FormsModule],
+  imports: [CommonModule, RouterModule, ButtonModule, FormsModule],
   templateUrl: './mission-detail.html',
   styleUrl: './mission-detail.scss',
 })

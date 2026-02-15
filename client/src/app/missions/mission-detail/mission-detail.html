@@ -1,202 +1,319 @@
-<div class="mission-room-container">
+<div class="max-w-7xl mx-auto px-6 py-12 animate-in pb-32">
   @if (loading) {
-    <div class="loading-state">
-      <div class="spinner"></div>
-      <p>Synchronizing mission protocol...</p>
+    <div class="h-[60vh] flex flex-col items-center justify-center opacity-40">
+      <i class="pi pi-spin pi-spinner text-4xl mb-6"></i>
+      <p class="text-[10px] font-black uppercase tracking-[0.4em]">
+        Synchronizing Mission Protocol...
+      </p>
     </div>
   } @else if (isCountdownActive) {
-    <div class="countdown-overlay">
-      <div class="box">
-        <div class="prepare">PREPARING DEPARTURE</div>
-        <div class="timer">{{ countdownValue }}</div>
+    <div
+      class="fixed inset-0 bg-black/80 backdrop-blur-2xl z-[2000] flex items-center justify-center"
+    >
+      <div class="text-center animate-pulse">
+        <div class="text-indigo-400 text-[12px] font-black uppercase tracking-[0.4em] mb-8">
+          Departure Imminent
+        </div>
+        <div class="text-[16rem] font-black text-white leading-none tracking-tighter">
+          {{ countdownValue }}
+        </div>
       </div>
     </div>
   } @else if (mission) {
-    <header class="page-header">
-      <div class="info">
-        <h1>{{ mission.name }}</h1>
-        <p class="desc">{{ mission.description }}</p>
-        <div class="logistics">
-          @if (mission.scheduled_at) {
-            <div class="item">
-              <mat-icon>schedule</mat-icon>
-              <span>{{ mission.scheduled_at | date: 'MMM d, h:mm a' }}</span>
-            </div>
-          }
-          @if (mission.location) {
-            <div class="item">
-              <mat-icon>place</mat-icon>
-              <span>{{ mission.location }}</span>
-            </div>
-          }
+    <!-- Mission Godly Header -->
+    <header class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-8">
+      <div class="flex-grow">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="glass-pill text-indigo-400">{{ mission.category || 'Standard Op' }}</div>
+          <div
+            [class]="
+              'glass-pill border-none ' +
+              (mission.status === 'Open'
+                ? 'bg-green-500/10 text-green-500'
+                : 'bg-indigo-500/10 text-indigo-400')
+            "
+          >
+            {{ mission.status }}
+          </div>
         </div>
+        <h1 class="text-5xl font-black uppercase tracking-tighter mb-4">{{ mission.name }}</h1>
+        <p
+          class="text-sm font-bold text-[var(--text-secondary)] opacity-60 uppercase tracking-[0.3em] max-w-2xl leading-relaxed"
+        >
+          {{ mission.description || 'Secure intelligence frequency. Mission briefing initiated.' }}
+        </p>
       </div>
-      <div class="badges">
-        @if (mission.category) {
-          <div class="category-badge">
-            {{ mission.category }}
+
+      <div class="flex gap-4 mb-4">
+        @if (mission.location) {
+          <div class="glass-pill flex items-center gap-2 opacity-60">
+            <i class="pi pi-map-marker"></i>
+            <span>{{ mission.location }}</span>
           </div>
         }
-        <div [class]="'status-badge ' + mission.status.toLowerCase()">
-          {{ mission.status }}
-        </div>
+        @if (mission.scheduled_at) {
+          <div class="glass-pill flex items-center gap-2 opacity-60">
+            <i class="pi pi-clock"></i>
+            <span>{{ mission.scheduled_at | date: 'HH:mm' }}</span>
+          </div>
+        }
       </div>
     </header>
 
-    <div class="room-grid">
-      <!-- Left: Crew Panel -->
-      <aside class="panel">
-        <div class="panel-header">
-          <h3>Crew ({{ mission.crew_count }}/{{ mission.max_crew }})</h3>
-        </div>
-        <div class="crew-list">
-          <div class="member-card active-user" [class.chief]="mission.chief_id === currentUserId">
-            <a [routerLink]="['/profile', mission.chief_id]">
-              <img
-                [src]="
-                  mission.chief_avatar_url ||
-                  'https://ui-avatars.com/api/?name=' +
-                    mission.chief_display_name +
-                    '&background=random&size=64'
-                "
-                class="avatar"
-              />
-            </a>
-            <div class="info">
-              <span class="name">
-                <a [routerLink]="['/profile', mission.chief_id]">{{
-                  mission.chief_display_name
-                }}</a>
-              </span>
-              <span class="role">Chief Officer</span>
+    <!-- Tactical Room Grid -->
+    <div class="grid grid-cols-12 gap-8 h-[700px]">
+      <!-- Left: Crew Roster -->
+      <aside
+        class="col-span-12 lg:col-span-3 bento-card flex flex-col p-8 overflow-hidden bg-white/5 border border-white/5"
+      >
+        <h3
+          class="text-xs font-black uppercase tracking-[0.2em] mb-8 flex justify-between items-center opacity-40"
+        >
+          Crew Roster
+          <span class="opacity-100 text-indigo-400"
+            >{{ mission.crew_count }}/{{ mission.max_crew }}</span
+          >
+        </h3>
+
+        <div class="flex-grow overflow-y-auto space-y-4 pr-2">
+          <!-- Chief Section -->
+          <div
+            class="section-label text-[8px] font-black uppercase tracking-widest opacity-20 mb-2"
+          >
+            Commanding Officer
+          </div>
+          <div
+            class="flex items-center gap-4 p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20"
+          >
+            <img
+              [src]="
+                mission.chief_avatar_url ||
+                'https://ui-avatars.com/api/?name=' + mission.chief_display_name
+              "
+              class="w-10 h-10 rounded-xl"
+            />
+            <div class="flex-grow">
+              <div class="text-[11px] font-black uppercase tracking-tight">
+                {{ mission.chief_display_name }}
+              </div>
+              <div class="text-[8px] font-black uppercase tracking-widest text-indigo-400">
+                Chief Officer
+              </div>
             </div>
           </div>
 
+          <!-- Crew Section -->
+          <div
+            class="section-label text-[8px] font-black uppercase tracking-widest opacity-20 mt-8 mb-2"
+          >
+            Deployed Operatives
+          </div>
           @for (member of crew; track member.id) {
             @if (member.id !== mission.chief_id) {
-              <div class="member-card" [class.active-user]="member.id === currentUserId">
-                <a [routerLink]="['/profile', member.id]">
-                  <img
-                    [src]="
-                      member.avatar_url ||
-                      'https://ui-avatars.com/api/?name=' +
-                        member.display_name +
-                        '&background=random&size=64'
-                    "
-                    class="avatar"
-                  />
-                </a>
-                <div class="info">
-                  <span class="name">
-                    <a [routerLink]="['/profile', member.id]">{{ member.display_name }}</a>
-                  </span>
-                  <span class="role">Mission Crew</span>
+              <div
+                class="flex items-center gap-4 p-3 rounded-2xl hover:bg-white/5 transition-all group"
+              >
+                <img
+                  [src]="
+                    member.avatar_url || 'https://ui-avatars.com/api/?name=' + member.display_name
+                  "
+                  class="w-10 h-10 rounded-xl border border-white/5"
+                />
+                <div class="flex-grow">
+                  <div class="text-[11px] font-black uppercase tracking-tight">
+                    {{ member.display_name }}
+                  </div>
+                  <div class="text-[8px] font-black uppercase tracking-widest opacity-30">
+                    Active Crew
+                  </div>
                 </div>
                 @if (isChief && mission.status === 'Open') {
-                  <button class="kick-btn" (click)="onKick(member)">
-                    <mat-icon size="small">remove_circle</mat-icon>
-                  </button>
+                  <button
+                    pButton
+                    icon="pi pi-minus-circle"
+                    (click)="onKick(member)"
+                    class="p-button-text p-button-danger p-0 w-8 h-8 opacity-0 group-hover:opacity-100 transition-all"
+                  ></button>
                 }
               </div>
             }
+          } @empty {
+            <div
+              class="py-12 text-center opacity-20 italic text-[10px] font-black uppercase tracking-widest"
+            >
+              Awaiting deployment.
+            </div>
           }
         </div>
       </aside>
 
-      <!-- Center: Chat Panel -->
-      <main class="panel chat-panel">
-        <div class="panel-header">
-          <h3>Mission Briefing</h3>
+      <!-- Center: Tactical Comms -->
+      <main class="col-span-12 lg:col-span-6 bento-card p-0 flex flex-col overflow-hidden">
+        <div class="p-8 border-b border-white/5 flex justify-between items-center">
+          <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-40">Briefing Channel</h3>
           @if (isChief && comments.length > 0) {
-            <button class="icon-btn-danger" (click)="clearChat()" title="Clear History">
-              <mat-icon>delete</mat-icon>
-              <span>Clear</span>
-            </button>
+            <button
+              pButton
+              icon="pi pi-trash"
+              label="CLEAR FREQUENCY"
+              (click)="clearChat()"
+              class="p-button-text p-button-danger text-[8px] h-8"
+            ></button>
           }
         </div>
 
-        <div class="messages" #chatMessages>
+        <div class="flex-grow overflow-y-auto p-8 flex flex-col gap-10" #chatMessages>
           @for (comment of comments; track comment.id) {
-            <div class="message" [class.own]="comment.brawler_id === currentUserId">
-              <a [routerLink]="['/profile', comment.brawler_id]">
-                <img
-                  [src]="
-                    comment.brawler_avatar_url ||
-                    'https://ui-avatars.com/api/?name=' +
-                      comment.brawler_display_name +
-                      '&background=random&size=64'
-                  "
-                  class="msg-avatar"
-                />
-              </a>
-              <div class="bubble">
-                <div class="header">
-                  <span class="author">
-                    <a [routerLink]="['/profile', comment.brawler_id]">{{
-                      comment.brawler_display_name
-                    }}</a>
-                  </span>
-                  <span class="time">{{ comment.created_at | date: 'h:mm a' }}</span>
+            <div
+              class="flex gap-6 group"
+              [class.flex-row-reverse]="comment.brawler_id === currentUserId"
+            >
+              <img
+                [src]="
+                  comment.brawler_avatar_url ||
+                  'https://ui-avatars.com/api/?name=' + comment.brawler_display_name
+                "
+                class="w-10 h-10 rounded-xl mt-1 object-cover"
+              />
+              <div
+                class="flex flex-col gap-2"
+                [class.items-end]="comment.brawler_id === currentUserId"
+              >
+                <div
+                  class="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest opacity-30"
+                >
+                  <span>{{ comment.brawler_display_name }}</span>
+                  <span>{{ comment.created_at | date: 'HH:mm' }}</span>
                 </div>
-                <div class="text">{{ comment.content }}</div>
+                <div
+                  class="p-4 rounded-2xl text-[13px] leading-relaxed"
+                  [class]="
+                    comment.brawler_id === currentUserId
+                      ? 'bg-indigo-600 text-white rounded-tr-none'
+                      : 'bg-white/5 text-white/80 border border-white/5 rounded-tl-none'
+                  "
+                >
+                  {{ comment.content }}
+                </div>
               </div>
             </div>
           } @empty {
-            <div class="empty-chat">Room established. Stand by for orders.</div>
+            <div
+              class="h-full flex flex-col items-center justify-center opacity-20 text-center px-10"
+            >
+              <i class="pi pi-lock text-4xl mb-6"></i>
+              <p class="text-[10px] font-black uppercase tracking-[0.3em]">
+                Encrypted Tactical Channel Locked
+              </p>
+              <p
+                class="text-[9px] mt-2 font-medium opacity-60 uppercase tracking-widest leading-loose"
+              >
+                Transmit your first signal to activate room records.
+              </p>
+            </div>
           }
         </div>
 
-        <div class="input-area" [class.disabled]="isMissionDeleted || isKicked">
+        <div class="p-8 border-t border-white/5 flex items-center gap-4 bg-black/10">
           <input
             type="text"
-            [placeholder]="
-              isMissionDeleted || isKicked ? 'Broadcast offline' : 'Send message to crew...'
-            "
+            class="flex-grow h-14 bg-white/5 rounded-2xl px-6 text-[13px] border border-white/5 focus:border-indigo-500/50 outline-none transition-all"
             [(ngModel)]="newCommentContent"
             (keyup.enter)="sendComment()"
             [disabled]="sendingComment || isMissionDeleted || isKicked"
+            [placeholder]="
+              isMissionDeleted || isKicked ? 'Broadcast offline...' : 'Send secure transmit...'
+            "
           />
-          <button (click)="sendComment()" [disabled]="sendingComment || !newCommentContent.trim()">
-            <mat-icon>{{ sendingComment ? 'sync' : 'send' }}</mat-icon>
-          </button>
+          <button
+            pButton
+            icon="pi pi-send"
+            (click)="sendComment()"
+            [disabled]="sendingComment || !newCommentContent.trim()"
+            class="w-14 h-14 bg-indigo-600"
+          ></button>
         </div>
       </main>
 
-      <!-- Right: Command Panel -->
-      <aside class="panel command-panel">
-        <div class="panel-header">
-          <h3>Command Center</h3>
-        </div>
-        <div class="actions">
-          @if (isChief) {
-            @if (mission.status === 'Open') {
-              <button
-                class="btn-action start"
-                [disabled]="mission.crew_count === 0"
-                (click)="onStart()"
+      <!-- Right: Command Center -->
+      <aside
+        class="col-span-12 lg:col-span-3 bento-card flex flex-col p-8 bg-gradient-to-t from-indigo-500/5 to-transparent"
+      >
+        <h3 class="text-xs font-black uppercase tracking-[0.2em] mb-10 opacity-40 px-2">
+          Command Center
+        </h3>
+
+        <div class="flex-grow space-y-6">
+          <div class="p-6 rounded-3xl bg-white/5 border border-white/10">
+            <div class="text-[9px] font-black uppercase tracking-widest opacity-40 mb-4">
+              Mission Integrity
+            </div>
+            <div class="flex items-center justify-between text-2xl font-black">
+              <span
+                >{{
+                  mission.crew_count >= mission.max_crew
+                    ? '100'
+                    : ((mission.crew_count / mission.max_crew) * 100).toFixed(0)
+                }}%</span
               >
-                <mat-icon>play_circle</mat-icon> Execute Mission
-              </button>
-            } @else if (mission.status === 'InProgress') {
-              <button class="btn-action complete" (click)="onComplete()">
-                <mat-icon>verified</mat-icon> Mark Success
-              </button>
-              <button class="btn-action fail" (click)="onFail()">
-                <mat-icon>error</mat-icon> Report Failure
-              </button>
-            } @else {
-              <p class="final-status">Operation Finalized</p>
-            }
+              <i class="pi pi-verified text-indigo-400"></i>
+            </div>
+          </div>
+
+          @if (isChief) {
+            <div class="pt-6 border-t border-white/5 space-y-4">
+              <label class="text-[8px] font-black uppercase tracking-widest opacity-30 px-2"
+                >Operational Controls</label
+              >
+              @if (mission.status === 'Open') {
+                <button
+                  pButton
+                  label="INITIALIZE EXECUTION"
+                  icon="pi pi-play"
+                  [disabled]="mission.crew_count === 0"
+                  (click)="onStart()"
+                  class="w-full h-14 p-button-primary text-[10px] font-black tracking-widest"
+                ></button>
+              } @else if (mission.status === 'InProgress') {
+                <button
+                  pButton
+                  label="MARK SUCCESS"
+                  icon="pi pi-check"
+                  (click)="onComplete()"
+                  class="w-full h-14 p-button-success text-[10px]"
+                ></button>
+                <button
+                  pButton
+                  label="REPORT FAILURE"
+                  icon="pi pi-times"
+                  (click)="onFail()"
+                  class="w-full h-14 p-button-danger p-button-text border border-red-500/20 text-[10px]"
+                ></button>
+              } @else {
+                <div class="p-8 text-center bg-white/5 rounded-3xl border border-white/5">
+                  <div class="text-[10px] font-black uppercase tracking-widest opacity-40">
+                    Operation Closed
+                  </div>
+                </div>
+              }
+            </div>
           } @else {
-            <div class="crew-brief">
-              <p>Stand by for Chief's command. Maintain communication.</p>
+            <div class="p-8 text-center bg-white/5 rounded-3xl border border-white/5">
+              <i class="pi pi-shield text-2xl opacity-20 mb-4 block"></i>
+              <p class="text-[9px] font-black uppercase tracking-widest opacity-40 leading-loose">
+                Awaiting command authorization from Chief Officer.
+              </p>
             </div>
           }
 
           @if (isMissionDeleted || isKicked) {
-            <button class="btn-action fail" (click)="leaveMission()">
-              <mat-icon>logout</mat-icon> Exit Room
-            </button>
+            <button
+              pButton
+              label="ABORT ROOM"
+              icon="pi pi-sign-out"
+              (click)="leaveMission()"
+              class="w-full h-14 p-button-danger text-[10px]"
+            ></button>
           }
         </div>
       </aside>

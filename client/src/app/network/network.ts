@@ -2,16 +2,17 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FriendshipService } from '../_services/friendship-service';
 import { ChatService } from '../_services/chat-service';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { ToastService } from '../_services/toast-service';
 import { PassportService } from '../_services/passport-service';
 
+// PrimeNG
+import { ButtonModule } from 'primeng/button';
+
 @Component({
   selector: 'app-network',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ButtonModule],
   templateUrl: './network.html',
   styleUrl: './network.scss',
 })
