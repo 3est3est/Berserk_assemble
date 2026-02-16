@@ -1,13 +1,22 @@
-<div class="relative">
+<div class="relative inline-block">
   <button
     pButton
     icon="pi pi-users"
-    class="p-button-text p-button-rounded w-10 h-10 relative"
+    class="p-button-text p-button-rounded w-10 h-10 relative !text-zinc-500 hover:!text-white"
     (click)="op.toggle($event)"
   >
     @if (onlineUsers().length > 0) {
-      <span class="absolute top-1 right-1 flex h-2 w-2">
-        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-green-500"></span>
+      <span
+        class="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-green-500 border border-black shadow-[0_0_6px_rgba(34,197,94,0.6)]"
+        title="Online"
+      ></span>
+    }
+    @if (pendingCount() > 0) {
+      <span
+        class="nav-stat-badge absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-amber-500 text-black text-[10px] font-black shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+        title="Pending friend requests"
+      >
+        {{ pendingCount() > 99 ? '99+' : pendingCount() }}
       </span>
     }
   </button>

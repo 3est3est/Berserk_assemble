@@ -1,120 +1,118 @@
-<div class="glass-surface border border-white/10 rounded-2xl overflow-hidden min-w-[480px]">
+<div class="os-dialog-container">
   <!-- Header -->
-  <div class="px-6 py-4 border-b border-white/5 bg-white/5">
-    <h2 class="text-xs font-black uppercase tracking-[0.2em] opacity-60 m-0">
-      Protocol: Initialize Mission
-    </h2>
+  <div class="os-dialog-header">
+    <div class="os-dot-controls mb-6"><span></span><span></span><span></span></div>
+    <div class="flex items-center gap-6 mb-3">
+      <div
+        class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-xl shadow-2xl"
+      >
+        <i class="pi pi-plus text-black"></i>
+      </div>
+      <h2 class="text-3xl font-black tracking-[-0.04em] m-0 uppercase">
+        Initialize <span class="opacity-40 italic">Protocol</span>
+      </h2>
+    </div>
+    <p class="os-label !mb-0 text-zinc-500">
+      Establish mission parameters and coordination details
+    </p>
   </div>
 
   <!-- Body -->
-  <div class="p-6 flex flex-col gap-5">
+  <div class="os-dialog-body">
     <!-- Mission Name -->
-    <div class="flex flex-col gap-2">
-      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
-        >Codename / Mission Name</label
-      >
+    <div class="os-input-field">
+      <label class="os-label text-zinc-600">Mission_Codename</label>
       <input
         pInputText
         [(ngModel)]="addMission.name"
-        placeholder="Enter activity name"
-        class="w-full bg-white/5 border-white/10 h-11 text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+        placeholder="ENTER_SIGNAL_NAME..."
+        class="w-full bg-white/5 border-white/5 h-16 rounded-xl px-6 text-sm font-bold focus:bg-white/10 focus:border-white/20 transition-all outline-none"
       />
     </div>
 
     <!-- Category -->
-    <div class="flex flex-col gap-2">
-      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
-        >Operational Category</label
-      >
+    <div class="os-input-field">
+      <label class="os-label text-zinc-600">Deployment_Category</label>
       <p-select
         [(ngModel)]="addMission.category"
         [options]="categories"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select Type"
-        styleClass="w-full bg-white/5 border-white/10 h-11 flex items-center text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+        placeholder="SELECT_TYPE..."
+        styleClass="w-full bg-white/5 border-white/5 h-16 flex items-center rounded-xl px-4 text-sm font-bold transition-all"
       ></p-select>
     </div>
 
     <!-- Description -->
-    <div class="flex flex-col gap-2">
-      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
-        >Mission Intelligence / Briefing</label
-      >
+    <div class="os-input-field">
+      <label class="os-label text-zinc-600">Mission_Briefing</label>
       <textarea
         pTextarea
         [(ngModel)]="addMission.description"
         [autoResize]="true"
         rows="3"
-        class="w-full bg-white/5 border-white/10 text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+        placeholder="ESTABLISH_CONTEXT..."
+        class="w-full bg-white/5 border-white/5 rounded-xl p-6 text-sm font-bold outline-none focus:bg-white/10 focus:border-white/20 transition-all"
       ></textarea>
     </div>
 
     <!-- Stats & Time -->
-    <div class="grid grid-cols-2 gap-4">
-      <div class="flex flex-col gap-2">
-        <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
-          >Max Crew</label
-        >
+    <div class="grid grid-cols-2 gap-8">
+      <div class="os-input-field">
+        <label class="os-label text-zinc-600">Operative_Limit</label>
         <p-inputNumber
           [(ngModel)]="addMission.max_crew"
           [min]="1"
           [max]="50"
           [showButtons]="true"
-          buttonLayout="horizontal"
-          decrementButtonClass="p-button-text p-button-secondary h-full border-0"
-          incrementButtonClass="p-button-text p-button-secondary h-full border-0"
-          styleClass="w-full h-11 bg-white/5 border-white/10 overflow-hidden"
-          inputClass="flex-grow bg-transparent border-0 text-center text-sm font-bold h-full"
+          styleClass="w-full h-16 bg-white/5 border border-white/5 rounded-xl overflow-hidden"
+          inputClass="flex-grow bg-transparent border-0 text-center text-sm font-black h-full text-white"
         ></p-inputNumber>
       </div>
-      <div class="flex flex-col gap-2">
-        <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
-          >Extraction Schedule</label
-        >
+      <div class="os-input-field">
+        <label class="os-label text-zinc-600">Deployment_Time</label>
         <p-datepicker
           [(ngModel)]="addMission.scheduled_at"
           [showTime]="true"
-          [hourFormat]="'12'"
           appendTo="body"
-          styleClass="w-full bg-white/5 border-white/10 h-11 focus:border-indigo-500/50 transition-all shadow-inner"
-          inputClass="w-full h-full bg-transparent border-0 px-3 text-sm font-medium cursor-pointer"
+          styleClass="w-full bg-white/5 border-white/5 h-16 rounded-xl"
+          inputClass="w-full h-full bg-transparent border-0 px-6 text-sm font-bold text-white"
         ></p-datepicker>
       </div>
     </div>
 
     <!-- Location -->
-    <div class="flex flex-col gap-2">
-      <label class="text-[10px] font-black uppercase tracking-widest text-indigo-400"
-        >Deployment Coordinates / Location</label
-      >
-      <span class="p-input-icon-left w-full">
-        <i class="pi pi-map-marker text-indigo-400/50"></i>
+    <div class="os-input-field">
+      <label class="os-label text-zinc-600">Sector_Location</label>
+      <div class="relative group">
         <input
           pInputText
           [(ngModel)]="addMission.location"
-          placeholder="Where?"
-          class="w-full bg-white/5 border-white/10 h-11 text-sm font-medium focus:border-indigo-500/50 transition-all shadow-inner"
+          placeholder="IDENTIFY_COORDINATES..."
+          class="w-full bg-white/5 border-white/5 h-16 rounded-xl pl-14 pr-6 text-sm font-bold focus:bg-white/10 focus:border-white/20 transition-all outline-none"
         />
-      </span>
+        <i
+          class="pi pi-map-marker absolute left-6 top-1/2 -translate-y-1/2 text-zinc-800 group-focus-within:text-white transition-all"
+        ></i>
+      </div>
     </div>
   </div>
 
   <!-- Footer Action -->
-  <div class="px-6 py-4 bg-white/5 border-t border-white/5 flex justify-end gap-3">
+  <div class="os-dialog-footer">
     <button
       pButton
       label="ABORT"
       (click)="_ref.close()"
-      class="p-button-text p-button-sm text-[9px] font-black tracking-widest"
+      class="p-button-text p-button-sm text-[10px] font-black tracking-[0.4em] text-zinc-700 hover:text-red-500"
     ></button>
     <button
       pButton
-      label="LEGALIZE MISSION"
-      icon="pi pi-check-circle"
-      (click)="onSubmit()"
+      label="START THIS VIBE"
+      icon="pi pi-bolt"
       [disabled]="!addMission.name"
-      class="p-button-primary h-10 px-8 text-[9px] font-black tracking-widest shadow-xl shadow-indigo-500/20"
+      (click)="onSubmit()"
+      class="h-16 px-12 rounded-2xl text-[11px] font-black tracking-[0.4em] shadow-2xl transition-all"
     ></button>
   </div>
 </div>

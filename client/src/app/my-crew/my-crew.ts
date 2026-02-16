@@ -79,4 +79,12 @@ export class MyCrew implements OnDestroy {
       this._toast.error('Failed to leave mission: ' + (e.error || e.message));
     }
   }
+
+  getZone(category?: string): string {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('sport') || cat.includes('gaming')) return 'zone-action';
+    if (cat.includes('social') || cat.includes('entertainment')) return 'zone-sunset';
+    if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
+    return 'zone-tech';
+  }
 }

@@ -1,168 +1,135 @@
-<div class="max-w-7xl mx-auto px-6 py-12 animate-in">
-  <!-- Discovery Header -->
-  <header class="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
-    <div class="animate-in">
-      <div class="glass-pill mb-4 text-indigo-400">Tactical Discovery</div>
-      <h1 class="text-5xl font-black tracking-tighter uppercase">
-        Explore <span class="vibe-gradient">Missions</span>
-      </h1>
-      <p
-        class="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--text-secondary)] opacity-60 mt-2"
-      >
-        Sector scan complete. Active deployments identified.
-      </p>
-    </div>
+<div class="missions-container">
+  <div class="bg-mesh"></div>
 
-    <!-- Search & Filters -->
-    <div class="animate-in flex items-center gap-3" style="animation-delay: 0.1s">
-      <div class="relative group">
-        <input
-          type="text"
-          [(ngModel)]="filter.name"
-          (keyup.enter)="onSubmit()"
-          placeholder="Sector search..."
-          class="bg-white/5 border border-white/5 focus:border-indigo-500/50 rounded-2xl pl-11 pr-4 py-3 w-72 text-sm font-bold placeholder:opacity-30 outline-none transition-all"
-        />
-        <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 opacity-30 text-xs"></i>
-      </div>
-      <button
-        pButton
-        icon="pi pi-filter"
-        (click)="onSubmit()"
-        class="p-button-text p-button-sm h-12 w-12 border border-white/5 rounded-2xl"
-      ></button>
-    </div>
-  </header>
+  <div class="godly-hero-missions">
+    <!-- OS WINDOW FOR DIRECTORY -->
+    <main class="os-window-base os-missions-window">
+      <!-- DIRECTORY SIDEBAR -->
+      <aside class="os-sidebar-base os-missions-sidebar">
+        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
 
-  <!-- Missions Grid -->
-  @if ((missions$ | async)?.length) {
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      @for (mission of missions$ | async; track mission.id; let i = $index) {
-        <div
-          class="mission-card animate-in flex flex-col p-8"
-          [style.animation-delay]="i * 0.05 + 's'"
-          [ngClass]="getZone(mission.category)"
-        >
-          <!-- Card Header -->
-          <div class="flex justify-between items-start mb-10">
-            <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-40 italic"
-              >#{{ mission.id }} / {{ mission.category || 'GENERIC' }}</span
-            >
-            <div
-              [class]="
-                'w-2 h-2 rounded-full shadow-lg ' +
-                (mission.status === 'Open'
-                  ? 'bg-green-500 shadow-green-500/50'
-                  : 'bg-red-500 shadow-red-500/50')
-              "
-            ></div>
+        <div class="flex flex-col gap-1 mb-10">
+          <div class="os-missions-nav-item active">
+            <span>Open Signals</span>
+            <span class="text-[8px] opacity-40">AUTO</span>
           </div>
-
-          <!-- Mission Core -->
-          <div class="flex-grow mb-12">
-            <h3
-              class="text-2xl font-black uppercase tracking-tighter mb-4 group-hover:text-indigo-400 transition-colors"
-            >
-              {{ mission.name }}
-            </h3>
-            <p
-              class="text-xs text-[var(--text-secondary)] font-medium leading-[1.8] opacity-60 line-clamp-2"
-            >
-              {{
-                mission.description ||
-                  'Secure communication frequency. Tactical briefing pending deployment approval.'
-              }}
-            </p>
+          <div class="os-missions-nav-item">
+            <span>My Archives</span>
           </div>
-
-          <!-- Meta Grid (High Contrast) -->
-          <div
-            class="grid grid-cols-2 gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5 mb-8"
-          >
-            <div class="bg-black/20 p-4">
-              <span class="text-[8px] font-black uppercase tracking-widest opacity-30 block mb-2"
-                >Squad Link</span
-              >
-              <div class="flex items-center gap-2">
-                <i class="pi pi-users text-indigo-400 text-[10px]"></i>
-                <span class="text-[11px] font-black"
-                  >{{ mission.crew_count
-                  }}<span class="opacity-30"> / {{ mission.max_crew }}</span></span
-                >
-              </div>
-            </div>
-            <div class="bg-black/20 p-4">
-              <span class="text-[8px] font-black uppercase tracking-widest opacity-30 block mb-2"
-                >Chief Signal</span
-              >
-              <div class="flex items-center gap-2">
-                <img
-                  [src]="
-                    mission.chief_avatar_url ||
-                    'https://ui-avatars.com/api/?name=' + mission.chief_display_name
-                  "
-                  class="w-4 h-4 rounded-md"
-                />
-                <span class="text-[10px] font-black uppercase truncate opacity-80">{{
-                  mission.chief_display_name
-                }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Interaction Hub -->
-          @if (isSignin()) {
-            <button
-              pButton
-              [label]="
-                joiningMissionId === mission.id
-                  ? 'ESTABLISHING...'
-                  : mission.crew_count >= mission.max_crew
-                    ? 'CAPACITY REACHED'
-                    : 'JOIN THE CREW'
-              "
-              [loading]="joiningMissionId === mission.id"
-              class="w-full h-12 text-[10px] font-black tracking-[0.1em]"
-              [class]="
-                mission.crew_count >= mission.max_crew ? 'p-button-secondary' : 'p-button-primary'
-              "
-              [disabled]="mission.crew_count >= mission.max_crew || joiningMissionId === mission.id"
-              (click)="onJoin(mission)"
-            ></button>
-          } @else {
-            <button
-              pButton
-              label="PROTOCOL AUTH REQUIRED"
-              icon="pi pi-lock"
-              class="w-full h-12 text-[10px] font-black tracking-[0.1em] p-button-text border border-white/10"
-              routerLink="/login"
-            ></button>
-          }
         </div>
-      }
-    </div>
-  } @else {
-    <div
-      class="py-40 flex flex-col items-center justify-center mission-card opacity-50 text-center animate-in"
-    >
-      <div
-        class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-8 border border-white/10"
-      >
-        <i class="pi pi-search text-3xl opacity-20"></i>
-      </div>
-      <h3 class="text-xl font-black uppercase tracking-tight mb-4">No Signals Detected</h3>
-      <p
-        class="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 max-w-xs leading-loose"
-      >
-        The sector appears silent. Modify your tracking parameters to find active signals.
-      </p>
-    </div>
-  }
-</div>
 
-<app-guide-overlay
-  *ngIf="showOnboarding && isSignin()"
-  [steps]="onboardingSteps"
-  (completed)="onOnboardingComplete()"
->
-</app-guide-overlay>
+        <span class="os-label">Filter_Categories</span>
+        <div class="flex flex-col gap-1">
+          <p-selectButton
+            [options]="categories"
+            [(ngModel)]="filter.category"
+            (onChange)="onSubmit()"
+            class="shuttle-select-compact !flex-col"
+          ></p-selectButton>
+        </div>
+
+        <div class="mt-auto pt-8 border-t border-white/5 space-y-6">
+          <div>
+            <span class="os-label">Status_Scan</span>
+            <p-selectButton
+              [options]="statusOptions"
+              [(ngModel)]="filter.status"
+              (onChange)="onSubmit()"
+              class="shuttle-select-compact"
+            ></p-selectButton>
+          </div>
+          <div>
+            <span class="os-label">Availability</span>
+            <p-selectButton
+              [options]="availabilityOptions"
+              [(ngModel)]="filter.is_available"
+              (onChange)="onSubmit()"
+              class="shuttle-select-compact"
+            ></p-selectButton>
+          </div>
+        </div>
+      </aside>
+
+      <!-- DIRECTORY CONTENT -->
+      <section class="os-main-base os-missions-main">
+        <div class="os-title-bar mb-10">
+          <div class="flex items-center gap-6 flex-grow">
+            <div class="os-search-container">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                [(ngModel)]="filter.name"
+                (keyup.enter)="onSubmit()"
+                placeholder="Search directory..."
+              />
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              (click)="onSubmit()"
+              class="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-white transition-all"
+            >
+              <i class="pi pi-refresh text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        @if ((missions$ | async)?.length) {
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 overflow-y-auto hide-scrollbar pb-20"
+          >
+            @for (mission of missions$ | async; track mission.id) {
+              <a
+                [routerLink]="['/missions', mission.id]"
+                class="mission-folder-card group block no-underline"
+              >
+                <div class="flex justify-between items-start mb-6">
+                  <div class="folder-icon-glow"></div>
+                  <div class="os-badge" [class.active]="mission.status === 'InProgress'">
+                    {{ mission.status === 'InProgress' ? 'ACTIVE' : 'IDLE' }}
+                  </div>
+                </div>
+
+                <div class="flex-grow">
+                  <h3
+                    class="text-xl font-black text-white group-hover:text-blue-400 transition-colors mb-2 truncate"
+                  >
+                    {{ mission.name }}
+                  </h3>
+                  <p
+                    class="text-[10px] text-zinc-600 font-bold uppercase tracking-tight line-clamp-2 mb-6"
+                  >
+                    {{ mission.description || 'No data package attached.' }}
+                  </p>
+                </div>
+
+                <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <img
+                      [src]="'https://ui-avatars.com/api/?name=' + mission.chief_display_name"
+                      class="w-5 h-5 rounded-full border border-white/10"
+                    />
+                    <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{{
+                      mission.chief_display_name
+                    }}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5">
+                    <i class="pi pi-users text-[10px] text-zinc-800"></i>
+                    <span class="text-[10px] font-black text-white italic"
+                      >{{ mission.crew_count }}/{{ mission.max_crew }}</span
+                    >
+                  </div>
+                </div>
+              </a>
+            }
+          </div>
+        } @else {
+          <div class="flex-grow flex flex-col items-center justify-center opacity-10 py-40">
+            <i class="pi pi-folder-open text-6xl mb-8"></i>
+            <p class="text-xs font-black uppercase tracking-[0.5em]">No archives found</p>
+          </div>
+        }
+      </section>
+    </main>
+  </div>
+</div>

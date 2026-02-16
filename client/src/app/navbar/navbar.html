@@ -5,30 +5,30 @@
     <!-- Branding -->
     <a
       routerLink="/"
-      class="flex items-center pl-3 pr-4 h-10 hover:bg-white/5 rounded-full transition-all group"
+      class="flex items-center pl-3 pr-4 h-11 hover:bg-zinc-800/40 rounded-2xl transition-all group"
     >
       <div
-        class="w-7 h-7 bg-white rounded-lg flex items-center justify-center mr-3 group-hover:scale-110 transition-transform"
+        class="w-8 h-8 bg-white rounded-xl flex items-center justify-center mr-3 group-hover:scale-105 transition-transform"
       >
-        <i class="pi pi-bolt text-black text-[12px]"></i>
+        <i class="pi pi-bolt text-black text-[14px]"></i>
       </div>
-      <span class="text-[11px] font-black uppercase tracking-[0.1em] text-white">Vibe</span>
+      <span class="text-[12px] font-black uppercase tracking-[-0.02em] text-white">Vibe</span>
     </a>
 
     <!-- Divider -->
-    <div class="h-4 w-[1px] bg-white/10 mx-1"></div>
+    <div class="h-4 w-[1px] bg-zinc-800 mx-2"></div>
 
     <!-- Main Navigation -->
-    <div class="flex items-center">
-      <a routerLink="/missions" routerLinkActive="active" class="nav-link">Explore</a>
-      <a routerLink="/chief" routerLinkActive="active" class="nav-link">Chief</a>
-      <a routerLink="/my-crew" routerLinkActive="active" class="nav-link">Crew</a>
-      <a routerLink="/network" routerLinkActive="active" class="nav-link">Network</a>
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Stats</a>
+    <div class="flex items-center gap-1">
+      <a routerLink="/missions" routerLinkActive="active" class="nav-link">Discover</a>
+      <a routerLink="/chief" routerLinkActive="active" class="nav-link">Host</a>
+      <a routerLink="/my-crew" routerLinkActive="active" class="nav-link">My Groups</a>
+      <a routerLink="/network" routerLinkActive="active" class="nav-link">Friends</a>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link">Dashboard</a>
     </div>
 
     <!-- Divider -->
-    <div class="h-4 w-[1px] bg-white/10 mx-1"></div>
+    <div class="h-4 w-[1px] bg-zinc-800 mx-2"></div>
 
     <!-- Global Controls -->
     <div class="flex items-center pr-2">
@@ -39,18 +39,18 @@
         pButton
         [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
         (click)="toggleTheme()"
-        class="p-button-text p-button-sm w-9 h-9 p-0 opacity-40 hover:opacity-100 hover:bg-white/5"
+        class="p-button-text p-button-sm !w-10 !h-10 !p-0 text-zinc-500 hover:text-white"
       ></button>
 
       @if (display_name()) {
         <!-- Profile Link -->
         <a
           [routerLink]="['/profile']"
-          class="flex items-center ml-1 px-1.5 py-1 rounded-full hover:bg-white/5 transition-all group"
+          class="flex items-center ml-1 px-1.5 py-1 rounded-full hover:bg-zinc-800/40 transition-all group"
         >
           <img
             [src]="avatar_url()"
-            class="w-7 h-7 rounded-full object-cover border border-white/10 group-hover:border-white/40 transition-all"
+            class="w-8 h-8 rounded-lg object-cover border border-zinc-800 group-hover:border-zinc-500 transition-all"
           />
         </a>
 
@@ -58,14 +58,14 @@
           pButton
           icon="pi pi-sign-out"
           (click)="logout()"
-          class="p-button-text p-button-danger p-button-sm w-9 h-9 opacity-40 hover:opacity-100"
+          class="p-button-text p-button-danger p-button-sm !w-10 !h-10 text-zinc-600 hover:text-red-500"
         ></button>
       } @else {
         <button
           pButton
           label="JOIN"
           routerLink="/login"
-          class="p-button-primary h-9 px-4 rounded-full ml-2 text-[9px]"
+          class="p-button-primary h-10 px-6 rounded-xl ml-2 text-[10px] font-black"
         ></button>
       }
     </div>

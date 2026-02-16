@@ -1,171 +1,26 @@
- .new-mission-dialog {
-  padding: 1rem;
-  background-color: var(--ctp-mantle);
-  color: var(--ctp-text);
-  border-radius: 20px;
-
-  h2 {
-    margin: 0;
-    padding-bottom: 1.5rem;
-    font-size: 1.8rem;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--ctp-mauve), var(--ctp-pink));
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: 0.05em;
-  }
-
-  .form-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    min-width: 350px;
-    margin-top: 0.5rem;
-
-    /* Custom Field Styling to match Material Design */
-    .custom-field {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
-      margin-bottom: 1rem;
-
-      label {
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: var(--ctp-subtext1);
-        padding-left: 0.2rem;
-      }
-
-      .native-datetime-input {
-        width: 100%;
-        padding: 0.8rem 1rem;
-        background: transparent;
-        border: 1px solid var(--ctp-surface1);
-        border-radius: 4px; /* Material Design style */
-        color: var(--ctp-text);
-        font-family: inherit;
-        font-size: 1rem;
-        outline: none;
-        transition: 0.2s;
-        box-sizing: border-box; /* Ensure padding doesn't affect width */
-
-        &:focus {
-          border-color: var(--ctp-mauve);
-          border-width: 2px;
-          padding: calc(0.8rem - 1px) calc(1rem - 1px); /* Adjustment for border width */
-        }
-
-        &::-webkit-calendar-picker-indicator {
-          filter: invert(0.8); /* Make icon visible in dark mode */
-          cursor: pointer;
-        }
-      }
-    }
-  }
-
-  mat-form-field {
-    width: 100%;
-
-    ::ng-deep {
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
-      .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
-        border-color: var(--ctp-surface1) !important;
-      }
-
-      .mat-mdc-input-element {
-        color: var(--ctp-text) !important;
-      }
-
-      .mat-mdc-floating-label {
-        color: var(--ctp-subtext1) !important;
-      }
-
-      &:hover .mdc-notched-outline > * {
-        border-color: var(--ctp-mauve) !important;
-      }
-
-      .mdc-text-field--focused {
-        .mdc-notched-outline > * {
-          border-color: var(--ctp-mauve) !important;
-          border-width: 2px !important;
-        }
-        .mat-mdc-floating-label {
-          color: var(--ctp-mauve) !important;
-        }
-      }
-
-      .mat-mdc-select-value, 
-      .mat-mdc-select-value-text {
-        color: var(--ctp-text) !important;
-      }
-
-      .mat-mdc-select-arrow {
-        color: var(--ctp-subtext1) !important;
-      }
-    }
-  }
-
-  mat-dialog-actions {
-    padding-top: 1.5rem;
-    gap: 1rem;
-
-    .cancel-btn {
-      color: var(--ctp-subtext1);
-      font-weight: 600;
-      &:hover {
-        background: rgba(255, 255, 255, 0.05);
-      }
-    }
-
-    .create-btn {
-      background-color: var(--ctp-pink) !important;
-      color: var(--ctp-crust) !important;
-      border-radius: 12px !important;
-      font-weight: 700 !important;
-      padding: 0 1.5rem !important;
-      height: 44px !important;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-
-      &:hover:not(:disabled) {
-        filter: brightness(1.1);
-        transform: translateY(-1px);
-      }
-
-      &:disabled {
-        background-color: var(--ctp-surface1) !important;
-        color: var(--ctp-overlay0) !important;
-        opacity: 0.7;
-      }
-    }
-  }
+.os-dialog-container {
+    @apply flex flex-col;
 }
 
-    ::ng-deep {
-        mat-dialog-container {
-            padding: 0 !important;
-            border-radius: 20px !important;
-            background-color: var(--ctp-mantle) !important;
-            border: 1px solid var(--ctp-surface0) !important;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
-        }
+.os-dialog-header {
+    @apply px-12 py-10 border-b border-white/5 bg-white/[0.02];
+}
 
-        .mat-mdc-select-panel {
-            background-color: var(--ctp-surface0) !important;
-            border: 1px solid var(--ctp-surface1) !important;
-            
-            .mat-mdc-option {
-                color: var(--ctp-text) !important;
-                
-                &:hover, &.mdc-list-item--selected {
-                    background-color: var(--ctp-surface1) !important;
-                }
-                
-                .mdc-list-item__primary-text {
-                    color: var(--ctp-text) !important;
-                }
-            }
-        }
+.os-dialog-body {
+    @apply p-12 flex flex-col gap-10 overflow-y-auto max-h-[70vh];
+    
+    /* hide-scrollbar replacement */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+        display: none;
     }
+}
+
+.os-dialog-footer {
+    @apply px-12 py-10 bg-white/[0.02] border-t border-white/5 flex items-center justify-between;
+}
+
+.os-input-field {
+    @apply flex flex-col gap-3;
+}

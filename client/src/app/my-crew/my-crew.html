@@ -1,119 +1,99 @@
-<div class="relative min-h-screen bg-black">
+<div class="my-crew-container">
   <div class="bg-mesh"></div>
 
-  <div class="max-w-7xl mx-auto px-6 py-12 animate-in pb-32">
-    <!-- Header -->
-    <header class="mb-16">
-      <div class="glass-pill mb-4 text-indigo-400">Personnel Status</div>
-      <h1 class="text-5xl font-black uppercase tracking-tighter">
-        Active <span class="vibe-gradient">Deployments</span>
-      </h1>
-      <p class="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 mt-2">
-        Operational sectors where your signal is currently active.
-      </p>
-    </header>
+  <div class="godly-hero-my-crew">
+    <!-- MY CREW OS WINDOW -->
+    <main class="os-window-base os-crew-window">
+      <!-- NAVIGATION SIDEBAR -->
+      <aside class="os-sidebar-base os-crew-sidebar">
+        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
 
-    <!-- Grid Layout -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      @for (mission of myJoinedMissions$ | async; track mission.id; let i = $index) {
-        <div
-          class="mission-card flex flex-col p-8 group border border-white/5"
-          [style.animation-delay]="i * 0.05 + 's'"
-        >
-          <!-- Card Header -->
-          <div class="flex justify-between items-start mb-10">
-            <span class="text-[9px] font-black uppercase tracking-[0.3em] opacity-40 italic"
-              >STATIONED / #{{ mission.id }}</span
+        <div class="flex flex-col gap-1 mb-10">
+          <div class="os-crew-nav-item active">
+            <span>Active Deployments</span>
+          </div>
+          <div class="os-crew-nav-item" routerLink="/missions">
+            <span>Protocol Search</span>
+          </div>
+        </div>
+
+        <div class="mt-auto pt-8 border-t border-white/5">
+          <span class="os-label">Squadron_Status</span>
+          <div class="flex items-center gap-3">
+            <div class="presence-dot-os"></div>
+            <span class="text-[9px] font-black text-white uppercase tracking-widest"
+              >Signal Locked</span
             >
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN CONTENT AREA -->
+      <section class="os-main-base os-crew-main">
+        <div class="os-title-bar mb-10">
+          <div class="flex flex-col py-4">
+            <span class="os-label">Operational_Sectors</span>
+            <h1 class="os-title-large">My <span class="opacity-30 italic">Groups</span></h1>
+          </div>
+        </div>
+
+        <div class="crew-grid overflow-y-auto hide-scrollbar pb-20">
+          @for (mission of myJoinedMissions$ | async; track mission.id; let i = $index) {
             <div
-              [class]="
-                'w-2 h-2 rounded-full shadow-lg ' +
-                (mission.status === 'Open'
-                  ? 'bg-green-500 shadow-green-500/50'
-                  : 'bg-indigo-500 shadow-indigo-500/50')
-              "
-            ></div>
-          </div>
-
-          <!-- Mission Core -->
-          <div class="flex-grow mb-12">
-            <h3
-              class="text-2xl font-black uppercase tracking-tighter mb-4 group-hover:text-indigo-400 transition-colors"
+              class="os-glass-card mission-card-os group"
+              [routerLink]="['/missions', mission.id]"
             >
-              {{ mission.name }}
-            </h3>
-            <p class="text-xs text-white/40 font-medium leading-relaxed line-clamp-2">
-              {{ mission.description || 'Sector report encrypted. Tactical link established.' }}
-            </p>
-          </div>
+              <div class="os-label text-zinc-600 mb-6 flex justify-between">
+                <span>{{ mission.category || 'General' }}</span>
+                <span class="opacity-30">#{{ mission.id }}</span>
+              </div>
 
-          <!-- Ops Stats -->
-          <div
-            class="grid grid-cols-2 gap-px bg-white/5 rounded-2xl overflow-hidden border border-white/5 mb-8"
-          >
-            <div class="bg-black/20 p-4">
-              <span class="text-[8px] font-black uppercase tracking-widest opacity-30 block mb-2"
-                >Command</span
+              <h3
+                class="text-2xl font-black uppercase tracking-tight mb-4 group-hover:text-white transition-colors"
               >
-              <div class="flex items-center gap-2">
+                {{ mission.name }}
+              </h3>
+
+              <div class="flex items-center gap-4 mb-8">
                 <img
                   [src]="'https://ui-avatars.com/api/?name=' + mission.chief_display_name"
-                  class="w-4 h-4 rounded-md"
+                  class="w-6 h-6 rounded-lg opacity-60"
                 />
-                <span class="text-[10px] font-black uppercase truncate opacity-80">{{
+                <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{{
                   mission.chief_display_name
                 }}</span>
               </div>
-            </div>
-            <div class="bg-black/20 p-4">
-              <span class="text-[8px] font-black uppercase tracking-widest opacity-30 block mb-2"
-                >Integrity</span
-              >
-              <span class="text-[11px] font-black">{{ mission.status }}</span>
-            </div>
-          </div>
 
-          <!-- Actions Hub -->
-          <div class="flex gap-2">
-            <button
-              pButton
-              label="ENTER ROOM"
-              icon="pi pi-sign-in"
-              [routerLink]="['/missions', mission.id]"
-              class="flex-grow h-12 text-[10px] font-black tracking-widest p-button-primary"
-            ></button>
-            <button
-              pButton
-              icon="pi pi-sign-out"
-              title="Leave Mission"
-              (click)="onLeave(mission, $event)"
-              class="w-12 h-12 p-button-text p-button-danger border border-red-500/10"
-            ></button>
-          </div>
+              <div class="flex gap-2">
+                <button
+                  pButton
+                  label="ENTER"
+                  class="flex-grow h-12 p-button-primary rounded-xl text-[9px] font-black"
+                ></button>
+                <button
+                  (click)="onLeave(mission, $event); $event.stopPropagation()"
+                  class="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/5 text-zinc-600 hover:text-red-500 transition-colors flex items-center justify-center"
+                >
+                  <i class="pi pi-sign-out text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-full py-40 flex flex-col items-center justify-center opacity-10">
+              <i class="pi pi-folder-open text-6xl mb-8"></i>
+              <p class="text-xs font-black uppercase tracking-[0.5em]">
+                No active deployments found
+              </p>
+              <button
+                routerLink="/missions"
+                class="mt-8 px-8 h-12 rounded-xl border border-white/10 text-[9px] font-black uppercase tracking-widest hover:bg-white/5"
+              >
+                Locate Protocol
+              </button>
+            </div>
+          }
         </div>
-      } @empty {
-        <div
-          class="col-span-full py-40 flex flex-col items-center justify-center mission-card opacity-50 text-center"
-        >
-          <div
-            class="w-20 h-20 rounded-3xl bg-white/5 flex items-center justify-center mb-8 border border-white/10"
-          >
-            <i class="pi pi-box text-3xl opacity-20"></i>
-          </div>
-          <h3 class="text-xl font-black uppercase tracking-tight mb-4">No Remote Signals</h3>
-          <p
-            class="text-[10px] font-black uppercase tracking-[0.4em] opacity-40 max-w-xs leading-loose"
-          >
-            You are not currently part of any external missions. Join a crew to begin participation.
-          </p>
-          <button
-            pButton
-            label="FIND OPERATIONS"
-            routerLink="/missions"
-            class="p-button-text text-indigo-400 mt-8"
-          ></button>
-        </div>
-      }
-    </div>
+      </section>
+    </main>
   </div>
 </div>

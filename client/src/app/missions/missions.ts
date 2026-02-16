@@ -11,13 +11,13 @@ import { getUserIdFromToken } from '../_helpers/util';
 import { ToastService } from '../_services/toast-service';
 import { WebsocketService } from '../_services/websocket-service';
 
-import { OnboardingService, GuideStep } from '../_services/onboarding-service';
-import { GuideOverlay } from '../_components/guide-overlay/guide-overlay';
 // PrimeNG
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { TagModule } from 'primeng/tag';
+
+import { RouterLink, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-missions',
@@ -25,11 +25,12 @@ import { TagModule } from 'primeng/tag';
   imports: [
     FormsModule,
     CommonModule,
-    GuideOverlay,
     ButtonModule,
     InputTextModule,
     SelectButtonModule,
     TagModule,
+    RouterLink,
+    RouterModule,
   ],
   templateUrl: './missions.html',
   styleUrl: './missions.scss',
@@ -42,30 +43,7 @@ export class Missions implements OnDestroy {
     if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
     return 'zone-tech';
   }
-  private _onboarding = inject(OnboardingService);
 
-  onboardingSteps: GuideStep[] = [
-    {
-      elementId: 'search-input',
-      title: 'Search Activities',
-      content: 'Find activities you love by name or tags.',
-      position: 'bottom',
-    },
-    {
-      elementId: 'filters-area',
-      title: 'Find Your Vibe',
-      content: 'Filter by category, status, or availability to find your perfect match.',
-      position: 'bottom',
-    },
-    {
-      elementId: 'chat-widget',
-      title: 'Private Messages',
-      content: 'Connect with others directly to coordinate plans.',
-      position: 'top',
-    },
-  ];
-
-  showOnboarding = false;
   private _mission = inject(MissionService);
   private _crewService = inject(CrewService);
   private _passportService = inject(PassportService);
@@ -88,24 +66,25 @@ export class Missions implements OnDestroy {
     'Other',
   ];
 
+  statusOptions = [
+    { label: 'All Status', value: '' },
+    { label: 'Recruiting', value: 'Open' },
+    { label: 'In Mission', value: 'InProgress' },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'Failed', value: 'Failed' },
+  ];
+
+  availabilityOptions = [
+    { label: 'All Slots', value: null },
+    { label: 'Available Only', value: true },
+  ];
+
   constructor() {
     this.isSignin = computed(() => this._passportService.isSignin());
     this.filter = this._mission.filter;
     // Initial data load
     this.onSubmit();
     this.setupRealtimeUpdates();
-
-    // Trigger onboarding if not seen yet
-    setTimeout(() => {
-      if (!this._onboarding.isCompleted('missions')) {
-        this.showOnboarding = true;
-      }
-    }, 1000);
-  }
-
-  onOnboardingComplete() {
-    this.showOnboarding = false;
-    this._onboarding.markAsCompleted('missions');
   }
 
   ngOnDestroy(): void {

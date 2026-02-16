@@ -1,376 +1,55 @@
+:host {
+  display: block;
+}
+
 .profile-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 24px 24px 80px 24px;
-  min-height: 80vh;
-
-  @media (min-width: 768px) {
-    grid-template-columns: 320px 1fr;
-    align-items: start;
-    padding-top: 40px;
-  }
+  @apply min-h-screen selection:bg-white selection:text-black pt-24 pb-40 overflow-x-hidden;
 }
 
-.identity-card {
-  background-color: var(--ctp-mantle);
-  border-radius: 24px;
-  padding: 40px 24px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--app-border);
-  height: fit-content;
-  position: sticky;
-  top: 24px;
+.godly-hero-profile {
+  @apply max-w-[1300px] mx-auto px-6 mb-16;
+}
 
-  .avatar-wrapper {
-    position: relative;
-    width: 140px;
-    height: 140px;
-    margin-bottom: 8px;
-
-    .avatar-lg {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 4px solid var(--ctp-base);
-      background-color: var(--ctp-surface0);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
-    }
-
-    .edit-avatar-btn {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      background-color: var(--ctp-mauve);
-      color: var(--ctp-base);
-      border-radius: 50%;
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid var(--ctp-mantle);
-      cursor: pointer;
-      padding: 0;
-      transition: all 0.2s ease;
-
-      mat-icon {
-        font-size: 20px;
-        width: 20px;
-        height: 20px;
-      }
-
-      &:hover {
-        background-color: var(--ctp-pink);
-        transform: scale(1.1);
-      }
-    }
-  }
-
-  .display-name {
-    font-family: 'Outfit', sans-serif;
-    font-size: 1.75rem;
-    font-weight: 800;
-    color: var(--ctp-text);
-    margin: 0;
-    text-align: center;
-    line-height: 1.2;
-  }
-
-  .rank-badge {
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 24px;
-    
-    &.newcomer { 
-        background-color: rgba(137, 180, 250, 0.15); // Sapphire
-        color: var(--ctp-sapphire); 
-        border: 1px solid rgba(137, 180, 250, 0.3); 
-    }
-    &.member { 
-        background-color: rgba(203, 166, 247, 0.15); // Mauve
-        color: var(--ctp-mauve); 
-        border: 1px solid rgba(203, 166, 247, 0.3);
-    }
-    &.organizer { 
-        background-color: rgba(249, 226, 175, 0.15); // Yellow
-        color: var(--ctp-yellow); 
-        border: 1px solid rgba(249, 226, 175, 0.3);
-    }
-  }
-
-  .contacts-box {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    width: 100%;
-    margin-bottom: 20px;
-  }
-
-  .contact-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 8px 16px;
-    border-radius: 10px;
-    background-color: var(--ctp-surface0);
-    color: var(--ctp-text);
-    font-size: 0.9rem;
-    font-weight: 600;
-    transition: var(--transition-smooth);
-    border: 1px solid transparent;
+.avatar-wrapper-os {
+  @apply relative mb-12;
+  
+  .avatar-img-os {
+    @apply w-40 h-40 rounded-[2.5rem] object-cover border border-white/10 transition-all duration-700;
+    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
 
     &:hover {
-        background-color: var(--ctp-surface1);
-        border-color: var(--ctp-surface2);
-    }
-    
-    mat-icon { 
-        font-size: 1.2rem;
-        width: 20px;
-        height: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .contact-icon {
-        width: 20px;
-        height: 20px;
-        object-fit: contain;
-    }
-
-    &.email mat-icon { color: var(--ctp-teal); }
-    &.ig .contact-icon { filter: drop-shadow(0 0 2px rgba(225, 48, 108, 0.3)); }
-    &.fb .contact-icon { filter: drop-shadow(0 0 2px rgba(24, 119, 242, 0.3)); }
-  }
-
-  .bio-text {
-    text-align: center;
-    color: var(--ctp-overlay2);
-    font-style: italic;
-    font-size: 0.95rem;
-    line-height: 1.5;
-    margin: 0 0 24px 0;
-    max-width: 260px;
-  }
-
-  .edit-btn {
-    width: 100%;
-    height: 48px;
-    border-radius: 12px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    font-size: 0.95rem;
-    background-color: var(--ctp-surface0);
-    color: var(--ctp-text);
-    box-shadow: none;
-    border: 1px solid var(--ctp-surface2);
-    transition: all 0.2s ease;
-    margin-bottom: 1.5rem !important;
-
-    mat-icon { margin-right: 8px; }
-
-    &:hover {
-      background-color: var(--ctp-surface1);
-      transform: translateY(-2px);
-      border-color: var(--ctp-mauve);
-      color: var(--ctp-mauve);
-    }
-  }
-
-  .friend-actions {
-    margin-bottom: 1.5rem;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-
-    .friend-btn {
-      width: 100%;
-      height: 48px;
-      border-radius: 12px;
-      font-family: 'Outfit', sans-serif;
-      font-weight: 600;
-
-      &.pending {
-        background-color: rgba(249, 226, 175, 0.1); // yellow
-        color: var(--ctp-yellow);
-        border: 1px solid var(--ctp-yellow) !important;
-      }
-
-      &.accepted {
-        background-color: rgba(166, 227, 161, 0.15); // green
-        color: var(--ctp-green);
-        border: 1px solid transparent !important;
-        cursor: default;
-      }
-
-      &.message {
-        background-color: rgba(203, 166, 247, 0.1); // mauve
-        color: var(--ctp-mauve);
-        border: 1px solid var(--ctp-mauve) !important;
-
-        &:hover {
-          background-color: var(--ctp-mauve);
-          color: var(--ctp-crust);
-        }
-      }
+      @apply scale-105 -translate-y-2 border-white/30;
+      box-shadow: 0 50px 100px -20px rgba(0,0,0,0.9);
     }
   }
 }
 
-.stats-column {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+/* 🧊 OS Window Elements */
+.os-profile-window {
+    min-height: 600px;
+    display: flex;
 }
 
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-
-  @media (max-width: 600px) {
-    grid-template-columns: 1fr;
-  }
-
-  .stat-item {
-    background-color: var(--ctp-mantle);
-    border-radius: 20px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--app-border);
-    transition: transform 0.2s;
-    min-height: 120px;
-
-    &:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-      border-color: rgba(255,255,255,0.1);
-    }
-
-    .stat-value {
-      font-family: 'Outfit', sans-serif;
-      font-size: 2.25rem;
-      font-weight: 800;
-      color: var(--ctp-text);
-      line-height: 1;
-      margin-bottom: 8px;
-
-      &.highlight { 
-          background: linear-gradient(45deg, var(--ctp-green), var(--ctp-teal));
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-      }
-    }
-
-    .stat-label {
-      font-size: 0.85rem;
-      color: var(--ctp-subtext0);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
+.os-profile-sidebar {
 }
 
-.recent-activity-card {
-  background-color: var(--ctp-mantle);
-  border-radius: 24px;
-  padding: 32px;
-  border: 1px solid var(--app-border);
-  flex: 1;
-  min-height: 300px;
+.os-profile-main {
+}
 
-  h3 {
-    font-family: 'Outfit', sans-serif;
-    color: var(--ctp-subtext0);
-    font-size: 0.95rem;
-    font-weight: 700;
-    margin: 0 0 24px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.os-profile-nav-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 transition-all cursor-pointer hover:bg-white/[0.03] hover:text-white;
+    span { @apply text-[10px] font-black uppercase tracking-widest; }
+    &.active { @apply bg-white/[0.05] text-white; }
+}
 
-    &::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background-color: var(--ctp-surface0);
+/* 🏷️ Social OS Pills */
+.social-pill-os {
+    @apply p-6 flex items-center gap-6;
+    .icon-box {
+        @apply w-12 h-12 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all group-hover:bg-white group-hover:text-black;
     }
-  }
+}
 
-  .mission-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .mission-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    padding: 16px;
-    border-radius: 16px;
-    background-color: var(--ctp-base);
-    transition: all 0.2s ease;
-    border: 1px solid transparent;
-
-    &:hover {
-      background-color: var(--ctp-surface0);
-      transform: translateX(4px);
-      border-color: rgba(255,255,255,0.05);
-    }
-
-    .status-dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-      
-      &.completed { background-color: var(--ctp-green); box-shadow: 0 0 8px rgba(166, 227, 161, 0.4); }
-      &.in_progress { background-color: var(--ctp-yellow); box-shadow: 0 0 8px rgba(249, 226, 175, 0.4); }
-      &.failed { background-color: var(--ctp-red); }
-      &.open { background-color: var(--ctp-blue); }
-    }
-
-    .mission-name {
-      flex: 1;
-      font-weight: 600;
-      color: var(--ctp-text);
-      font-size: 1rem;
-    }
-
-    .mission-date {
-      font-size: 0.85rem;
-      color: var(--ctp-overlay1);
-      font-weight: 500;
-    }
-  }
-
-  .empty-state {
-    text-align: center;
-    color: var(--ctp-overlay0);
-    padding: 48px 0;
-    font-style: italic;
-    font-size: 1.1rem;
-  }
+.presence-dot-os {
+    @apply w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_green];
 }

@@ -1,288 +1,38 @@
-.page-header {
-  margin-bottom: 24px;
-  
-  h2 {
-    font-size: 2rem;
-    font-weight: 800;
-    margin: 0 0 4px;
-    color: var(--ctp-text);
-    font-family: 'Outfit', sans-serif;
-  }
-  
-  p {
-    color: var(--ctp-subtext0);
-    margin: 0;
-    font-size: 0.95rem;
-  }
+.my-crew-container {
+    @apply relative min-h-screen selection:bg-white selection:text-black bg-black;
 }
 
-.data-table {
-  width: 100%;
-  background: var(--ctp-mantle);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--app-border);
-  overflow: hidden;
-
-  .table-header,
-  .table-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 2fr 1.2fr 100px 120px 1fr;
-    align-items: center;
-    padding: 16px 24px;
-    gap: 16px;
-
-    .category {
-        .cat-pill {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            background: rgba(var(--ctp-subtext0-rgb), 0.1); 
-            color: var(--ctp-subtext0);
-            border: 1px solid rgba(var(--ctp-subtext0-rgb), 0.15);
-            white-space: nowrap;
-            font-weight: 600;
-            display: inline-block;
-
-            &.sports-active { background: rgba(var(--ctp-red-rgb), 0.15); color: var(--ctp-red); border-color: rgba(var(--ctp-red-rgb), 0.2); }
-            &.social-chill { background: rgba(var(--ctp-blue-rgb), 0.15); color: var(--ctp-blue); border-color: rgba(var(--ctp-blue-rgb), 0.2); }
-            &.gaming-e-sports { background: rgba(var(--ctp-mauve-rgb), 0.15); color: var(--ctp-mauve); border-color: rgba(var(--ctp-mauve-rgb), 0.2); }
-            &.entertainment { background: rgba(var(--ctp-yellow-rgb), 0.15); color: var(--ctp-yellow); border-color: rgba(var(--ctp-yellow-rgb), 0.2); }
-            &.travel-trip { background: rgba(var(--ctp-green-rgb), 0.15); color: var(--ctp-green); border-color: rgba(var(--ctp-green-rgb), 0.2); }
-            &.lifestyle-hobby { background: rgba(var(--ctp-peach-rgb), 0.15); color: var(--ctp-peach); border-color: rgba(var(--ctp-peach-rgb), 0.2); }
-        }
-    }
-  }
-
-  .table-header {
-    background: rgba(var(--ctp-surface0-rgb), 0.3);
-    border-bottom: 1px solid var(--app-border);
-    
-    span {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--ctp-mauve);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
-
-  .table-row {
-    border-bottom: 1px solid var(--app-border);
-    transition: var(--transition-smooth);
-    cursor: pointer;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    &:hover {
-      background: var(--ctp-surface0);
-    }
-
-    .name {
-      font-weight: 600;
-      color: var(--ctp-text);
-    }
-
-    .description {
-      color: var(--ctp-subtext1);
-      font-size: 0.85rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .chief {
-      color: var(--ctp-text);
-      font-size: 0.9rem;
-      font-weight: 500;
-
-      a {
-        color: var(--ctp-mauve);
-        text-decoration: none;
-        &:hover { text-decoration: underline; }
-      }
-    }
-
-    .crew-count {
-      color: var(--ctp-subtext0);
-      font-size: 0.9rem;
-      text-align: center;
-    }
-  }
+.godly-hero-my-crew {
+    @apply flex items-center justify-center;
 }
 
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-  width: fit-content;
-
-  &.open { background: rgba(var(--ctp-teal-rgb), 0.1); color: var(--ctp-teal); }
-  &.inprogress { background: rgba(var(--ctp-blue-rgb), 0.1); color: var(--ctp-blue); }
-  &.completed { background: rgba(var(--ctp-green-rgb), 0.1); color: var(--ctp-green); }
-  &.failed { background: rgba(var(--ctp-red-rgb), 0.1); color: var(--ctp-red); }
-  &.removed { background: rgba(var(--ctp-maroon-rgb), 0.1); color: var(--ctp-maroon); border: 1px dashed var(--ctp-maroon); }
-}
-
-.action-cell {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-
-  .row-btn {
-    padding: 6px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 700;
-    font-family: 'Outfit', sans-serif;
-    border: 1px solid var(--app-border);
-    background: transparent;
-    color: var(--ctp-subtext0);
-    cursor: pointer;
-    transition: var(--transition-smooth);
-
-    &.primary {
-      background: var(--ctp-mauve);
-      color: var(--ctp-crust);
-      border: none;
-    }
-
-    &:hover:not(.primary) {
-      background: var(--ctp-surface1);
-      color: var(--ctp-text);
-      border-color: var(--ctp-mauve);
-    }
-    
-    &.primary:hover {
-      filter: brightness(1.1);
-    }
-
-    &.danger:hover {
-      color: var(--ctp-red);
-      border-color: var(--ctp-red);
-      background: rgba(var(--ctp-red-rgb), 0.1);
-    }
-  }
-}
-
-.empty-state {
-  padding: 64px 24px;
-  text-align: center;
-  background: var(--ctp-mantle);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--ctp-surface0);
-  
-  p {
-    color: var(--ctp-subtext0);
-    margin-bottom: 24px;
-  }
-  
-  .browse-link {
-    color: var(--ctp-mauve);
-    text-decoration: none;
-    font-weight: 700;
-    font-family: 'Outfit', sans-serif;
-    padding: 8px 16px;
-    border: 1px solid var(--ctp-mauve);
-    border-radius: var(--radius-sm);
-    transition: var(--transition-smooth);
-    
-    &:hover {
-      background: var(--ctp-mauve);
-      color: var(--ctp-crust);
-    }
-  }
-}
-
-.network-section {
-  margin-top: 48px;
-  animation: fadeIn 0.5s ease-out;
-
-  .page-header.secondary {
-    margin-bottom: 24px;
-    h2 { font-size: 1.5rem; color: var(--ctp-teal); }
-    p { font-size: 0.9rem; }
-  }
-}
-
-.requests-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 16px;
-}
-
-.request-card {
-  background: var(--ctp-mantle);
-  border: 1px solid var(--app-border);
-  border-radius: var(--radius-md);
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-
-  .req-info {
-    .req-label {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.7rem;
-      font-weight: 800;
-      color: var(--ctp-mauve);
-      text-transform: uppercase;
-      display: block;
-      margin-bottom: 4px;
-    }
-    p {
-      color: var(--ctp-text);
-      font-size: 0.9rem;
-      margin: 0;
-    }
-  }
-
-  .req-actions {
+/* 🧊 OS Window Interface */
+.os-crew-window {
+    height: 85vh;
     display: flex;
-    align-items: center;
-    gap: 8px;
-
-    .action-btn {
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 0.75rem;
-      font-weight: 700;
-      border: 1px solid var(--app-border);
-      background: transparent;
-      cursor: pointer;
-      transition: all 0.2s;
-
-      &.accept {
-        background: var(--ctp-teal);
-        color: var(--ctp-crust);
-        border: none;
-        &:hover { filter: brightness(1.1); }
-      }
-
-      &.ignore:hover {
-        background: rgba(var(--ctp-red-rgb), 0.1);
-        color: var(--ctp-red);
-        border-color: var(--ctp-red);
-      }
-    }
-
-    .view-profile {
-      font-size: 0.75rem;
-      color: var(--ctp-subtext1);
-      text-decoration: none;
-      margin-left: auto;
-      &:hover { color: var(--ctp-mauve); text-decoration: underline; }
-    }
-  }
+    width: 100%;
+    max-width: 1280px;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+.os-crew-sidebar {
+    width: 18rem;
+}
+
+.os-crew-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.os-crew-nav-item {
+    @apply flex items-center justify-between px-4 py-3 rounded-xl text-zinc-500 transition-all cursor-pointer hover:bg-white/[0.03] hover:text-white;
+    span { @apply text-[10px] font-black uppercase tracking-widest; }
+    &.active { @apply bg-white/[0.05] text-white; }
+}
+
+.crew-grid {
+    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+}
+
+.mission-card-os {
+    @apply p-8 flex flex-col h-fit transition-all duration-500 cursor-pointer border-transparent hover:border-white/20;
 }

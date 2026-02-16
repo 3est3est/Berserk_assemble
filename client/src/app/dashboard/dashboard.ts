@@ -7,6 +7,7 @@ import { Mission } from '../_models/mission';
 import { Subscription } from 'rxjs';
 import { WebsocketService } from '../_services/websocket-service';
 import { RouterModule, Router } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
 
 interface MissionStats {
   open: number;
@@ -22,7 +23,7 @@ interface MissionStats {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ButtonModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -216,8 +217,13 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   getProgressBarColor(successRate: number): string {
-    if (successRate >= 80) return 'var(--ctp-green)';
-    if (successRate >= 50) return 'var(--ctp-yellow)';
-    return 'var(--ctp-red)';
+    if (successRate >= 80) return '#22c55e';
+    if (successRate >= 50) return '#eab308';
+    return '#ef4444';
+  }
+
+  getSuccessRateOffset(): number {
+    const circumference = 628.3;
+    return circumference * (1 - this.stats.successRate / 100);
   }
 }

@@ -1,92 +1,180 @@
-<div class="relative min-h-screen overflow-hidden bg-black selection:bg-indigo-500/30">
-  <!-- Cinematic Mesh Background -->
+<div class="relative min-h-screen selection:bg-white selection:text-black overflow-x-hidden">
   <div class="bg-mesh"></div>
 
-  <!-- Hero Section -->
-  <section
-    class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col items-center text-center"
-  >
-    <div class="animate-in mb-8">
-      <div class="glass-pill border-indigo-500/30 text-indigo-400">
-        Operational Protocol V2.5 Active
+  <!-- 🏷️ Floating Presence Cursors (OS Style) -->
+  <div class="presence-tag top-[20%] right-[15%] animate-bounce">
+    <div class="presence-label">Jean</div>
+    <div class="presence-pointer"></div>
+  </div>
+  <div class="presence-tag bottom-[30%] left-[10%] animate-pulse">
+    <div class="presence-label">Kirsten</div>
+    <div class="presence-pointer"></div>
+  </div>
+
+  <div class="godly-shell">
+    <!-- 👑 TOP NAVIGATION BAR (OS STYLE) -->
+    <header class="flex flex-col items-center text-center mb-24">
+      <h1 class="godly-title-shuttle mb-6">Vibe <span class="text-zinc-700">Assemble.</span></h1>
+      <p class="max-w-xl text-zinc-500 font-medium tracking-tight mb-10">
+        The ultimate synchronization hub. <br />
+        Simply host, <span class="text-white">join and build the vibe.</span>
+      </p>
+      <div class="flex items-center gap-4">
+        <button
+          pButton
+          label="Get early access"
+          routerLink="/missions"
+          class="shuttle-action-btn"
+        ></button>
+        <span class="text-[10px] font-bold text-zinc-700 uppercase tracking-widest"
+          >Currently in beta.</span
+        >
       </div>
-    </div>
+    </header>
 
-    <h1 class="text-godly mb-8 animate-in" style="animation-delay: 0.1s">
-      Vibe <span class="vibe-gradient">Assemble</span>
-    </h1>
+    <!-- 🖥️ MAIN OS WINDOW INTERFACE -->
+    <main class="os-window flex min-h-[700px]">
+      <!-- 🛠️ WINDOW SIDEBAR -->
+      <aside class="os-sidebar">
+        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
 
-    <p
-      class="max-w-2xl text-[11px] font-black uppercase tracking-[0.5em] text-white/40 mb-16 leading-loose animate-in"
-      style="animation-delay: 0.2s"
+        <div class="flex flex-col gap-1">
+          <div class="os-nav-item active">
+            <i class="pi pi-bolt"></i>
+            <span>Live Pulse</span>
+          </div>
+          <div class="os-nav-item">
+            <i class="pi pi-users"></i>
+            <span>Community</span>
+          </div>
+          <div class="os-nav-item">
+            <i class="pi pi-cog"></i>
+            <span>Settings</span>
+          </div>
+        </div>
+
+        <div class="mt-auto">
+          <span class="text-[9px] font-black text-zinc-800 uppercase tracking-widest block mb-4"
+            >Categories</span
+          >
+          <div class="flex flex-col gap-1">
+            <div class="os-nav-item"><span>🏀 Sports</span></div>
+            <div class="os-nav-item"><span>🎮 Gaming</span></div>
+            <div class="os-nav-item"><span>🍕 Social</span></div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- 📂 WINDOW CONTENT -->
+      <section class="os-main-content flex flex-col">
+        <div class="os-title-bar">
+          <div class="flex items-center gap-4">
+            <i class="pi pi-folder-open text-zinc-600"></i>
+            <h2 class="text-sm font-black text-white uppercase tracking-widest">Active_Sessions</h2>
+          </div>
+          <div class="flex items-center gap-2">
+            <button
+              class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-white"
+            >
+              <i class="pi pi-plus text-[10px]"></i>
+            </button>
+            <button
+              class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-white"
+            >
+              <i class="pi pi-share-alt text-[10px]"></i>
+            </button>
+          </div>
+        </div>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto hide-scrollbar pb-10"
+        >
+          @for (mission of liveMissions(); track mission.id) {
+            <div [routerLink]="['/missions', mission.id]" class="activity-card-shuttle group">
+              <div class="flex justify-between items-start mb-6">
+                <div class="shuttle-folder-icon shadow-lg shadow-blue-900/40"></div>
+                <div
+                  class="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.03] border border-white/5"
+                >
+                  <span class="pulse-dot-shuttle"></span>
+                  <span class="text-[8px] font-black text-white/40 uppercase">LIVE</span>
+                </div>
+              </div>
+
+              <h4
+                class="text-lg font-black text-white group-hover:text-blue-400 transition-colors mb-4 truncate"
+              >
+                {{ mission.name }}
+              </h4>
+
+              <div class="flex items-center justify-between mt-6 pt-6 border-t border-white/5">
+                <div class="flex items-center gap-2">
+                  <img
+                    [src]="mission.chief_avatar_url"
+                    class="w-5 h-5 rounded-full border border-white/10"
+                  />
+                  <span class="text-[9px] font-bold text-zinc-600">{{
+                    mission.chief_display_name
+                  }}</span>
+                </div>
+                <span class="text-[9px] font-black text-zinc-800"
+                  >{{ mission.crew_count }}/{{ mission.max_crew }}</span
+                >
+              </div>
+            </div>
+          }
+          @if (liveMissions().length === 0) {
+            <div class="col-span-full py-40 text-center opacity-10">
+              <i class="pi pi-inbox text-4xl mb-6"></i>
+              <p class="text-[10px] font-black uppercase tracking-[0.4em]">Directory empty</p>
+            </div>
+          }
+        </div>
+      </section>
+    </main>
+
+    <!-- 📊 EXTRA OVERLAY WINDOW (COMMUNITY INTEL) -->
+    <div
+      class="os-window absolute bottom-0 right-20 w-[350px] h-[450px] shadow-3xl transform translate-y-1/2 z-20 p-8 hidden lg:flex flex-col border-white/10"
     >
-      The ultimate tactical coordination hub for elite operatives. <br />
-      Initialize missions. Command your squad. Master the grid.
-    </p>
-
-    <div class="flex flex-wrap justify-center gap-6 animate-in" style="animation-delay: 0.3s">
-      <button
-        pButton
-        label="INITIALIZE MISSION"
-        routerLink="/missions"
-        class="p-button-primary h-14 px-10 rounded-2xl"
-      ></button>
-      <button
-        pButton
-        label="COMMAND CENTER"
-        routerLink="/dashboard"
-        class="p-button-text h-14 px-10 border border-white/5 bg-white/5"
-      ></button>
-    </div>
-  </section>
-
-  <!-- Bento Stats & Operations -->
-  <section class="max-w-7xl mx-auto px-6 pb-32 animate-in" style="animation-delay: 0.4s">
-    <div class="grid grid-cols-12 gap-6">
-      <!-- Current Ops -->
-      <div class="col-span-12 lg:col-span-8 bento-card flex flex-col min-h-[400px]">
-        <div class="flex justify-between items-center mb-10">
-          <h3 class="text-xs font-black uppercase tracking-[0.2em] opacity-40">
-            Active Deployments
-          </h3>
-          <button
-            pButton
-            label="VIEW ALL"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            routerLink="/missions"
-            class="p-button-text text-[9px] h-8"
-          ></button>
-        </div>
-
-        <div class="flex-grow flex flex-col justify-center items-center opacity-20 text-center">
-          <i class="pi pi-bolt text-5xl mb-6"></i>
-          <p class="text-[10px] font-black uppercase tracking-[0.3em]">
-            Stand by for tactical updates
-          </p>
-        </div>
+      <div class="flex justify-between items-center mb-10">
+        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500"
+          >Active_Link</span
+        >
+        <i class="pi pi-times text-[10px] text-zinc-800 hover:text-white cursor-pointer"></i>
       </div>
 
-      <!-- Quick Metrics -->
-      <div class="col-span-12 lg:col-span-4 grid grid-rows-2 gap-6">
-        <div class="bento-card border-none bg-indigo-600/10 flex flex-col justify-center">
-          <div class="text-[9px] font-black uppercase tracking-widest opacity-40 mb-4">
-            Active Agents
+      <div class="flex flex-col gap-5 flex-grow overflow-y-auto hide-scrollbar">
+        @for (user of onlineUsers(); track user.id) {
+          <div class="flex items-center justify-between group cursor-pointer">
+            <div class="flex items-center gap-4">
+              <img
+                [src]="user.avatar_url || 'https://ui-avatars.com/api/?name=' + user.display_name"
+                class="w-10 h-10 rounded-full border border-white/5"
+              />
+              <div class="flex flex-col">
+                <span
+                  class="text-xs font-bold text-zinc-400 group-hover:text-white transition-colors"
+                  >{{ user.display_name }}</span
+                >
+                <span class="text-[8px] text-zinc-800 font-black uppercase tracking-widest">{{
+                  user.is_online ? 'Full Access' : 'Offline'
+                }}</span>
+              </div>
+            </div>
+            <i
+              class="pi pi-ellipsis-h text-[10px] text-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity"
+            ></i>
           </div>
-          <div class="text-6xl font-black vibe-gradient leading-none">0</div>
-        </div>
-        <div class="bento-card flex flex-col justify-center">
-          <div class="text-[9px] font-black uppercase tracking-widest opacity-40 mb-4">
-            Network Status
-          </div>
-          <div class="flex items-center gap-3">
-            <div
-              class="w-3 h-3 bg-green-500 rounded-full shadow-[0_0_15px_rgba(34,197,94,0.5)]"
-            ></div>
-            <span class="text-xl font-black uppercase tracking-tighter">Synchronized</span>
-          </div>
+        }
+      </div>
+
+      <div class="mt-8 pt-8 border-t border-white/5">
+        <div class="flex items-center justify-between">
+          <span class="text-[9px] font-black text-zinc-700 uppercase">Synchronization Active</span>
+          <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_green]"></span>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </div>

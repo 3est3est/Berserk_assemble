@@ -1,16 +1,15 @@
-<div class="relative">
+<div class="relative inline-block">
   <button
     pButton
     icon="pi pi-bell"
-    class="p-button-text p-button-rounded w-10 h-10 relative"
+    class="p-button-text p-button-rounded w-10 h-10 relative !text-zinc-500 hover:!text-white"
     (click)="op.toggle($event)"
   >
     @if (notificationService.unreadCount() > 0) {
-      <span class="absolute top-1 right-1 flex h-2 w-2">
-        <span
-          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
-        ></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+      <span
+        class="nav-stat-badge absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-white text-black text-[10px] font-black shadow-[0_0_10px_rgba(255,255,255,0.4)]"
+      >
+        {{ notificationService.unreadCount() > 99 ? '99+' : notificationService.unreadCount() }}
       </span>
     }
   </button>
@@ -18,12 +17,16 @@
   <p-popover #op styleClass="glass-surface p-0 overflow-hidden" [style]="{ width: '320px' }">
     <div class="flex flex-col">
       <!-- Header -->
-      <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between">
-        <h3 class="text-xs font-black uppercase tracking-widest opacity-60">Notifications</h3>
+      <div
+        class="px-4 py-3 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/40"
+      >
+        <h3 class="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+          Notifications
+        </h3>
         @if (notificationService.unreadCount() > 0) {
           <button
             (click)="notificationService.markAllAsRead()"
-            class="text-[9px] font-black text-indigo-400 uppercase hover:underline"
+            class="text-[9px] font-black text-white uppercase hover:underline"
           >
             Mark all read
           </button>
@@ -31,29 +34,32 @@
       </div>
 
       <!-- List -->
-      <div class="max-h-[380px] overflow-y-auto">
+      <div class="max-h-[380px] overflow-y-auto custom-scrollbar">
         @for (notif of notificationService.notifications(); track notif.id) {
           <div
-            class="px-4 py-3 hover:bg-white/5 transition-colors cursor-pointer border-b border-white/5 group relative"
-            [class.bg-indigo-500/5]="!notif.is_read"
+            class="px-4 py-3 hover:bg-zinc-800/40 transition-colors cursor-pointer border-b border-zinc-800/50 group relative"
+            [class.bg-zinc-800/20]="!notif.is_read"
             (click)="onNotificationClick(notif); op.hide()"
           >
             <div class="flex gap-3">
               <div
-                class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center text-[10px]"
+                class="w-8 h-8 rounded-lg bg-zinc-900/50 border border-zinc-800 flex items-center justify-center text-[10px]"
               >
-                <i [class]="getNotificationIcon(notif.type)"></i>
+                <i [class]="getNotificationIcon(notif.type) + ' text-zinc-500'"></i>
               </div>
               <div class="flex-grow min-w-0">
                 <div class="flex items-center justify-between mb-0.5">
-                  <span class="text-[9px] font-black uppercase tracking-tight text-indigo-400">{{
-                    notif.type.split('_').join(' ')
-                  }}</span>
-                  <span class="text-[8px] opacity-40">{{
+                  <span
+                    class="text-[9px] font-black uppercase tracking-tight text-white opacity-40"
+                    >{{ notif.type.split('_').join(' ') }}</span
+                  >
+                  <span class="text-[8px] text-zinc-600 font-bold uppercase">{{
                     notif.created_at + 'Z' | date: 'shortTime'
                   }}</span>
                 </div>
-                <p class="text-[11px] leading-snug font-medium opacity-90 truncate">
+                <p
+                  class="text-[11px] leading-snug font-medium text-zinc-400 group-hover:text-white transition-colors truncate"
+                >
                   {{ notif.content }}
                 </p>
 
@@ -61,7 +67,7 @@
                   <button
                     pButton
                     label="ACCEPT"
-                    class="p-button-primary p-button-sm h-7 mt-2"
+                    class="p-button-primary p-button-sm h-7 mt-2 text-[8px] font-black"
                     (click)="acceptFriendRequest(notif); $event.stopPropagation()"
                   ></button>
                 }
@@ -69,7 +75,7 @@
             </div>
             @if (!notif.is_read) {
               <div
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-indigo-500 rounded-full"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full"
               ></div>
             }
           </div>

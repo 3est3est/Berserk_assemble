@@ -24,10 +24,12 @@ export class OnlineUsers implements OnInit, OnDestroy {
   private _cdr = inject(ChangeDetectorRef);
 
   onlineUsers = signal<any[]>([]);
+  pendingCount = signal(0);
   private _wsSubscription?: Subscription;
 
   ngOnInit() {
     this.loadOnlineUsers();
+    this.loadPendingCount();
     this.setupRealtime();
   }
 
@@ -38,7 +40,6 @@ export class OnlineUsers implements OnInit, OnDestroy {
   async loadOnlineUsers() {
     try {
       const users = await this._friendship.getOnlineUsers();
-      // Filter out self
       const myId = this._passport.data()?.id;
       this.onlineUsers.set(users.filter((u) => u.id !== myId));
       this._cdr.detectChanges();
@@ -47,10 +48,23 @@ export class OnlineUsers implements OnInit, OnDestroy {
     }
   }
 
+  async loadPendingCount() {
+    try {
+      const pending = await this._friendship.getPendingRequests();
+      this.pendingCount.set(pending.length);
+      this._cdr.detectChanges();
+    } catch (e) {
+      console.error('Failed to load pending count', e);
+    }
+  }
+
   setupRealtime() {
     this._wsSubscription = this._wsService.notifications$.subscribe((msg) => {
       if (msg.type === 'agent_online' || msg.type === 'agent_offline') {
         this.loadOnlineUsers();
+      }
+      if (msg.type === 'friend_request' || msg.type === 'friend_accepted') {
+        this.loadPendingCount();
       }
     });
   }

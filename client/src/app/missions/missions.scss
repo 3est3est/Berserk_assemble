@@ -1,21 +1,75 @@
-.mission-card {
-  &.zone-tech { border-top: 4px solid var(--zone-tech); }
-  &.zone-sunset { border-top: 4px solid var(--zone-sunset); }
-  &.zone-action { border-top: 4px solid var(--zone-action); }
-  &.zone-ocean { border-top: 4px solid var(--zone-ocean); }
+.missions-container {
+    @apply min-h-screen pt-24 pb-44 overflow-x-hidden selection:bg-white selection:text-black;
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+.godly-hero-missions {
+    @apply max-w-[1300px] mx-auto px-6 mb-16;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+/* 🧊 OS Window Interface */
+.os-missions-window {
+    min-height: 750px;
+    display: flex;
 }
 
-input {
-  &:focus {
-    outline: none;
+.os-missions-sidebar {
+}
+
+.os-missions-main {
+    display: flex;
+    flex-direction: column;
+}
+
+.os-missions-nav-item {
+    @apply flex items-center justify-between px-4 py-3 rounded-xl text-zinc-500 transition-all cursor-pointer hover:bg-white/[0.03] hover:text-white;
+    span { @apply text-[10px] font-black uppercase tracking-widest; }
+    &.active { @apply bg-white/[0.05] text-white; }
+}
+
+/* ⚡ Folder Activity Card (Shuttle style) */
+.mission-folder-card {
+    @apply rounded-2xl bg-zinc-900/40 border border-white/5 p-8 transition-all duration-500 cursor-pointer overflow-hidden flex flex-col;
+    &:hover {
+        @apply -translate-y-2 border-white/20 bg-zinc-800/40;
+        box-shadow: 0 30px 60px -10px rgba(0,0,0,0.8);
+    }
+}
+
+.folder-icon-glow {
+    @apply w-12 h-10 bg-blue-600 rounded-lg relative mb-6;
+    &::after {
+        content: '';
+        @apply absolute -top-1 left-0 w-6 h-2 bg-blue-700 rounded-t-sm;
+    }
+    box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+}
+
+/* 🏷️ Status Badges */
+.os-badge {
+    @apply px-3 py-1 rounded-md text-[8px] font-black uppercase tracking-widest border border-white/5 bg-white/[0.03] text-zinc-500;
+    &.active { @apply border-white/20 text-white bg-white/5; }
+}
+
+/* 🔍 Search Input OS */
+.os-search-container {
+    @apply relative h-12 flex-grow max-w-xl;
+    input {
+        @apply w-full h-full bg-white/[0.02] border border-white/5 rounded-xl pl-12 pr-6 text-[11px] font-bold uppercase tracking-widest focus:bg-white/[0.05] focus:border-white/20 outline-none transition-all;
+    }
+    i { @apply absolute left-5 top-1/2 -translate-y-1/2 text-zinc-700; }
+}
+
+.shuttle-select-compact {
+  ::v-deep .p-selectbutton {
+    @apply flex gap-1 bg-white/[0.01] border border-white/5 p-1 rounded-xl;
+    
+    .p-button {
+      @apply bg-transparent border-none rounded-lg text-[8px] font-black uppercase tracking-widest transition-all px-4 h-8 !important;
+      color: rgba(255, 255, 255, 0.4);
+
+      &:hover { color: white; }
+      &.p-highlight { @apply bg-white !important; color: black !important; }
+      .p-button-label { @apply transition-none; }
+    }
   }
 }

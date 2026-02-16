@@ -2,6 +2,7 @@ import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { Mission } from '../../_models/mission';
 import { MissionService } from '../../_services/mission-service';
+import { CrewService } from '../../_services/crew-service';
 import { DialogService, DynamicDialogModule } from 'primeng/dynamicdialog';
 import { NewMission } from '../../_dialogs/new-mission/new-mission';
 import { AddMission } from '../../_models/add-mission';
@@ -33,6 +34,7 @@ import { TooltipModule } from 'primeng/tooltip';
 })
 export class MissionManager implements OnDestroy {
   private _missionService = inject(MissionService);
+  private _crewService = inject(CrewService);
   private _dialog = inject(DialogService);
   private _router = inject(Router);
   private _toast = inject(ToastService);
@@ -131,5 +133,13 @@ export class MissionManager implements OnDestroy {
 
   onManage(mission: Mission) {
     this._router.navigate(['/missions', mission.id]);
+  }
+
+  getZone(category?: string): string {
+    const cat = (category || '').toLowerCase();
+    if (cat.includes('sport') || cat.includes('gaming')) return 'zone-action';
+    if (cat.includes('social') || cat.includes('entertainment')) return 'zone-sunset';
+    if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
+    return 'zone-tech';
   }
 }

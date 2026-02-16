@@ -43,6 +43,9 @@ export class Navbar {
   }
 
   private updateTheme() {
+    const theme = this.isDarkMode() ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', theme);
+    // Also keep the .dark class for tailwind if needed, but data-theme is primary for SCSS
     if (this.isDarkMode()) {
       document.documentElement.classList.add('dark');
     } else {

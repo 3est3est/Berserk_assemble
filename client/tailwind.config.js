@@ -35,7 +35,7 @@ module.exports = {
         },
       },
       fontFamily: {
-        sans: ['Outfit', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         'sm': '6px',
@@ -51,7 +51,49 @@ module.exports = {
         'card': '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
         'card-hover': '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1)',
       },
+      keyframes: {
+        shuttleIn: {
+          '0%': { opacity: '0', filter: 'blur(8px)' },
+          '100%': { opacity: '1', filter: 'blur(0)' },
+        }
+      },
+      animation: {
+        shuttle: 'shuttleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+      }
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss/plugin')(function({ addComponents, addUtilities }) {
+      addComponents({
+        '.os-window-base': {
+          '@apply rounded-[1.8rem] border border-white/5 bg-black/40 backdrop-blur-3xl shadow-2xl relative overflow-hidden': {},
+          'box-shadow': '0 50px 100px -20px rgba(0,0,0,0.8)',
+        },
+        '.os-sidebar-base': {
+          '@apply w-64 border-r border-white/5 bg-white/[0.02] p-6 flex flex-col gap-8': {},
+        },
+        '.os-main-base': {
+          '@apply flex-grow p-10 bg-white/[0.01]': {},
+        },
+        '.os-glass-card': {
+          '@apply rounded-[1.5rem] border border-white/[0.03] bg-white/[0.02] backdrop-blur-2xl transition-all duration-500': {},
+          '&:hover': {
+            '@apply bg-white/[0.05] border-white/10': {},
+          }
+        },
+        '.os-label': {
+          '@apply text-[9px] font-black uppercase tracking-[0.4em] text-zinc-600 mb-4 block': {},
+        }
+      });
+      addUtilities({
+        '.hide-scrollbar': {
+          '-ms-overflow-style': 'none',
+          'scrollbar-width': 'none',
+          '&::-webkit-scrollbar': {
+            'display': 'none',
+          }
+        }
+      });
+    })
+  ],
 }

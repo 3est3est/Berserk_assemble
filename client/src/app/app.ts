@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, effect, HostListener, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './navbar/navbar';
 import { PassportService } from './_services/passport-service';
@@ -42,6 +42,12 @@ export class App {
     this._ws.notifications$.subscribe((msg) => {
       this.handleNotification(msg);
     });
+  }
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(e: MouseEvent) {
+    document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+    document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
   }
 
   private handleNotification(msg: any) {
