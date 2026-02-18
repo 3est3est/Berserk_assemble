@@ -1,35 +1,50 @@
 .shuttle-nav {
-  @apply glass-surface rounded-[2rem] px-2;
-  background: var(--bg-glass);
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  height: 52px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-md);
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
+  }
 }
 
 .nav-link {
-  @apply px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all duration-300;
-  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.18s ease, background 0.18s ease;
+  white-space: nowrap;
 
   &:hover {
     color: var(--text-primary);
-    background: var(--bg-frost);
+    background: var(--glass-bg-hover);
   }
 
   &.active {
+    background: var(--bg-elevated);
     color: var(--text-primary);
-    background: var(--text-primary);
-    color: var(--bg-main) !important;
-  }
-}
-
-// Theme specific adjustments
-:host-context([data-theme='light']) {
-  .shuttle-nav {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    font-weight: 600;
+    border: 1px solid var(--border-subtle);
   }
 }
 
 @media (max-width: 768px) {
   .nav-link {
-    @apply px-3 text-[8px];
+    padding: 5px 10px;
+    font-size: 12px;
   }
 }

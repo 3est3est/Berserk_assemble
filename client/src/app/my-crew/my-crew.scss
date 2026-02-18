@@ -1,38 +1,32 @@
+/* ═══════════════════════════════════════════════════════
+   MY CREW PAGE — Vibe Design System
+   ═══════════════════════════════════════════════════════ */
+
 .my-crew-container {
-    @apply relative min-h-screen selection:bg-white selection:text-black bg-black;
+  min-height: 100vh;
+  padding-top: 1.5rem;
+  padding-bottom: 6rem;
 }
 
 .godly-hero-my-crew {
-    @apply flex items-center justify-center;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* 🧊 OS Window Interface */
-.os-crew-window {
-    height: 85vh;
-    display: flex;
-    width: 100%;
-    max-width: 1280px;
-}
-
-.os-crew-sidebar {
-    width: 18rem;
-}
-
-.os-crew-main {
-    display: flex;
-    flex-direction: column;
-}
-
-.os-crew-nav-item {
-    @apply flex items-center justify-between px-4 py-3 rounded-xl text-zinc-500 transition-all cursor-pointer hover:bg-white/[0.03] hover:text-white;
-    span { @apply text-[10px] font-black uppercase tracking-widest; }
-    &.active { @apply bg-white/[0.05] text-white; }
-}
-
+/* ── Crew Grid specific overrides if any ── */
 .crew-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
 }
 
-.mission-card-os {
-    @apply p-8 flex flex-col h-fit transition-all duration-500 cursor-pointer border-transparent hover:border-white/20;
+.presence-dot-os {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
 }

@@ -1,23 +1,18 @@
 <div class="profile-container">
   <div class="bg-mesh"></div>
 
-  <!-- 🏷️ Presence Cursor (Self) -->
-  <div class="presence-tag top-[15%] right-[20%] animate-pulse">
-    <div class="presence-label">{{ display_name() }}</div>
-    <div class="presence-pointer"></div>
-  </div>
-
   <div class="godly-hero-profile">
     <!-- OS WINDOW -->
-    <main class="os-window-base os-profile-window">
+    <main class="os-window flex min-h-[700px]">
       <!-- WINDOW SIDEBAR -->
-      <aside class="os-sidebar-base os-profile-sidebar">
+      <aside class="os-sidebar">
+        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
         <div class="avatar-wrapper-os">
           <img [src]="avatar_url()" class="avatar-img-os" />
           @if (isOwnProfile()) {
             <button
               (click)="openAvatarDialog()"
-              class="absolute -bottom-2 -right-2 w-10 h-10 bg-white text-black rounded-lg flex items-center justify-center border-4 border-black border-[rgba(0,0,0,0.5)]"
+              class="absolute -bottom-2 -right-2 w-10 h-10 bg-white text-black rounded-lg flex items-center justify-center border-4 border-black"
             >
               <i class="pi pi-camera text-xs"></i>
             </button>
@@ -25,22 +20,22 @@
         </div>
 
         <div class="flex flex-col gap-1">
-          <div class="os-profile-nav-item active">
+          <div class="os-nav-item active">
             <i class="pi pi-user"></i>
             <span>Overview</span>
           </div>
-          <div class="os-profile-nav-item">
+          <div class="os-nav-item">
             <i class="pi pi-history"></i>
             <span>History</span>
           </div>
-          <div class="os-profile-nav-item">
+          <div class="os-nav-item">
             <i class="pi pi-shield"></i>
             <span>Security</span>
           </div>
         </div>
 
         <div class="mt-auto pt-8 border-t border-white/5">
-          <span class="os-label">Operative_Rank</span>
+          <span class="os-label">Rank</span>
           <div class="flex items-center gap-3">
             <div class="presence-dot-os"></div>
             <span class="text-[10px] font-black text-white uppercase tracking-widest">{{
@@ -51,18 +46,10 @@
       </aside>
 
       <!-- WINDOW CONTENT -->
-      <section class="os-profile-main flex flex-col">
-        <div class="flex justify-between items-start mb-16">
-          <div class="flex flex-col pt-4">
-            <span class="os-label">Identity_Profile</span>
+      <section class="os-main">
+        <div class="os-title-bar mb-10">
+          <div class="flex flex-col">
             <h1 class="os-title-large mb-4">{{ display_name() }}</h1>
-            <div class="flex items-center gap-4 text-zinc-600">
-              <span class="text-[10px] uppercase font-black tracking-widest">Sector_Active</span>
-              <div class="h-1 w-1 rounded-full bg-zinc-800"></div>
-              <span class="text-[10px] uppercase font-black tracking-widest"
-                >ID_{{ display_name().substring(0, 4).toUpperCase() }}</span
-              >
-            </div>
           </div>
 
           <div class="flex gap-3">
@@ -108,7 +95,7 @@
         <div class="grid grid-cols-3 gap-6 mb-12">
           <div class="os-glass-card p-8 group">
             <span class="os-label !mb-2 opacity-40 group-hover:opacity-100 transition-opacity"
-              >Total_Vibes</span
+              >Total Vibes</span
             >
             <div class="text-5xl font-black text-white italic tracking-tighter">
               {{ stats().hosted + stats().joined }}
@@ -136,7 +123,7 @@
         <div
           class="os-glass-card p-10 mb-12 relative overflow-hidden flex flex-col justify-between min-h-[250px]"
         >
-          <span class="os-label">Bio_Database</span>
+          <span class="os-label">Bio</span>
           <p class="text-2xl font-black leading-tight text-zinc-300 italic max-w-2xl">
             "{{ bio() || "Hey! I'm here to vibe. Let's do something cool together." }}"
           </p>
@@ -159,7 +146,7 @@
           <div class="os-glass-card social-pill-os group">
             <div class="icon-box"><i class="pi pi-discord"></i></div>
             <div class="flex flex-col">
-              <span class="os-label !mb-0 text-[8px]">Discord_ID</span>
+              <span class="os-label !mb-0 text-[8px]">Discord</span>
               <span class="text-xs font-black uppercase tracking-widest text-white">{{
                 discord_id() || 'Private'
               }}</span>
@@ -168,7 +155,7 @@
           <div class="os-glass-card social-pill-os group">
             <div class="icon-box"><i class="pi pi-instagram"></i></div>
             <div class="flex flex-col">
-              <span class="os-label !mb-0 text-[8px]">IG_Database</span>
+              <span class="os-label !mb-0 text-[8px]">Instagram</span>
               <span class="text-xs font-black uppercase tracking-widest text-white">{{
                 instagram() || 'Private'
               }}</span>
@@ -177,7 +164,7 @@
           <div class="os-glass-card social-pill-os group">
             <div class="icon-box"><i class="pi pi-facebook"></i></div>
             <div class="flex flex-col">
-              <span class="os-label !mb-0 text-[8px]">Facebook_Link</span>
+              <span class="os-label !mb-0 text-[8px]">Facebook</span>
               <span class="text-xs font-black uppercase tracking-widest text-white">{{
                 facebook() || 'Private'
               }}</span>
@@ -186,7 +173,7 @@
           <div class="os-glass-card social-pill-os group">
             <div class="icon-box"><i class="pi pi-envelope"></i></div>
             <div class="flex flex-col overflow-hidden">
-              <span class="os-label !mb-0 text-[8px]">Contact_Signal</span>
+              <span class="os-label !mb-0 text-[8px]">Email</span>
               <span class="text-xs font-black uppercase tracking-widest text-white truncate">{{
                 contact_email() || 'Private'
               }}</span>

@@ -1,180 +1,220 @@
-<div class="relative min-h-screen selection:bg-white selection:text-black overflow-x-hidden">
-  <div class="bg-mesh"></div>
+<div class="home">
+  <!-- ══════════════════════════════════════════════════
+       HERO
+       ══════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-inner">
+      <!-- Status pill -->
+      <div class="hero-pill" style="animation: fadeUp 0.5s 0s cubic-bezier(0.16, 1, 0.3, 1) both">
+        <span class="live-dot"></span>
+        <span>{{ onlineUsers().length }} people online now</span>
+      </div>
 
-  <!-- 🏷️ Floating Presence Cursors (OS Style) -->
-  <div class="presence-tag top-[20%] right-[15%] animate-bounce">
-    <div class="presence-label">Jean</div>
-    <div class="presence-pointer"></div>
-  </div>
-  <div class="presence-tag bottom-[30%] left-[10%] animate-pulse">
-    <div class="presence-label">Kirsten</div>
-    <div class="presence-pointer"></div>
-  </div>
+      <!-- Headline -->
+      <h1 class="hero-h1" style="animation: fadeUp 0.5s 0.07s cubic-bezier(0.16, 1, 0.3, 1) both">
+        Find your vibe,<br />
+        <span class="hero-h1-accent">build your crew.</span>
+      </h1>
 
-  <div class="godly-shell">
-    <!-- 👑 TOP NAVIGATION BAR (OS STYLE) -->
-    <header class="flex flex-col items-center text-center mb-24">
-      <h1 class="godly-title-shuttle mb-6">Vibe <span class="text-zinc-700">Assemble.</span></h1>
-      <p class="max-w-xl text-zinc-500 font-medium tracking-tight mb-10">
-        The ultimate synchronization hub. <br />
-        Simply host, <span class="text-white">join and build the vibe.</span>
+      <!-- Sub -->
+      <p class="hero-sub" style="animation: fadeUp 0.5s 0.14s cubic-bezier(0.16, 1, 0.3, 1) both">
+        Host or join activities with people who share your energy. Gaming, sports, social — whatever
+        moves you.
       </p>
-      <div class="flex items-center gap-4">
-        <button
-          pButton
-          label="Get early access"
-          routerLink="/missions"
-          class="shuttle-action-btn"
-        ></button>
-        <span class="text-[10px] font-bold text-zinc-700 uppercase tracking-widest"
-          >Currently in beta.</span
-        >
+
+      <!-- CTAs -->
+      <div
+        class="hero-actions"
+        style="animation: fadeUp 0.5s 0.21s cubic-bezier(0.16, 1, 0.3, 1) both"
+      >
+        <a routerLink="/missions" class="btn btn-primary btn-lg">
+          <i class="pi pi-compass"></i>
+          Explore Sessions
+        </a>
+        <a routerLink="/chief" class="btn btn-ghost btn-lg"> Host an Event </a>
       </div>
-    </header>
 
-    <!-- 🖥️ MAIN OS WINDOW INTERFACE -->
-    <main class="os-window flex min-h-[700px]">
-      <!-- 🛠️ WINDOW SIDEBAR -->
-      <aside class="os-sidebar">
-        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
-
-        <div class="flex flex-col gap-1">
-          <div class="os-nav-item active">
-            <i class="pi pi-bolt"></i>
-            <span>Live Pulse</span>
-          </div>
-          <div class="os-nav-item">
-            <i class="pi pi-users"></i>
-            <span>Community</span>
-          </div>
-          <div class="os-nav-item">
-            <i class="pi pi-cog"></i>
-            <span>Settings</span>
-          </div>
-        </div>
-
-        <div class="mt-auto">
-          <span class="text-[9px] font-black text-zinc-800 uppercase tracking-widest block mb-4"
-            >Categories</span
-          >
-          <div class="flex flex-col gap-1">
-            <div class="os-nav-item"><span>🏀 Sports</span></div>
-            <div class="os-nav-item"><span>🎮 Gaming</span></div>
-            <div class="os-nav-item"><span>🍕 Social</span></div>
-          </div>
-        </div>
-      </aside>
-
-      <!-- 📂 WINDOW CONTENT -->
-      <section class="os-main-content flex flex-col">
-        <div class="os-title-bar">
-          <div class="flex items-center gap-4">
-            <i class="pi pi-folder-open text-zinc-600"></i>
-            <h2 class="text-sm font-black text-white uppercase tracking-widest">Active_Sessions</h2>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-white"
-            >
-              <i class="pi pi-plus text-[10px]"></i>
-            </button>
-            <button
-              class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-white"
-            >
-              <i class="pi pi-share-alt text-[10px]"></i>
-            </button>
-          </div>
-        </div>
-
+      <!-- Social proof -->
+      @if (onlineUsers().length > 0) {
         <div
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 overflow-y-auto hide-scrollbar pb-10"
+          class="hero-proof"
+          style="animation: fadeUp 0.5s 0.28s cubic-bezier(0.16, 1, 0.3, 1) both"
         >
-          @for (mission of liveMissions(); track mission.id) {
-            <div [routerLink]="['/missions', mission.id]" class="activity-card-shuttle group">
-              <div class="flex justify-between items-start mb-6">
-                <div class="shuttle-folder-icon shadow-lg shadow-blue-900/40"></div>
-                <div
-                  class="flex items-center gap-2 px-2 py-1 rounded-md bg-white/[0.03] border border-white/5"
-                >
-                  <span class="pulse-dot-shuttle"></span>
-                  <span class="text-[8px] font-black text-white/40 uppercase">LIVE</span>
-                </div>
-              </div>
-
-              <h4
-                class="text-lg font-black text-white group-hover:text-blue-400 transition-colors mb-4 truncate"
-              >
-                {{ mission.name }}
-              </h4>
-
-              <div class="flex items-center justify-between mt-6 pt-6 border-t border-white/5">
-                <div class="flex items-center gap-2">
-                  <img
-                    [src]="mission.chief_avatar_url"
-                    class="w-5 h-5 rounded-full border border-white/10"
-                  />
-                  <span class="text-[9px] font-bold text-zinc-600">{{
-                    mission.chief_display_name
-                  }}</span>
-                </div>
-                <span class="text-[9px] font-black text-zinc-800"
-                  >{{ mission.crew_count }}/{{ mission.max_crew }}</span
-                >
-              </div>
-            </div>
-          }
-          @if (liveMissions().length === 0) {
-            <div class="col-span-full py-40 text-center opacity-10">
-              <i class="pi pi-inbox text-4xl mb-6"></i>
-              <p class="text-[10px] font-black uppercase tracking-[0.4em]">Directory empty</p>
-            </div>
-          }
-        </div>
-      </section>
-    </main>
-
-    <!-- 📊 EXTRA OVERLAY WINDOW (COMMUNITY INTEL) -->
-    <div
-      class="os-window absolute bottom-0 right-20 w-[350px] h-[450px] shadow-3xl transform translate-y-1/2 z-20 p-8 hidden lg:flex flex-col border-white/10"
-    >
-      <div class="flex justify-between items-center mb-10">
-        <span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500"
-          >Active_Link</span
-        >
-        <i class="pi pi-times text-[10px] text-zinc-800 hover:text-white cursor-pointer"></i>
-      </div>
-
-      <div class="flex flex-col gap-5 flex-grow overflow-y-auto hide-scrollbar">
-        @for (user of onlineUsers(); track user.id) {
-          <div class="flex items-center justify-between group cursor-pointer">
-            <div class="flex items-center gap-4">
+          <div class="avatar-stack">
+            @for (user of onlineUsers().slice(0, 4); track user.id) {
               <img
-                [src]="user.avatar_url || 'https://ui-avatars.com/api/?name=' + user.display_name"
-                class="w-10 h-10 rounded-full border border-white/5"
+                [src]="
+                  'https://ui-avatars.com/api/?name=' +
+                  user.display_name +
+                  '&background=random&size=48'
+                "
+                [alt]="user.display_name"
               />
-              <div class="flex flex-col">
-                <span
-                  class="text-xs font-bold text-zinc-400 group-hover:text-white transition-colors"
-                  >{{ user.display_name }}</span
-                >
-                <span class="text-[8px] text-zinc-800 font-black uppercase tracking-widest">{{
-                  user.is_online ? 'Full Access' : 'Offline'
-                }}</span>
-              </div>
-            </div>
-            <i
-              class="pi pi-ellipsis-h text-[10px] text-zinc-800 opacity-0 group-hover:opacity-100 transition-opacity"
-            ></i>
+            }
           </div>
-        }
+          <span class="hero-proof-text">
+            Join <strong>{{ onlineUsers().length }}</strong> members already vibing
+          </span>
+        </div>
+      }
+    </div>
+
+    <!-- Category pills row -->
+    <div class="hero-cats" style="animation: fadeUp 0.5s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both">
+      <span class="cat-chip cat-gaming">🎮 Gaming</span>
+      <span class="cat-chip cat-sports">🏀 Sports</span>
+      <span class="cat-chip cat-social">🍕 Social</span>
+      <span class="cat-chip cat-travel">✈️ Travel</span>
+      <span class="cat-chip cat-ent">🎵 Entertainment</span>
+      <span class="cat-chip cat-life">🌿 Lifestyle</span>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       LIVE SESSIONS PREVIEW
+       ══════════════════════════════════════════════════ -->
+  <section class="section" vibeReveal>
+    <div class="section-head">
+      <div class="flex items-center gap-2">
+        <span class="live-dot"></span>
+        <span class="section-title">Live Now</span>
+      </div>
+      <a routerLink="/missions" class="section-link">
+        View all <i class="pi pi-arrow-right text-[10px]"></i>
+      </a>
+    </div>
+
+    <div class="sessions-grid stagger">
+      @for (mission of liveMissions(); track mission.id; let i = $index) {
+        <div [routerLink]="['/missions', mission.id]" class="session-card">
+          <!-- Top row -->
+          <div class="session-card-top">
+            <span class="badge" [ngClass]="getCategoryClass(mission.category ?? '')">
+              {{ mission.category || 'Event' }}
+            </span>
+            <span class="session-live-badge">
+              <span class="live-dot" style="width: 5px; height: 5px"></span>
+              Live
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h3 class="session-title">{{ mission.name }}</h3>
+
+          <!-- Footer -->
+          <div class="session-footer">
+            <div class="flex items-center gap-2">
+              <img
+                [src]="
+                  'https://ui-avatars.com/api/?name=' +
+                  mission.chief_display_name +
+                  '&size=28&background=random'
+                "
+                class="w-6 h-6 rounded-full border"
+                style="border-color: var(--border-subtle)"
+                [alt]="mission.chief_display_name"
+              />
+              <span class="session-host">{{ mission.chief_display_name }}</span>
+            </div>
+            <span class="session-count">
+              {{ mission.crew_count }}/{{ mission.max_crew }}
+              <i class="pi pi-users" style="font-size: 10px"></i>
+            </span>
+          </div>
+        </div>
+      }
+
+      @if (liveMissions().length === 0) {
+        <div class="sessions-empty">
+          <i class="pi pi-calendar" style="font-size: 28px; color: var(--text-muted)"></i>
+          <p>No active sessions right now</p>
+          <a routerLink="/chief" class="btn btn-subtle btn-sm">Host one →</a>
+        </div>
+      }
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       HOW IT WORKS
+       ══════════════════════════════════════════════════ -->
+  <section class="section" vibeReveal>
+    <div class="section-head">
+      <span class="section-title">How it works</span>
+    </div>
+
+    <div class="how-grid stagger">
+      <div class="how-card">
+        <div class="how-icon" style="background: var(--accent-subtle); color: var(--accent)">
+          <i class="pi pi-plus-circle" style="font-size: 18px"></i>
+        </div>
+        <div>
+          <h3 class="how-title">Host</h3>
+          <p class="how-desc">
+            Create a session, set the time, open it up. Your event, your rules.
+          </p>
+        </div>
       </div>
 
-      <div class="mt-8 pt-8 border-t border-white/5">
-        <div class="flex items-center justify-between">
-          <span class="text-[9px] font-black text-zinc-700 uppercase">Synchronization Active</span>
-          <span class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_green]"></span>
+      <div class="how-card">
+        <div class="how-icon" style="background: rgba(168, 85, 247, 0.1); color: var(--cat-gaming)">
+          <i class="pi pi-search" style="font-size: 18px"></i>
+        </div>
+        <div>
+          <h3 class="how-title">Discover</h3>
+          <p class="how-desc">
+            Browse sessions by category. Find something that matches your vibe.
+          </p>
+        </div>
+      </div>
+
+      <div class="how-card">
+        <div class="how-icon" style="background: rgba(249, 115, 22, 0.1); color: var(--cat-sports)">
+          <i class="pi pi-users" style="font-size: 18px"></i>
+        </div>
+        <div>
+          <h3 class="how-title">Show Up</h3>
+          <p class="how-desc">Meet real people, do things together, build lasting connections.</p>
         </div>
       </div>
     </div>
-  </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       STATS
+       ══════════════════════════════════════════════════ -->
+  <section class="section" vibeReveal>
+    <div class="stats-row stagger">
+      <div class="stat-item">
+        <span class="stat-num">128+</span>
+        <span class="stat-label">Sessions this week</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">500+</span>
+        <span class="stat-label">Members joined</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">7</span>
+        <span class="stat-label">Activity categories</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       CLOSING CTA
+       ══════════════════════════════════════════════════ -->
+  <section class="section cta-section" vibeReveal>
+    <div class="cta-box">
+      <h2 class="cta-title">Ready to find your vibe?</h2>
+      <p class="cta-sub">Join hundreds of people already doing things together.</p>
+      <div class="flex items-center justify-center gap-3 flex-wrap">
+        <a routerLink="/missions" class="btn btn-primary btn-lg">
+          <i class="pi pi-compass"></i>
+          Get Started
+        </a>
+        <a routerLink="/missions" class="btn btn-ghost btn-lg">Browse Sessions</a>
+      </div>
+    </div>
+  </section>
 </div>

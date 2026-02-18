@@ -1,135 +1,197 @@
 <div class="missions-container">
-  <div class="bg-mesh"></div>
-
   <div class="godly-hero-missions">
-    <!-- OS WINDOW FOR DIRECTORY -->
-    <main class="os-window-base os-missions-window">
-      <!-- DIRECTORY SIDEBAR -->
-      <aside class="os-sidebar-base os-missions-sidebar">
-        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
-
-        <div class="flex flex-col gap-1 mb-10">
-          <div class="os-missions-nav-item active">
-            <span>Open Signals</span>
-            <span class="text-[8px] opacity-40">AUTO</span>
-          </div>
-          <div class="os-missions-nav-item">
-            <span>My Archives</span>
-          </div>
-        </div>
-
-        <span class="os-label">Filter_Categories</span>
+    <div class="page-layout">
+      <!-- SIDEBAR -->
+      <aside class="page-sidebar">
         <div class="flex flex-col gap-1">
-          <p-selectButton
-            [options]="categories"
-            [(ngModel)]="filter.category"
-            (onChange)="onSubmit()"
-            class="shuttle-select-compact !flex-col"
-          ></p-selectButton>
+          <div
+            class="os-nav-item"
+            [class.active]="!selectedCategory"
+            (click)="selectedCategory = ''; filterMissions()"
+          >
+            <i class="pi pi-compass"></i>
+            <span>Browse All</span>
+          </div>
+          <div class="os-nav-item">
+            <i class="pi pi-calendar"></i>
+            <span>My Schedule</span>
+          </div>
         </div>
 
-        <div class="mt-auto pt-8 border-t border-white/5 space-y-6">
-          <div>
-            <span class="os-label">Status_Scan</span>
-            <p-selectButton
-              [options]="statusOptions"
-              [(ngModel)]="filter.status"
-              (onChange)="onSubmit()"
-              class="shuttle-select-compact"
-            ></p-selectButton>
+        <div class="flex flex-col gap-4">
+          <span class="label">Categories</span>
+          <div class="grid grid-cols-1 gap-1">
+            @for (cat of categories; track cat.name) {
+              <div
+                class="os-nav-item"
+                [class.active]="selectedCategory === cat.name"
+                (click)="selectedCategory = cat.name; filterMissions()"
+              >
+                <span class="text-lg mr-2">{{ cat.emoji }}</span>
+                <span>{{ cat.name }}</span>
+              </div>
+            }
           </div>
-          <div>
-            <span class="os-label">Availability</span>
-            <p-selectButton
-              [options]="availabilityOptions"
-              [(ngModel)]="filter.is_available"
-              (onChange)="onSubmit()"
-              class="shuttle-select-compact"
-            ></p-selectButton>
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-white/5">
+          <div class="flex items-center gap-3 px-3">
+            <div
+              class="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]"
+            ></div>
+            <span class="text-[10px] font-bold text-white uppercase tracking-wider">Live Now</span>
           </div>
         </div>
       </aside>
 
-      <!-- DIRECTORY CONTENT -->
-      <section class="os-main-base os-missions-main">
-        <div class="os-title-bar mb-10">
-          <div class="flex items-center gap-6 flex-grow">
-            <div class="os-search-container">
-              <i class="pi pi-search"></i>
-              <input
-                type="text"
-                [(ngModel)]="filter.name"
-                (keyup.enter)="onSubmit()"
-                placeholder="Search directory..."
-              />
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <button
-              (click)="onSubmit()"
-              class="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-white transition-all"
-            >
-              <i class="pi pi-refresh text-xs"></i>
-            </button>
+      <!-- MAIN CONTENT -->
+      <section class="page-main">
+        <div class="page-header">
+          <h1 class="page-title">Discover Activities</h1>
+          <div class="search-wrap">
+            <i class="pi pi-search"></i>
+            <input
+              type="text"
+              placeholder="Find a activity room..."
+              [(ngModel)]="searchTerm"
+              (input)="filterMissions()"
+            />
           </div>
         </div>
 
-        @if ((missions$ | async)?.length) {
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 overflow-y-auto hide-scrollbar pb-20"
-          >
-            @for (mission of missions$ | async; track mission.id) {
-              <a
-                [routerLink]="['/missions', mission.id]"
-                class="mission-folder-card group block no-underline"
-              >
-                <div class="flex justify-between items-start mb-6">
-                  <div class="folder-icon-glow"></div>
-                  <div class="os-badge" [class.active]="mission.status === 'InProgress'">
-                    {{ mission.status === 'InProgress' ? 'ACTIVE' : 'IDLE' }}
-                  </div>
+        <div class="missions-grid hide-scrollbar overflow-y-auto">
+          @for (mission of filteredMissions; track mission.id; let i = $index) {
+            <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
+              <!-- Card Cover Image with Dynamic Backgrounds -->
+              <div class="card-cover-wrap">
+                <!-- Thematic Images based on Category -->
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="mission.category === 'Gaming & E-Sports'"
+                />
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="mission.category === 'Sports & Active'"
+                />
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1514525253361-9f9a5690d562?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="mission.category === 'Entertainment'"
+                />
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="mission.category === 'Social & Chill'"
+                />
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1500835595546-64e86b468cc0?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="mission.category === 'Travel & Trip'"
+                />
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="mission.category === 'Lifestyle & Hobby'"
+                />
+                <!-- Default Gradient if no image -->
+                <div
+                  class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
+                ></div>
+                <div class="absolute top-4 left-4">
+                  <span
+                    class="status-tag"
+                    [ngClass]="
+                      'status-' + (mission.status.toLowerCase().replace(' ', '-') || 'open')
+                    "
+                  >
+                    {{ mission.status }}
+                  </span>
+                </div>
+              </div>
+
+              <div class="card-body">
+                <div class="flex flex-col gap-1">
+                  <span class="text-[10px] font-black text-accent uppercase tracking-widest">{{
+                    mission.category || 'Vibe Room'
+                  }}</span>
+                  <h2 class="room-title">{{ mission.name }}</h2>
                 </div>
 
-                <div class="flex-grow">
-                  <h3
-                    class="text-xl font-black text-white group-hover:text-blue-400 transition-colors mb-2 truncate"
-                  >
-                    {{ mission.name }}
-                  </h3>
-                  <p
-                    class="text-[10px] text-zinc-600 font-bold uppercase tracking-tight line-clamp-2 mb-6"
-                  >
-                    {{ mission.description || 'No data package attached.' }}
-                  </p>
-                </div>
+                <p class="text-[13px] text-white/50 line-clamp-2 leading-relaxed h-[40px]">
+                  {{
+                    mission.description ||
+                      'Join us for a great ' +
+                        mission.category +
+                        ' session. Connect and share your vibe!'
+                  }}
+                </p>
 
-                <div class="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-                  <div class="flex items-center gap-2">
-                    <img
-                      [src]="'https://ui-avatars.com/api/?name=' + mission.chief_display_name"
-                      class="w-5 h-5 rounded-full border border-white/10"
-                    />
-                    <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{{
-                      mission.chief_display_name
+                <div class="room-metadata">
+                  <div class="meta-item">
+                    <i class="pi pi-map-marker"></i>
+                    <span class="truncate max-w-[120px]">{{
+                      mission.location || 'Online Session'
                     }}</span>
                   </div>
-                  <div class="flex items-center gap-1.5">
-                    <i class="pi pi-users text-[10px] text-zinc-800"></i>
-                    <span class="text-[10px] font-black text-white italic"
-                      >{{ mission.crew_count }}/{{ mission.max_crew }}</span
-                    >
+                  <div class="meta-item ml-auto">
+                    <i class="pi pi-calendar"></i>
+                    <span>Today</span>
                   </div>
                 </div>
-              </a>
-            }
-          </div>
-        } @else {
-          <div class="flex-grow flex flex-col items-center justify-center opacity-10 py-40">
-            <i class="pi pi-folder-open text-6xl mb-8"></i>
-            <p class="text-xs font-black uppercase tracking-[0.5em]">No archives found</p>
-          </div>
-        }
+              </div>
+
+              <div class="card-footer">
+                <div class="flex items-center gap-3">
+                  <img
+                    [src]="
+                      'https://ui-avatars.com/api/?name=' +
+                      mission.chief_display_name +
+                      '&background=random&color=fff'
+                    "
+                    class="w-8 h-8 rounded-full border border-white/10"
+                  />
+                  <div class="flex flex-col">
+                    <span class="text-[11px] font-bold text-white">{{
+                      mission.chief_display_name
+                    }}</span>
+                    <div class="flex items-center gap-1">
+                      <i class="pi pi-users text-[9px] text-white/40"></i>
+                      <span class="text-[10px] text-white/40 font-bold"
+                        >{{ mission.crew_count }} / {{ mission.max_crew }}</span
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="card-footer-action">
+                  <button class="btn btn-primary btn-sm rounded-xl px-5 shadow-xl font-bold">
+                    Enter Room
+                  </button>
+                </div>
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-full py-60 flex flex-col items-center justify-center opacity-20">
+              <i class="pi pi-search text-6xl mb-6"></i>
+              <p class="font-bold uppercase tracking-widest text-sm">No activity vibe found</p>
+            </div>
+          }
+        </div>
       </section>
-    </main>
+    </div>
   </div>
 </div>

@@ -3,7 +3,8 @@
 }
 
 .os-auth-window {
-    @apply max-w-md w-full !p-12 animate-shuttle;
+    @apply max-w-md w-full !p-12;
+    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .os-auth-icon {

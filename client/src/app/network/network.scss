@@ -1,60 +1,43 @@
+/* ═══════════════════════════════════════════════════════
+   NETWORK PAGE — Vibe Design System
+   ═══════════════════════════════════════════════════════ */
+
 .network-container {
-    @apply min-h-screen pt-24 pb-44 selection:bg-white selection:text-black;
+  min-height: 100vh;
+  padding-top: 1.5rem;
+  padding-bottom: 6rem;
 }
 
 .godly-hero-network {
-    @apply max-w-[1300px] mx-auto px-6 mb-16;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* 🧊 OS Window Interface */
-.os-network-window {
-    min-height: 750px;
-    display: flex;
+/* ── Friend Row ── */
+.friend-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
 }
 
-.os-network-sidebar {
-}
-
-.os-network-main {
-    display: flex;
-    flex-direction: column;
-}
-
-.os-network-nav-item {
-    @apply flex items-center justify-between px-4 py-3 rounded-xl text-zinc-500 transition-all cursor-pointer hover:bg-white/[0.03] hover:text-white;
-    span { @apply text-[10px] font-black uppercase tracking-widest; }
-    &.active { @apply bg-white/[0.05] text-white; }
-}
-
-/* 👤 Contact Card OS */
-.contact-card-os {
-    @apply p-6 flex flex-col items-center text-center transition-all duration-500 relative;
-    &:hover {
-        @apply -translate-y-2 border-white/10;
-        .actions-overlay { @apply opacity-100 translate-y-0; }
-    }
-}
-
-.contact-avatar {
-    @apply w-20 h-20 rounded-2xl border border-white/10 object-cover mb-4 relative;
-    .presence-dot-network {
-        @apply absolute -top-1 -right-1 w-3 h-3 rounded-full bg-green-500 border-2 border-black shadow-[0_0_10px_green];
-    }
-}
-
-.actions-overlay {
-    @apply absolute bottom-6 inset-x-6 flex items-center justify-center gap-3 opacity-0 translate-y-4 transition-all duration-500;
-    .os-action-btn-sm {
-        @apply w-10 h-10 rounded-xl bg-white text-black flex items-center justify-center border border-black hover:bg-zinc-200 transition-colors;
-        &.danger { @apply bg-red-500 text-white border-red-500; }
-    }
-}
-
-.agent-grid {
-    @apply grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6;
-}
-
-/* 📜 Clearance List */
-.clearance-item-os {
-    @apply os-glass-card p-6 flex items-center gap-8 mb-4;
+/* ── Presence dot ── */
+.presence-dot-os {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
 }

@@ -3,27 +3,29 @@
 
   <div class="godly-hero-dashboard">
     <!-- DASHBOARD OS WINDOW -->
-    <main class="os-window-base os-dashboard-window">
+    <main class="os-window flex min-h-[700px]">
       <!-- STATUS SIDEBAR -->
-      <aside class="os-sidebar-base os-dashboard-sidebar">
+      <aside class="os-sidebar">
         <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
 
         <div class="flex flex-col gap-1 mb-10">
-          <div class="os-missions-nav-item active">
+          <div class="os-nav-item active">
+            <i class="pi pi-chart-bar"></i>
             <span>Insights</span>
           </div>
-          <div class="os-missions-nav-item">
+          <div class="os-nav-item">
+            <i class="pi pi-database"></i>
             <span>Archives</span>
           </div>
         </div>
 
         <div class="mt-auto">
-          <span class="os-label">System_Load</span>
+          <span class="os-label">System Load</span>
           <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden mb-8">
             <div class="h-full bg-white w-2/3"></div>
           </div>
 
-          <span class="os-label">Active_Members</span>
+          <span class="os-label">Active Members</span>
           <div class="flex -space-x-3 mb-4">
             @for (user of onlineUsers.slice(0, 5); track user.id) {
               <img
@@ -39,11 +41,13 @@
       </aside>
 
       <!-- MAIN DASHBOARD CONTENT -->
-      <section class="os-main-base os-dashboard-main">
-        <div class="flex justify-between items-start mb-16">
-          <div class="flex flex-col py-4">
-            <span class="os-label">Dashboard_OverView</span>
-            <h1 class="os-title-large">Control <span class="opacity-30 italic">Center</span></h1>
+      <section class="os-main">
+        <div class="os-title-bar mb-10">
+          <div class="flex flex-col">
+            <span class="os-label">Overview</span>
+            <h1 class="os-title-large">
+              Dashboard <span class="opacity-30 italic">Insights</span>
+            </h1>
           </div>
         </div>
 
@@ -88,11 +92,11 @@
                   <span class="text-5xl font-black text-white italic tracking-tighter"
                     >{{ stats.successRate }}%</span
                   >
-                  <span class="os-label !mb-0 opacity-40">Success_Rate</span>
+                  <span class="os-label !mb-0 opacity-40">Success Rate</span>
                 </div>
               </div>
               <div class="text-center">
-                <span class="os-label !mb-2">Total_Activities</span>
+                <span class="os-label !mb-2">Total Activities</span>
                 <div class="text-3xl font-black text-white uppercase tracking-tighter">
                   {{ stats.total }}
                 </div>
@@ -109,7 +113,7 @@
                 ></div>
               </div>
               <div class="os-glass-card p-8 group">
-                <span class="os-label opacity-40">Avg_Crew</span>
+                <span class="os-label opacity-40">Avg Crew</span>
                 <div class="text-6xl font-black text-white italic mb-4">
                   {{ stats.avgCrewSize }}
                 </div>
@@ -124,7 +128,7 @@
                 routerLink="/network"
               >
                 <div class="flex flex-col">
-                  <span class="os-label">Social_Network</span>
+                  <span class="os-label">Social Network</span>
                   <span
                     class="text-sm font-black text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors"
                     >Manage Members & Friend List</span
@@ -138,11 +142,23 @@
 
             <!-- Timeline -->
             <div class="col-span-12">
-              <span class="os-label mb-8 block">Recent_Activity_Archives</span>
+              <span class="os-label mb-8 block">Recent Activity</span>
               <div class="space-y-2">
                 @for (mission of recentMissions; track mission.id) {
                   <a [routerLink]="['/missions', mission.id]" class="timeline-item-os group">
-                    <div class="status-indicator" [ngClass]="mission.status.toLowerCase()"></div>
+                    <!-- Fix 5: Category color dot -->
+                    <div
+                      class="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5"
+                      [ngClass]="{
+                        'bg-purple-500': mission.category === 'Gaming & E-Sports',
+                        'bg-orange-500': mission.category === 'Sports & Active',
+                        'bg-pink-500': mission.category === 'Social & Chill',
+                        'bg-cyan-500': mission.category === 'Travel & Trip',
+                        'bg-yellow-500': mission.category === 'Entertainment',
+                        'bg-lime-500': mission.category === 'Lifestyle & Hobby',
+                        'bg-zinc-600': !mission.category,
+                      }"
+                    ></div>
                     <div class="flex-grow">
                       <div class="flex justify-between mb-1">
                         <span
@@ -175,7 +191,7 @@
             <!-- Pending Requests -->
             @if (pendingRequests().length > 0) {
               <div class="col-span-12">
-                <span class="os-label mb-8 block">Inbound_Clearance_Requests</span>
+                <span class="os-label mb-8 block">Friend Requests</span>
                 <div class="grid grid-cols-2 gap-6">
                   @for (req of pendingRequests(); track req.id) {
                     <div class="os-glass-card clearance-request-os">

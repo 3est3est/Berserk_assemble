@@ -1,118 +1,116 @@
-<div class="os-dialog-container">
+<div class="os-dialog-container" style="min-width: 500px">
   <!-- Header -->
   <div class="os-dialog-header">
-    <div class="os-dot-controls mb-6"><span></span><span></span><span></span></div>
-    <div class="flex items-center gap-6 mb-3">
+    <div class="flex items-center gap-5">
       <div
-        class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-xl shadow-2xl"
+        class="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-white shadow-[0_8px_20px_rgba(var(--accent-rgb),0.3)]"
       >
-        <i class="pi pi-plus text-black"></i>
+        <i class="pi pi-plus text-xl"></i>
       </div>
-      <h2 class="text-3xl font-black tracking-[-0.04em] m-0 uppercase">
-        Initialize <span class="opacity-40 italic">Protocol</span>
-      </h2>
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight m-0">Create New Room</h2>
+        <p style="font-size: 13px; color: var(--text-muted); margin: 0; opacity: 0.7">
+          Initialize your vibe and coordinate with friends
+        </p>
+      </div>
     </div>
-    <p class="os-label !mb-0 text-zinc-500">
-      Establish mission parameters and coordination details
-    </p>
   </div>
 
   <!-- Body -->
-  <div class="os-dialog-body">
-    <!-- Mission Name -->
+  <div class="os-dialog-body hide-scrollbar" style="padding: 40px">
+    <!-- Room Name -->
     <div class="os-input-field">
-      <label class="os-label text-zinc-600">Mission_Codename</label>
+      <label>Activity Name</label>
       <input
         pInputText
         [(ngModel)]="addMission.name"
-        placeholder="ENTER_SIGNAL_NAME..."
-        class="w-full bg-white/5 border-white/5 h-16 rounded-xl px-6 text-sm font-bold focus:bg-white/10 focus:border-white/20 transition-all outline-none"
+        placeholder="What are we doing today?..."
+        class="w-full h-12"
       />
     </div>
 
     <!-- Category -->
     <div class="os-input-field">
-      <label class="os-label text-zinc-600">Deployment_Category</label>
+      <label>Activity Category</label>
       <p-select
         [(ngModel)]="addMission.category"
         [options]="categories"
         optionLabel="label"
         optionValue="value"
-        placeholder="SELECT_TYPE..."
-        styleClass="w-full bg-white/5 border-white/5 h-16 flex items-center rounded-xl px-4 text-sm font-bold transition-all"
+        placeholder="Select vibe type..."
+        styleClass="w-full h-12"
       ></p-select>
     </div>
 
     <!-- Description -->
     <div class="os-input-field">
-      <label class="os-label text-zinc-600">Mission_Briefing</label>
+      <label>Activity Briefing (Description)</label>
       <textarea
         pTextarea
         [(ngModel)]="addMission.description"
         [autoResize]="true"
-        rows="3"
-        placeholder="ESTABLISH_CONTEXT..."
-        class="w-full bg-white/5 border-white/5 rounded-xl p-6 text-sm font-bold outline-none focus:bg-white/10 focus:border-white/20 transition-all"
+        rows="4"
+        placeholder="Tell potential participants about this event..."
+        class="w-full p-4"
       ></textarea>
     </div>
 
     <!-- Stats & Time -->
-    <div class="grid grid-cols-2 gap-8">
+    <div class="grid grid-cols-2 gap-6">
       <div class="os-input-field">
-        <label class="os-label text-zinc-600">Operative_Limit</label>
+        <label>Participant Limit</label>
         <p-inputNumber
           [(ngModel)]="addMission.max_crew"
           [min]="1"
           [max]="50"
           [showButtons]="true"
-          styleClass="w-full h-16 bg-white/5 border border-white/5 rounded-xl overflow-hidden"
-          inputClass="flex-grow bg-transparent border-0 text-center text-sm font-black h-full text-white"
+          styleClass="w-full h-12"
+          inputClass="text-center font-bold"
         ></p-inputNumber>
       </div>
       <div class="os-input-field">
-        <label class="os-label text-zinc-600">Deployment_Time</label>
+        <label>Activity Schedule</label>
         <p-datepicker
           [(ngModel)]="addMission.scheduled_at"
           [showTime]="true"
           appendTo="body"
-          styleClass="w-full bg-white/5 border-white/5 h-16 rounded-xl"
-          inputClass="w-full h-full bg-transparent border-0 px-6 text-sm font-bold text-white"
+          styleClass="w-full h-12"
         ></p-datepicker>
       </div>
     </div>
 
     <!-- Location -->
     <div class="os-input-field">
-      <label class="os-label text-zinc-600">Sector_Location</label>
-      <div class="relative group">
+      <label>Activity Location</label>
+      <div class="relative">
         <input
           pInputText
           [(ngModel)]="addMission.location"
-          placeholder="IDENTIFY_COORDINATES..."
-          class="w-full bg-white/5 border-white/5 h-16 rounded-xl pl-14 pr-6 text-sm font-bold focus:bg-white/10 focus:border-white/20 transition-all outline-none"
+          placeholder="Where is this happening?..."
+          class="w-full h-12"
+          style="padding-left: 44px !important"
         />
-        <i
-          class="pi pi-map-marker absolute left-6 top-1/2 -translate-y-1/2 text-zinc-800 group-focus-within:text-white transition-all"
-        ></i>
+        <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 opacity-30"></i>
       </div>
     </div>
   </div>
 
-  <!-- Footer Action -->
+  <!-- Footer -->
   <div class="os-dialog-footer">
     <button
       pButton
-      label="ABORT"
+      label="GO BACK"
       (click)="_ref.close()"
-      class="p-button-text p-button-sm text-[10px] font-black tracking-[0.4em] text-zinc-700 hover:text-red-500"
+      class="p-button-text p-button-sm !text-muted font-bold tracking-widest"
     ></button>
     <button
       pButton
-      label="START THIS VIBE"
-      icon="pi pi-bolt"
+      label="CREATE ROOM"
+      icon="pi pi-check"
       [disabled]="!addMission.name"
       (click)="onSubmit()"
-      class="h-16 px-12 rounded-2xl text-[11px] font-black tracking-[0.4em] shadow-2xl transition-all"
+      class="h-12 px-10 font-bold bg-accent"
+      style="background: var(--accent) !important; border: none; border-radius: 12px"
     ></button>
   </div>
 </div>

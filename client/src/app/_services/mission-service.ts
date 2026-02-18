@@ -47,7 +47,7 @@ export class MissionService {
     if (filter.category) {
       params.push(`category=${encodeURIComponent(filter.category)}`);
     }
-    if (filter.is_available !== undefined) {
+    if (filter.is_available != null) {
       params.push(`is_available=${filter.is_available}`);
     }
 

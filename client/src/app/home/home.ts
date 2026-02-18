@@ -10,8 +10,6 @@ import {
 } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { PassportService } from '../_services/passport-service';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { FriendshipService } from '../_services/friendship-service';
 import { WebsocketService } from '../_services/websocket-service';
 import { MissionService } from '../_services/mission-service';
@@ -19,15 +17,12 @@ import { NotificationService } from '../_services/notification-service';
 import { Mission } from '../_models/mission';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
-
-// PrimeNG
-import { ButtonModule } from 'primeng/button';
-import { TagModule } from 'primeng/tag';
+import { ScrollRevealDirective } from '../_helpers/scroll-reveal.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonModule, TagModule],
+  imports: [CommonModule, RouterModule, ScrollRevealDirective],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
@@ -43,10 +38,9 @@ export class Home implements OnInit, OnDestroy {
   display_name: Signal<string | undefined>;
   onlineUsers = signal<any[]>([]);
   liveMissions = signal<Mission[]>([]);
-  latestNotifications = computed(() => this._notificationService.notifications().slice(0, 5));
-  pendingRequestsCount = signal(0);
 
   private _wsSubscription?: Subscription;
+  private _lastLoad = 0;
 
   constructor() {
     this.display_name = computed(() => this._passport.data()?.display_name);
@@ -64,18 +58,15 @@ export class Home implements OnInit, OnDestroy {
 
   async loadData() {
     try {
-      const [online, pending, missions] = await Promise.all([
+      const [online, missions] = await Promise.all([
         this._friendship.getOnlineUsers(),
-        this._friendship.getPendingRequests(),
         this._missionService.getByFilter({ status: 'Open' }),
         this._notificationService.getNotifications(),
       ]);
 
-      // Filter out self
       const myId = this._passport.data()?.id;
       this.onlineUsers.set(online.filter((u: any) => u.id !== myId));
-      this.pendingRequestsCount.set(pending.length);
-      this.liveMissions.set(missions.slice(0, 4)); // Show top 4 active vibes
+      this.liveMissions.set(missions.slice(0, 6));
       this._cdr.detectChanges();
     } catch (e) {
       console.error('Failed to load home data', e);
@@ -87,8 +78,6 @@ export class Home implements OnInit, OnDestroy {
       const liveTypes = [
         'agent_online',
         'agent_offline',
-        'friend_request',
-        'friend_accepted',
         'mission_created',
         'mission_updated',
         'mission_deleted',
@@ -96,16 +85,25 @@ export class Home implements OnInit, OnDestroy {
         'crew_left',
       ];
       if (liveTypes.includes(msg.type)) {
-        this.loadData();
+        const now = Date.now();
+        if (now - this._lastLoad > 2000) {
+          this._lastLoad = now;
+          this.loadData();
+        }
       }
     });
   }
 
-  private _http = inject(HttpClient);
-  MakeError(code: number) {
-    const url = environment.baseUrl + '/api/util/make_error/' + code;
-    this._http.get(url).subscribe({
-      error: (e) => console.log(e),
-    });
+  /** Map category string → badge CSS class */
+  getCategoryClass(category: string): string {
+    const map: Record<string, string> = {
+      'Gaming & E-Sports': 'badge-gaming',
+      'Sports & Active': 'badge-sports',
+      'Social & Chill': 'badge-social',
+      'Travel & Trip': 'badge-travel',
+      Entertainment: 'badge-ent',
+      'Lifestyle & Hobby': 'badge-life',
+    };
+    return map[category] ?? 'badge-other';
   }
 }

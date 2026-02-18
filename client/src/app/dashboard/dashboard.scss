@@ -1,45 +1,80 @@
+/* ═══════════════════════════════════════════════════════
+   DASHBOARD PAGE — Vibe Design System
+   ═══════════════════════════════════════════════════════ */
+
 .dashboard-container {
-    @apply min-h-screen pt-24 pb-44 selection:bg-white selection:text-black;
+  min-height: 100vh;
+  padding-top: 1.5rem;
+  padding-bottom: 6rem;
 }
 
 .godly-hero-dashboard {
-    @apply max-w-[1300px] mx-auto px-6 mb-16;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-/* 🧊 OS Window Interface */
-.os-dashboard-window {
-    min-height: 700px;
-    display: flex;
-}
-
-.os-dashboard-sidebar {
-}
-
-.os-dashboard-main {
-    display: flex;
-    flex-direction: column;
-}
-
-/* 📊 Progress Circular Widget */
+/* ── Progress Ring ── */
 .progress-ring-container {
-    @apply relative flex items-center justify-center mb-10;
-    svg { @apply transform -rotate-90; }
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+
+  svg {
+    transform: rotate(-90deg);
+  }
 }
 
-/* 📜 Timeline / List OS */
+/* ── Timeline Item ── */
 .timeline-item-os {
-    @apply flex items-center gap-6 py-5 px-6 rounded-2xl transition-all duration-500 hover:bg-white/[0.03] no-underline border border-transparent hover:border-white/5;
-    
-    .status-indicator {
-        @apply w-3 h-3 rounded-full shadow-[0_0_10px_rgba(255,255,255,0.2)];
-        &.completed { @apply bg-green-500 shadow-green-500/40; }
-        &.inprogress { @apply bg-blue-500 shadow-blue-500/40; }
-        &.failed { @apply bg-red-500 shadow-red-500/40; }
-        &.idle { @apply bg-zinc-700; }
-    }
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--glass-bg);
+    border-color: var(--glass-border);
+  }
 }
 
+/* ── Clearance Request ── */
 .clearance-request-os {
-    @apply p-5 flex items-center gap-5;
-    .avatar-box { @apply w-12 h-12 rounded-xl object-cover border border-white/10; }
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  transition: background 0.18s ease;
+
+  &:hover { background: var(--glass-bg-hover); }
+}
+
+.avatar-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+/* ── Presence dot ── */
+.presence-dot-os {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
 }

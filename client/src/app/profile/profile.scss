@@ -1,55 +1,82 @@
-:host {
-  display: block;
-}
+/* ═══════════════════════════════════════════════════════
+   PROFILE PAGE — Vibe Design System
+   ═══════════════════════════════════════════════════════ */
 
 .profile-container {
-  @apply min-h-screen selection:bg-white selection:text-black pt-24 pb-40 overflow-x-hidden;
+  min-height: 100vh;
+  padding-top: 1.5rem;
+  padding-bottom: 6rem;
 }
 
 .godly-hero-profile {
-  @apply max-w-[1300px] mx-auto px-6 mb-16;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
+/* ── Avatar ── */
 .avatar-wrapper-os {
-  @apply relative mb-12;
-  
-  .avatar-img-os {
-    @apply w-40 h-40 rounded-[2.5rem] object-cover border border-white/10 transition-all duration-700;
-    box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 20px;
+}
 
-    &:hover {
-      @apply scale-105 -translate-y-2 border-white/30;
-      box-shadow: 0 50px 100px -20px rgba(0,0,0,0.9);
-    }
+.avatar-img-os {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  object-fit: cover;
+  border: 2px solid var(--border-default);
+}
+
+/* ── Action Button ── */
+.shuttle-action-btn {
+  height: 38px !important;
+  padding: 0 16px !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  border-radius: 10px !important;
+}
+
+/* ── Social Pill ── */
+.social-pill-os {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 14px;
+  transition: background 0.18s ease, border-color 0.18s ease;
+
+  &:hover {
+    background: var(--glass-bg-hover);
+    border-color: var(--glass-border-hover);
   }
 }
 
-/* 🧊 OS Window Elements */
-.os-profile-window {
-    min-height: 600px;
-    display: flex;
+.icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  flex-shrink: 0;
 }
 
-.os-profile-sidebar {
-}
-
-.os-profile-main {
-}
-
-.os-profile-nav-item {
-    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-zinc-500 transition-all cursor-pointer hover:bg-white/[0.03] hover:text-white;
-    span { @apply text-[10px] font-black uppercase tracking-widest; }
-    &.active { @apply bg-white/[0.05] text-white; }
-}
-
-/* 🏷️ Social OS Pills */
-.social-pill-os {
-    @apply p-6 flex items-center gap-6;
-    .icon-box {
-        @apply w-12 h-12 rounded-xl bg-white/[0.03] border border-white/5 flex items-center justify-center transition-all group-hover:bg-white group-hover:text-black;
-    }
-}
-
+/* ── Presence dot ── */
 .presence-dot-os {
-    @apply w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_green];
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
 }

@@ -1,99 +1,95 @@
 <div class="my-crew-container">
-  <div class="bg-mesh"></div>
-
   <div class="godly-hero-my-crew">
-    <!-- MY CREW OS WINDOW -->
-    <main class="os-window-base os-crew-window">
-      <!-- NAVIGATION SIDEBAR -->
-      <aside class="os-sidebar-base os-crew-sidebar">
-        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
-
-        <div class="flex flex-col gap-1 mb-10">
-          <div class="os-crew-nav-item active">
-            <span>Active Deployments</span>
+    <div class="page-layout">
+      <!-- SIDEBAR -->
+      <aside class="page-sidebar">
+        <div class="os-dot-controls"><span></span><span></span><span></span></div>
+        <div class="flex flex-col gap-1">
+          <div class="os-nav-item active">
+            <i class="pi pi-users"></i>
+            <span>Active Groups</span>
           </div>
-          <div class="os-crew-nav-item" routerLink="/missions">
-            <span>Protocol Search</span>
-          </div>
-        </div>
-
-        <div class="mt-auto pt-8 border-t border-white/5">
-          <span class="os-label">Squadron_Status</span>
-          <div class="flex items-center gap-3">
-            <div class="presence-dot-os"></div>
-            <span class="text-[9px] font-black text-white uppercase tracking-widest"
-              >Signal Locked</span
-            >
+          <div class="os-nav-item" routerLink="/missions">
+            <i class="pi pi-search"></i>
+            <span>Discover More</span>
           </div>
         </div>
       </aside>
 
-      <!-- MAIN CONTENT AREA -->
-      <section class="os-main-base os-crew-main">
-        <div class="os-title-bar mb-10">
-          <div class="flex flex-col py-4">
-            <span class="os-label">Operational_Sectors</span>
-            <h1 class="os-title-large">My <span class="opacity-30 italic">Groups</span></h1>
-          </div>
+      <!-- MAIN -->
+      <section class="page-main">
+        <div class="page-header">
+          <h1 class="page-title">My Groups</h1>
         </div>
 
-        <div class="crew-grid overflow-y-auto hide-scrollbar pb-20">
+        <div class="crew-grid hide-scrollbar overflow-y-auto">
           @for (mission of myJoinedMissions$ | async; track mission.id; let i = $index) {
-            <div
-              class="os-glass-card mission-card-os group"
-              [routerLink]="['/missions', mission.id]"
-            >
-              <div class="os-label text-zinc-600 mb-6 flex justify-between">
-                <span>{{ mission.category || 'General' }}</span>
-                <span class="opacity-30">#{{ mission.id }}</span>
-              </div>
+            <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
+              <div class="card-content">
+                <div class="flex justify-between items-start mb-2">
+                  <span class="label" style="margin: 0">{{ mission.category || 'Event' }}</span>
+                  <span class="label opacity-20">#{{ mission.id }}</span>
+                </div>
 
-              <h3
-                class="text-2xl font-black uppercase tracking-tight mb-4 group-hover:text-white transition-colors"
-              >
-                {{ mission.name }}
-              </h3>
+                <h3 class="mission-title">{{ mission.name }}</h3>
 
-              <div class="flex items-center gap-4 mb-8">
-                <img
-                  [src]="'https://ui-avatars.com/api/?name=' + mission.chief_display_name"
-                  class="w-6 h-6 rounded-lg opacity-60"
-                />
-                <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest">{{
-                  mission.chief_display_name
-                }}</span>
-              </div>
+                <div class="flex items-center gap-2 mb-4">
+                  <img
+                    [src]="
+                      'https://ui-avatars.com/api/?name=' +
+                      mission.chief_display_name +
+                      '&background=random'
+                    "
+                    class="w-5 h-5 rounded-full"
+                  />
+                  <span style="font-size: 11px; color: var(--text-muted)">{{
+                    mission.chief_display_name
+                  }}</span>
+                </div>
 
-              <div class="flex gap-2">
-                <button
-                  pButton
-                  label="ENTER"
-                  class="flex-grow h-12 p-button-primary rounded-xl text-[9px] font-black"
-                ></button>
-                <button
-                  (click)="onLeave(mission, $event); $event.stopPropagation()"
-                  class="w-12 h-12 rounded-xl bg-white/[0.03] border border-white/5 text-zinc-600 hover:text-red-500 transition-colors flex items-center justify-center"
-                >
-                  <i class="pi pi-sign-out text-[10px]"></i>
-                </button>
+                <div class="flex gap-2 mt-auto">
+                  <button class="btn btn-primary flex-grow" style="height: 36px">ENTER</button>
+                  <button
+                    (click)="onLeave(mission, $event); $event.stopPropagation()"
+                    class="btn btn-subtle"
+                    style="width: 36px; height: 36px; padding: 0"
+                    title="Leave Group"
+                  >
+                    <i class="pi pi-sign-out" style="font-size: 12px"></i>
+                  </button>
+                </div>
               </div>
             </div>
           } @empty {
-            <div class="col-span-full py-40 flex flex-col items-center justify-center opacity-10">
-              <i class="pi pi-folder-open text-6xl mb-8"></i>
-              <p class="text-xs font-black uppercase tracking-[0.5em]">
-                No active deployments found
-              </p>
-              <button
-                routerLink="/missions"
-                class="mt-8 px-8 h-12 rounded-xl border border-white/10 text-[9px] font-black uppercase tracking-widest hover:bg-white/5"
-              >
-                Locate Protocol
+            <div
+              class="col-span-full py-32 flex flex-col items-center justify-center gap-3"
+              style="color: var(--text-muted)"
+            >
+              <i class="pi pi-folder-open" style="font-size: 32px"></i>
+              <p style="font-size: 13px">No active groups found</p>
+              <button routerLink="/missions" class="btn btn-ghost btn-sm mt-2">
+                Discover Sessions
               </button>
             </div>
           }
+
+          <!-- Discover Link Card -->
+          <div
+            routerLink="/missions"
+            class="col-span-full mt-4 p-8 rounded-2xl border border-dashed border-white/10 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all group"
+          >
+            <div>
+              <p style="font-size: 14px; font-weight: 600; color: var(--text-primary)">
+                + Discover more groups
+              </p>
+              <p style="font-size: 12px; color: var(--text-muted)">
+                Find activities that match your vibe
+              </p>
+            </div>
+            <i class="pi pi-arrow-right" style="color: var(--text-muted)"></i>
+          </div>
         </div>
       </section>
-    </main>
+    </div>
   </div>
 </div>

@@ -19,7 +19,7 @@
 .guide-card {
   position: absolute;
   width: 320px;
-  @apply glass-surface p-8;
+  @apply p-8;
   background: rgba(28, 28, 32, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 24px;

@@ -1,206 +1,27 @@
-.manager-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  
-  .title-area {
-    h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      margin: 0 0 4px;
-      color: var(--ctp-text);
-      font-family: 'Outfit', sans-serif;
-    }
-    p {
-      color: var(--ctp-subtext0);
-      margin: 0;
-      font-size: 0.95rem;
-    }
-  }
+.mission-manager-container {
+  min-height: 100vh;
+  padding-top: 1.5rem;
+  padding-bottom: 6rem;
 }
 
-.fab-container {
-  position: fixed;
-  bottom: 110px;
-  right: 32px;
-  z-index: 90;
+.godly-hero-manager {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
 }
 
-.new-mission-btn {
-  background: var(--ctp-mauve);
-  color: var(--ctp-crust);
-  border: none;
-  padding: 16px 24px;
-  border-radius: 99px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  cursor: pointer;
-  transition: var(--transition-smooth);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  
-  mat-icon { font-size: 24px; width: 24px; height: 24px; }
-
-  &:hover {
-    filter: brightness(1.1);
-    transform: translateY(-4px) scale(1.05);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-  }
+.missions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
 }
 
-.data-table {
-  width: 100%;
-  background: var(--ctp-mantle);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--app-border);
-  overflow: hidden;
-
-  .table-header,
-  .table-row {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr 2fr 100px 120px 180px 1fr;
-    align-items: center;
-    padding: 16px 24px;
-    gap: 16px;
-    
-    .category {
-        .cat-pill {
-            font-size: 0.75rem;
-            padding: 4px 10px;
-            border-radius: 12px;
-            background: rgba(var(--ctp-subtext0-rgb), 0.1); 
-            color: var(--ctp-subtext0);
-            border: 1px solid rgba(var(--ctp-subtext0-rgb), 0.15);
-            white-space: nowrap;
-            font-weight: 600;
-            display: inline-block;
-
-            &.sports-active { background: rgba(var(--ctp-red-rgb), 0.15); color: var(--ctp-red); border-color: rgba(var(--ctp-red-rgb), 0.2); }
-            &.social-chill { background: rgba(var(--ctp-blue-rgb), 0.15); color: var(--ctp-blue); border-color: rgba(var(--ctp-blue-rgb), 0.2); }
-            &.gaming-e-sports { background: rgba(var(--ctp-mauve-rgb), 0.15); color: var(--ctp-mauve); border-color: rgba(var(--ctp-mauve-rgb), 0.2); }
-            &.entertainment { background: rgba(var(--ctp-yellow-rgb), 0.15); color: var(--ctp-yellow); border-color: rgba(var(--ctp-yellow-rgb), 0.2); }
-            &.travel-trip { background: rgba(var(--ctp-green-rgb), 0.15); color: var(--ctp-green); border-color: rgba(var(--ctp-green-rgb), 0.2); }
-            &.lifestyle-hobby { background: rgba(var(--ctp-peach-rgb), 0.15); color: var(--ctp-peach); border-color: rgba(var(--ctp-peach-rgb), 0.2); }
-        }
-    }
-  }
-
-  .table-header {
-    background: rgba(var(--ctp-surface0-rgb), 0.3);
-    border-bottom: 1px solid var(--app-border);
-    
-    span {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.75rem;
-      font-weight: 700;
-      color: var(--ctp-mauve);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-  }
-
-  .table-row {
-    border-bottom: 1px solid var(--app-border);
-    transition: var(--transition-smooth);
-    cursor: pointer;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    &:hover {
-      background: var(--ctp-surface0);
-    }
-
-    .name {
-      font-weight: 600;
-      color: var(--ctp-text);
-    }
-
-    .description {
-      color: var(--ctp-subtext1);
-      font-size: 0.85rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .crew-count {
-      color: var(--ctp-subtext0);
-      font-size: 0.9rem;
-      text-align: center;
-    }
-
-    .dates {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      font-size: 0.75rem;
-      color: var(--ctp-subtext1);
-      
-      .label {
-        font-size: 0.65rem;
-        color: var(--ctp-subtext0);
-        margin-right: 4px;
-      }
-    }
-  }
-}
-
-.status-badge {
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  text-align: center;
-  width: fit-content;
-
-  &.open { background: rgba(var(--ctp-teal-rgb), 0.1); color: var(--ctp-teal); }
-  &.inprogress { background: rgba(var(--ctp-blue-rgb), 0.1); color: var(--ctp-blue); }
-  &.completed { background: rgba(var(--ctp-green-rgb), 0.1); color: var(--ctp-green); }
-  &.failed { background: rgba(var(--ctp-red-rgb), 0.1); color: var(--ctp-red); }
-}
-
-.action-cell {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-
-  .icon-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--radius-sm);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--app-border);
-    background: transparent;
-    color: var(--ctp-subtext0);
-    cursor: pointer;
-    transition: var(--transition-smooth);
-
-    &:hover {
-      background: var(--ctp-surface1);
-      color: var(--ctp-text);
-      border-color: var(--ctp-mauve);
-    }
-
-    &.delete:hover {
-      color: var(--ctp-red);
-      border-color: var(--ctp-red);
-      background: rgba(var(--ctp-red-rgb), 0.1);
-    }
-
-    mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
-    }
-  }
+.presence-dot-os {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent-glow);
+  animation: pulseDot 2s ease-in-out infinite;
+  flex-shrink: 0;
 }

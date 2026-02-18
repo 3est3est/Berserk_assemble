@@ -36,59 +36,42 @@ import { RouterLink, RouterModule } from '@angular/router';
   styleUrl: './missions.scss',
 })
 export class Missions implements OnDestroy {
-  getZone(category?: string): string {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('sport') || cat.includes('gaming')) return 'zone-action';
-    if (cat.includes('social') || cat.includes('entertainment')) return 'zone-sunset';
-    if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
-    return 'zone-tech';
-  }
-
   private _mission = inject(MissionService);
   private _crewService = inject(CrewService);
   private _passportService = inject(PassportService);
   private _toast = inject(ToastService);
   private _wsService = inject(WebsocketService);
 
-  private _missionsSubject = new BehaviorSubject<Mission[]>([]);
-  readonly missions$ = this._missionsSubject.asObservable();
-  private _wsSubscription?: Subscription;
+  private _allMissions: Mission[] = [];
+  filteredMissions: Mission[] = [];
+  searchTerm: string = '';
+  selectedCategory: string = '';
 
-  filter: MissionFilter = { status: '', category: '' };
-  isSignin: Signal<boolean>;
   categories = [
-    'Sports & Active',
-    'Social & Chill',
-    'Gaming & E-Sports',
-    'Entertainment',
-    'Travel & Trip',
-    'Lifestyle & Hobby',
-    'Other',
+    { name: 'Sports & Active', emoji: '⚽' },
+    { name: 'Social & Chill', emoji: '🍹' },
+    { name: 'Gaming & E-Sports', emoji: '🎮' },
+    { name: 'Entertainment', emoji: '🍿' },
+    { name: 'Travel & Trip', emoji: '✈️' },
+    { name: 'Lifestyle & Hobby', emoji: '🎨' },
+    { name: 'Other', emoji: '✨' },
   ];
 
-  statusOptions = [
-    { label: 'All Status', value: '' },
-    { label: 'Recruiting', value: 'Open' },
-    { label: 'In Mission', value: 'InProgress' },
-    { label: 'Completed', value: 'Completed' },
-    { label: 'Failed', value: 'Failed' },
-  ];
-
-  availabilityOptions = [
-    { label: 'All Slots', value: null },
-    { label: 'Available Only', value: true },
-  ];
+  isSignin: Signal<boolean>;
+  private _wsSubscription?: Subscription;
 
   constructor() {
     this.isSignin = computed(() => this._passportService.isSignin());
-    this.filter = this._mission.filter;
-    // Initial data load
-    this.onSubmit();
+    this.initialLoad();
     this.setupRealtimeUpdates();
   }
 
   ngOnDestroy(): void {
     this._wsSubscription?.unsubscribe();
+  }
+
+  private async initialLoad() {
+    await this.onSubmit();
   }
 
   private setupRealtimeUpdates() {
@@ -103,45 +86,45 @@ export class Missions implements OnDestroy {
         'kicked_from_mission',
       ];
       if (reloadTypes.includes(msg.type)) {
-        console.log('[Missions] Global mission update received, reloading...');
-        this.onSubmit(); // Reload list to update counts and availability
+        this.onSubmit();
       }
     });
   }
 
   async onSubmit() {
-    // If logged in, filter out own missions and joined missions
+    const filter: MissionFilter = { status: '', category: '' };
     const passport = this._passportService.data();
     if (passport) {
       const userId = getUserIdFromToken(passport.token);
-      if (userId) {
-        this.filter.exclude_user_id = userId.toString();
-      }
-    } else {
-      // If not logged in, remove the exclude filter
-      delete this.filter.exclude_user_id;
+      if (userId) filter.exclude_user_id = userId.toString();
     }
 
-    const missions = await this._mission.getByFilter(this.filter);
-    this._missionsSubject.next(missions);
+    this._allMissions = await this._mission.getByFilter(filter);
+    this.filterMissions();
   }
 
-  joiningMissionId: number | null = null;
+  filterMissions() {
+    this.filteredMissions = this._allMissions.filter((m) => {
+      const matchesSearch =
+        !this.searchTerm ||
+        m.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        m.chief_display_name.toLowerCase().includes(this.searchTerm.toLowerCase());
+
+      // The selectedCategory is expected to be the 'name' property from the categories array.
+      // Assuming m.category also stores the full category name string.
+      const matchesCategory = !this.selectedCategory || m.category === this.selectedCategory;
+
+      return matchesSearch && matchesCategory;
+    });
+  }
 
   async onJoin(mission: Mission) {
-    if (!confirm(`Do you want to join mission "${mission.name}"?`)) return;
-
-    this.joiningMissionId = mission.id;
+    if (!confirm(`Do you want to join "${mission.name}"?`)) return;
     try {
       await this._crewService.join(mission.id);
-      // Removed success toast
-      // Reload missions to update the list (the joined mission should disappear)
       this.onSubmit();
     } catch (e: any) {
-      console.error('Join failed', e);
-      this._toast.error('Failed to join mission: ' + (e.error || e.message));
-    } finally {
-      this.joiningMissionId = null;
+      this._toast.error('Failed to join: ' + (e.error || e.message));
     }
   }
 }
