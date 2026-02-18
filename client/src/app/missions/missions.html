@@ -46,68 +46,116 @@
 
       <!-- MAIN CONTENT -->
       <section class="page-main">
-        <div class="page-header">
-          <h1 class="page-title">Discover Activities</h1>
-          <div class="search-wrap">
-            <i class="pi pi-search"></i>
-            <input
-              type="text"
-              placeholder="Find a activity room..."
-              [(ngModel)]="searchTerm"
-              (input)="filterMissions()"
-            />
+        <div class="page-header flex flex-col md:flex-row items-stretch md:items-center gap-4">
+          <div class="flex flex-col">
+            <h1 class="page-title m-0">Discover Activities</h1>
+            <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-1">
+              Found {{ filteredMissions.length }} open rooms
+            </p>
+          </div>
+
+          <div class="flex-grow flex items-center gap-3">
+            <div class="search-wrap flex-grow">
+              <i class="pi pi-search"></i>
+              <input
+                type="text"
+                placeholder="Find a activity room..."
+                [(ngModel)]="searchTerm"
+                (input)="filterMissions()"
+              />
+            </div>
+
+            <div class="filter-dropdown-wrap">
+              <p-select
+                [(ngModel)]="selectedStatus"
+                [options]="statusOptions"
+                optionLabel="label"
+                optionValue="value"
+                (onChange)="filterMissions()"
+                placeholder="Status"
+                styleClass="os-select"
+              >
+                <ng-template pTemplate="selectedItem" let-item>
+                  <div class="flex items-center gap-2">
+                    <i class="pi pi-filter-fill text-[10px] opacity-40"></i>
+                    <span class="font-bold text-[13px]">{{ item.label }}</span>
+                  </div>
+                </ng-template>
+              </p-select>
+            </div>
+
+            <div
+              class="Availability-toggle flex items-center gap-2 px-4 h-12 rounded-2xl border border-white/5 bg-white/5 cursor-pointer hover:bg-white/10 transition-all"
+              [class.active-filter]="showAvailableOnly"
+              (click)="showAvailableOnly = !showAvailableOnly; filterMissions()"
+            >
+              <i class="pi pi-users" [class.text-accent]="showAvailableOnly"></i>
+              <span class="text-[12px] font-bold whitespace-nowrap">Available Only</span>
+              <div
+                class="w-2 h-2 rounded-full"
+                [class.bg-accent]="showAvailableOnly"
+                [class.bg-white/10]="!showAvailableOnly"
+              ></div>
+            </div>
           </div>
         </div>
 
-        <div class="missions-grid hide-scrollbar overflow-y-auto">
-          @for (mission of filteredMissions; track mission.id; let i = $index) {
+        <!-- Missions Grid -->
+        <div class="missions-grid mt-6">
+          @for (mission of paginatedMissions; track mission.id; let i = $index) {
             <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
-              <!-- Card Cover Image with Dynamic Backgrounds -->
+              <!-- Card content (Unchanged for brevity) -->
               <div class="card-cover-wrap">
-                <!-- Thematic Images based on Category -->
                 <img
                   [src]="
                     'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=600'
                   "
                   class="card-cover"
-                  *ngIf="mission.category === 'Gaming & E-Sports'"
+                  *ngIf="mission.category?.includes('Gaming')"
                 />
                 <img
                   [src]="
                     'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=600'
                   "
                   class="card-cover"
-                  *ngIf="mission.category === 'Sports & Active'"
+                  *ngIf="mission.category?.includes('Sport')"
                 />
                 <img
                   [src]="
                     'https://images.unsplash.com/photo-1514525253361-9f9a5690d562?auto=format&fit=crop&q=80&w=600'
                   "
                   class="card-cover"
-                  *ngIf="mission.category === 'Entertainment'"
+                  *ngIf="mission.category?.includes('Entertainment')"
                 />
                 <img
                   [src]="
                     'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=600'
                   "
                   class="card-cover"
-                  *ngIf="mission.category === 'Social & Chill'"
+                  *ngIf="mission.category?.includes('Social')"
                 />
                 <img
                   [src]="
                     'https://images.unsplash.com/photo-1500835595546-64e86b468cc0?auto=format&fit=crop&q=80&w=600'
                   "
                   class="card-cover"
-                  *ngIf="mission.category === 'Travel & Trip'"
+                  *ngIf="mission.category?.includes('Travel')"
                 />
                 <img
                   [src]="
                     'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=600'
                   "
                   class="card-cover"
-                  *ngIf="mission.category === 'Lifestyle & Hobby'"
+                  *ngIf="mission.category?.includes('Lifestyle')"
                 />
-                <!-- Default Gradient if no image -->
+                <img
+                  [src]="
+                    'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600'
+                  "
+                  class="card-cover"
+                  *ngIf="!mission.category"
+                />
+
                 <div
                   class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
                 ></div>
@@ -130,26 +178,21 @@
                   }}</span>
                   <h2 class="room-title">{{ mission.name }}</h2>
                 </div>
-
-                <p class="text-[13px] text-white/50 line-clamp-2 leading-relaxed h-[40px]">
+                <p class="text-[13px] text-white/50 line-clamp-2 leading-relaxed">
                   {{
                     mission.description ||
-                      'Join us for a great ' +
-                        mission.category +
-                        ' session. Connect and share your vibe!'
+                      'Join this ' +
+                        (mission.category || 'exciting') +
+                        ' activity and connect with new people!'
                   }}
                 </p>
-
                 <div class="room-metadata">
                   <div class="meta-item">
-                    <i class="pi pi-map-marker"></i>
-                    <span class="truncate max-w-[120px]">{{
-                      mission.location || 'Online Session'
-                    }}</span>
+                    <i class="pi pi-map-marker"></i
+                    ><span class="truncate max-w-[120px]">{{ mission.location || 'Online' }}</span>
                   </div>
                   <div class="meta-item ml-auto">
-                    <i class="pi pi-calendar"></i>
-                    <span>Today</span>
+                    <i class="pi pi-calendar"></i><span>Today</span>
                   </div>
                 </div>
               </div>
@@ -176,20 +219,45 @@
                     </div>
                   </div>
                 </div>
-
                 <div class="card-footer-action">
-                  <button class="btn btn-primary btn-sm rounded-xl px-5 shadow-xl font-bold">
-                    Enter Room
+                  <button class="btn btn-primary btn-sm rounded-xl px-4 shadow-xl font-bold">
+                    Enter
                   </button>
                 </div>
               </div>
             </div>
           } @empty {
-            <div class="col-span-full py-60 flex flex-col items-center justify-center opacity-20">
-              <i class="pi pi-search text-6xl mb-6"></i>
-              <p class="font-bold uppercase tracking-widest text-sm">No activity vibe found</p>
+            <div class="col-span-full py-40 flex flex-col items-center justify-center opacity-40">
+              <div class="w-24 h-24 rounded-full bg-white/5 flex items-center justify-center mb-6">
+                <i class="pi pi-sparkles text-3xl text-accent"></i>
+              </div>
+              <h3 class="text-xl font-black text-white mb-2">That's all the vibes for now!</h3>
+              <p
+                class="text-sm text-white/40 max-w-[300px] text-center font-medium leading-relaxed"
+              >
+                You've reached the end of this journey. Try searching for something else or
+                <span class="text-accent cursor-pointer hover:underline">Host your own room</span>
+                to start a new vibe!
+              </p>
             </div>
           }
+        </div>
+
+        <!-- PAGINATION UI - Centered Buttons Only -->
+        <div class="flex items-center justify-center mt-16 py-6 border-t border-white/5">
+          <div class="flex items-center gap-10">
+            <button class="pagination-btn" [disabled]="currentPage === 1" (click)="prevPage()">
+              <i class="pi pi-chevron-left"></i>
+            </button>
+
+            <button
+              class="pagination-btn"
+              [disabled]="currentPage === totalPages"
+              (click)="nextPage()"
+            >
+              <i class="pi pi-chevron-right"></i>
+            </button>
+          </div>
         </div>
       </section>
     </div>

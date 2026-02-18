@@ -10,7 +10,7 @@ import { loadingInterceptor } from './_interceptors/loading-interceptor';
 import { errorInterceptor } from './_interceptors/error-interceptor';
 import { jwtInterceptor } from './_interceptors/jwt-interceptor';
 
-import { MessageService } from 'primeng/api';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
 
 export const appConfig: ApplicationConfig = {
@@ -28,6 +28,7 @@ export const appConfig: ApplicationConfig = {
       },
     }),
     MessageService,
+    ConfirmationService,
     DialogService,
   ],
 };

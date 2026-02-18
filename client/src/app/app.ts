@@ -9,12 +9,13 @@ import { NotificationService } from './_services/notification-service';
 import { CommonModule } from '@angular/common';
 import { PrivateChat } from './_components/private-chat/private-chat';
 
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, PrivateChat, CommonModule, ToastModule],
+  imports: [RouterOutlet, Navbar, CommonModule, ToastModule, ConfirmDialogModule],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -24,7 +25,7 @@ export class App {
   public _passport = inject(PassportService);
   private _ws = inject(WebsocketService);
   private _toast = inject(ToastService);
-  private _router = inject(Router);
+  public _router = inject(Router);
   private _notifService = inject(NotificationService);
 
   constructor() {
