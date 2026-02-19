@@ -48,7 +48,7 @@ export class MissionDetail implements OnInit, OnDestroy {
   private _routeSubscription?: Subscription;
 
   get isChief(): boolean {
-    return this.mission?.chief_display_name === this._passportService.data()?.display_name;
+    return this.mission?.chief_id === this._passportService.data()?.id;
   }
 
   get currentUserId(): number | undefined {

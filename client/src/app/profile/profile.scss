@@ -1,82 +1,176 @@
-/* ═══════════════════════════════════════════════════════
-   PROFILE PAGE — Vibe Design System
-   ═══════════════════════════════════════════════════════ */
+:host {
+  display: block;
+}
 
 .profile-container {
   min-height: 100vh;
-  padding-top: 1.5rem;
+  position: relative;
+  overflow: hidden;
   padding-bottom: 6rem;
 }
 
-.godly-hero-profile {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* ── Avatar ── */
-.avatar-wrapper-os {
-  position: relative;
-  width: 72px;
-  height: 72px;
-  margin-bottom: 20px;
-}
-
-.avatar-img-os {
-  width: 72px;
-  height: 72px;
-  border-radius: 18px;
-  object-fit: cover;
-  border: 2px solid var(--border-default);
-}
-
-/* ── Action Button ── */
-.shuttle-action-btn {
-  height: 38px !important;
-  padding: 0 16px !important;
-  font-size: 12px !important;
-  font-weight: 600 !important;
-  border-radius: 10px !important;
-}
-
-/* ── Social Pill ── */
-.social-pill-os {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 14px 16px;
+.glass-card-elite {
   background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  border-radius: 14px;
-  transition: background 0.18s ease, border-color 0.18s ease;
-
+  border-radius: 24px;
+  transition: var(--transition-smooth);
+  
   &:hover {
-    background: var(--glass-bg-hover);
     border-color: var(--glass-border-hover);
+    box-shadow: var(--shadow-xl);
   }
 }
 
-.icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-muted);
-  font-size: 14px;
+/* ── Avatar Section ── */
+.avatar-frame-elite {
+  width: 140px;
+  height: 140px;
+  border-radius: 36px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  padding: 10px;
+  position: relative;
+  transition: var(--transition-smooth);
   flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    border-radius: 26px;
+    object-fit: cover;
+  }
+
+  .avatar-edit-btn {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    width: 36px;
+    height: 36px;
+    background: var(--primary-gradient);
+    border: 3px solid #000;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 14px;
+    z-index: 10;
+    transition: var(--transition-fast);
+
+    &:hover {
+      transform: scale(1.1) rotate(5deg);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+  }
 }
 
-/* ── Presence dot ── */
-.presence-dot-os {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent-glow);
-  animation: pulseDot 2s ease-in-out infinite;
-  flex-shrink: 0;
+/* ── Stats Section ── */
+.stat-box-mini {
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    .stat-label {
+        display: block;
+        font-size: 9px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--text-muted);
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 950;
+        italic: true;
+        font-style: italic;
+        line-height: 1;
+        color: white;
+        letter-spacing: -0.05em;
+    }
+
+    .stat-glow {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03), transparent 70%);
+        pointer-events: none;
+    }
+}
+
+/* ── Manifesto Section ── */
+.manifesto-card-mini {
+    padding: 2.5rem;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 28px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* ── Social Section ── */
+.social-item-compact {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-subtle);
+    border-radius: 20px;
+    transition: var(--transition-fast);
+
+    .social-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        color: var(--text-muted);
+        transition: var(--transition-fast);
+    }
+
+    .label {
+        font-size: 8px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+    }
+
+    .value {
+        font-size: 13px;
+        font-weight: 700;
+        color: white;
+        letter-spacing: -0.01em;
+    }
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.04);
+        border-color: var(--accent-border);
+        transform: translateY(-2px);
+
+        .social-icon {
+            background: var(--accent-subtle);
+            border-color: var(--accent-border);
+            color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+    }
+}
+
+.neural-pulse {
+    animation: neural-pulse 2s ease-in-out infinite;
+}
+
+@keyframes neural-pulse {
+    0%, 100% { opacity: 0.2; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(1.05); }
 }

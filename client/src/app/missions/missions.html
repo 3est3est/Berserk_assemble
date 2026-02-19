@@ -12,10 +12,6 @@
             <i class="pi pi-compass"></i>
             <span>Browse All</span>
           </div>
-          <div class="os-nav-item">
-            <i class="pi pi-calendar"></i>
-            <span>My Schedule</span>
-          </div>
         </div>
 
         <div class="flex flex-col gap-4">
@@ -103,63 +99,16 @@
         <!-- Missions Grid -->
         <div class="missions-grid mt-6">
           @for (mission of paginatedMissions; track mission.id; let i = $index) {
-            <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
-              <!-- Card content (Unchanged for brevity) -->
+            <div class="mission-card-os group" (click)="openPreview(mission)">
               <div class="card-cover-wrap">
                 <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=600'
-                  "
+                  [src]="getVibeImage(mission.category)"
                   class="card-cover"
-                  *ngIf="mission.category?.includes('Gaming')"
-                />
-                <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&q=80&w=600'
-                  "
-                  class="card-cover"
-                  *ngIf="mission.category?.includes('Sport')"
-                />
-                <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1514525253361-9f9a5690d562?auto=format&fit=crop&q=80&w=600'
-                  "
-                  class="card-cover"
-                  *ngIf="mission.category?.includes('Entertainment')"
-                />
-                <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1493225255756-d9584f8606e9?auto=format&fit=crop&q=80&w=600'
-                  "
-                  class="card-cover"
-                  *ngIf="mission.category?.includes('Social')"
-                />
-                <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1500835595546-64e86b468cc0?auto=format&fit=crop&q=80&w=600'
-                  "
-                  class="card-cover"
-                  *ngIf="mission.category?.includes('Travel')"
-                />
-                <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&q=80&w=600'
-                  "
-                  class="card-cover"
-                  *ngIf="mission.category?.includes('Lifestyle')"
-                />
-                <img
-                  [src]="
-                    'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=600'
-                  "
-                  class="card-cover"
-                  *ngIf="!mission.category"
+                  [alt]="mission.name"
+                  loading="lazy"
                 />
 
-                <div
-                  class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"
-                ></div>
-                <div class="absolute top-4 left-4">
+                <div class="card-category-pill">
                   <span
                     class="status-tag"
                     [ngClass]="
@@ -172,57 +121,32 @@
               </div>
 
               <div class="card-body">
-                <div class="flex flex-col gap-1">
-                  <span class="text-[10px] font-black text-accent uppercase tracking-widest">{{
-                    mission.category || 'Vibe Room'
-                  }}</span>
-                  <h2 class="room-title">{{ mission.name }}</h2>
-                </div>
-                <p class="text-[13px] text-white/50 line-clamp-2 leading-relaxed">
+                <span class="badge mb-2" [ngClass]="getCategoryClass(mission.category)">{{
+                  mission.category || 'Vibe Room'
+                }}</span>
+                <h2 class="card-title">{{ mission.name }}</h2>
+                <p class="card-desc">
                   {{
                     mission.description ||
-                      'Join this ' +
-                        (mission.category || 'exciting') +
-                        ' activity and connect with new people!'
+                      'Welcome to the mission room. Join our crew and start the activity.'
                   }}
                 </p>
-                <div class="room-metadata">
-                  <div class="meta-item">
-                    <i class="pi pi-map-marker"></i
-                    ><span class="truncate max-w-[120px]">{{ mission.location || 'Online' }}</span>
-                  </div>
-                  <div class="meta-item ml-auto">
-                    <i class="pi pi-calendar"></i><span>Today</span>
-                  </div>
-                </div>
               </div>
 
               <div class="card-footer">
-                <div class="flex items-center gap-3">
+                <div class="card-host">
                   <img
                     [src]="
-                      'https://ui-avatars.com/api/?name=' +
-                      mission.chief_display_name +
-                      '&background=random&color=fff'
+                      mission.chief_avatar_url ||
+                      'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
+                        mission.chief_display_name
                     "
-                    class="w-8 h-8 rounded-full border border-white/10"
+                    class="w-6 h-6 rounded-lg object-cover"
                   />
-                  <div class="flex flex-col">
-                    <span class="text-[11px] font-bold text-white">{{
-                      mission.chief_display_name
-                    }}</span>
-                    <div class="flex items-center gap-1">
-                      <i class="pi pi-users text-[9px] text-white/40"></i>
-                      <span class="text-[10px] text-white/40 font-bold"
-                        >{{ mission.crew_count }} / {{ mission.max_crew }}</span
-                      >
-                    </div>
-                  </div>
+                  <span>{{ mission.chief_display_name }}</span>
                 </div>
-                <div class="card-footer-action">
-                  <button class="btn btn-primary btn-sm rounded-xl px-4 shadow-xl font-bold">
-                    Enter
-                  </button>
+                <div class="card-stats">
+                  {{ mission.crew_count }}/{{ mission.max_crew }} <i class="pi pi-users"></i>
                 </div>
               </div>
             </div>
@@ -263,3 +187,148 @@
     </div>
   </div>
 </div>
+
+<!-- QUICK VIEW DIALOG -->
+<p-dialog
+  [(visible)]="showPreview"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+  styleClass="preview-dialog"
+  [showHeader]="false"
+  [style]="{ width: '480px', background: 'transparent', border: 'none' }"
+  maskStyleClass="preview-mask"
+>
+  @if (selectedMission) {
+    <div class="preview-zoom-container">
+      <div
+        class="preview-card bg-surface overflow-hidden relative border border-white/10 rounded-[32px] shadow-2xl"
+      >
+        <!-- Close Button -->
+        <button
+          (click)="closePreview()"
+          class="absolute top-6 right-6 z-50 w-10 h-10 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center text-white/60 hover:text-white hover:bg-black/60 transition-all border border-white/10"
+        >
+          <i class="pi pi-times text-[12px]"></i>
+        </button>
+
+        <!-- Cover Image -->
+        <div class="h-64 w-full relative overflow-hidden">
+          <img [src]="getVibeImage(selectedMission.category)" class="w-full h-full object-cover" />
+          <div
+            class="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"
+          ></div>
+
+          <div class="absolute bottom-6 left-8">
+            <span class="badge mb-3" [ngClass]="getCategoryClass(selectedMission.category)">
+              {{ selectedMission.category || 'Vibe Room' }}
+            </span>
+            <h2 class="text-3xl font-black italic uppercase tracking-tight m-0 text-white">
+              {{ selectedMission.name }}
+            </h2>
+          </div>
+        </div>
+
+        <div class="p-8 pb-10 flex flex-col gap-8">
+          <!-- Description -->
+          <div class="flex flex-col gap-3">
+            <span class="label text-[9px] tracking-[0.3em]">Room Intelligence</span>
+            <p
+              class="text-[14px] text-white/50 m-0 leading-relaxed italic border-l border-accent/30 pl-4"
+            >
+              {{
+                selectedMission.description ||
+                  'Welcome to the room. Join the group and start sharing vibes with other community members.'
+              }}
+            </p>
+          </div>
+
+          <!-- Crew Info -->
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-between items-center">
+              <span class="label text-[9px] tracking-[0.3em]">Active Members</span>
+              <span class="text-accent text-[11px] font-black uppercase tracking-tight">
+                {{ selectedMission.crew_count }}/{{ selectedMission.max_crew }} Joined
+              </span>
+            </div>
+
+            <div
+              class="flex items-center gap-4 p-5 rounded-3xl bg-white/[0.03] border border-white/5"
+            >
+              @if (loadingPreviewCrew) {
+                <div class="flex items-center gap-3 py-2 opacity-50">
+                  <div class="w-2 h-2 rounded-full bg-accent animate-ping"></div>
+                  <span class="text-[10px] font-black uppercase tracking-[0.2em]"
+                    >Syncing Crew Data...</span
+                  >
+                </div>
+              } @else {
+                <div class="avatar-stack-preview">
+                  @if (previewCrew.length > 0) {
+                    <p-avatarGroup>
+                      @for (member of previewCrew.slice(0, 5); track member.id) {
+                        <p-avatar
+                          [image]="
+                            member.avatar_url ||
+                            'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
+                              member.display_name
+                          "
+                          shape="circle"
+                          size="large"
+                          [style]="{
+                            border: '3px solid var(--bg-surface)',
+                            boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
+                          }"
+                        ></p-avatar>
+                      }
+                      @if (previewCrew.length > 5) {
+                        <p-avatar
+                          label="+{{ previewCrew.length - 5 }}"
+                          shape="circle"
+                          size="large"
+                          [style]="{
+                            background: 'var(--bg-elevated)',
+                            border: '3px solid var(--bg-surface)',
+                          }"
+                        ></p-avatar>
+                      }
+                    </p-avatarGroup>
+                    <div class="flex flex-col ml-6">
+                      <span class="text-[12px] font-black text-white italic tracking-tight"
+                        >Active Crew Session</span
+                      >
+                      <span
+                        class="text-[10px] font-bold text-white/30 uppercase tracking-widest mt-0.5"
+                      >
+                        {{ previewCrew.length }} Members Vibing In
+                      </span>
+                    </div>
+                  } @else {
+                    <div class="flex items-center gap-3 py-2 opacity-20">
+                      <i class="pi pi-users text-lg"></i>
+                      <span class="text-[10px] font-black uppercase tracking-widest italic"
+                        >Room is currently empty</span
+                      >
+                    </div>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Footer Action -->
+          <div class="flex items-center mt-4">
+            <button
+              pButton
+              label="ENTER THIS ROOM"
+              icon="pi pi-bolt"
+              (click)="onJoin(selectedMission)"
+              class="w-full p-button-primary !h-14 !rounded-2xl !text-[11px] !font-black !tracking-[0.2em]"
+            ></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</p-dialog>

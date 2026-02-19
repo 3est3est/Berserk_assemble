@@ -1,169 +1,339 @@
 <div class="chat-wrapper" [class.opened]="isOpened()">
-  <!-- Shuttle Toggle Button -->
-  <button
-    pButton
-    [icon]="isOpened() ? 'pi pi-times' : 'pi pi-comments'"
-    class="main-toggle-btn group"
-    (click)="toggleChat()"
-  >
-    @if (unreadCount() > 0) {
-      <span class="absolute -top-1 -right-1 flex h-6 w-6">
-        <span
-          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"
-        ></span>
-        <span
-          class="relative inline-flex rounded-full h-6 w-6 bg-red-500 border-2 border-black text-[10px] font-black items-center justify-center text-white"
-        >
-          {{ unreadCount() }}
-        </span>
-      </span>
-    }
-  </button>
-
-  <!-- Shuttle Chat Window -->
+  <!-- Chat Window -->
   <div class="chat-window">
+    <!-- HEADER -->
     <div class="chat-header">
       <div class="header-left">
-        <div class="header-icon">
-          <i [class]="selectedUser ? 'pi pi-user' : 'pi pi-th-large'"></i>
-        </div>
-        <span class="title">{{ selectedUser ? selectedUser.display_name : 'Signal Network' }}</span>
-      </div>
-      <div class="flex items-center gap-2">
         @if (selectedUser) {
+          <img
+            [src]="
+              selectedUser.avatar_url ||
+              'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + selectedUser.display_name
+            "
+            class="header-avatar"
+          />
+        } @else {
+          <div class="header-icon"><i class="pi pi-comments"></i></div>
+        }
+        <div class="header-text">
+          <span class="title">{{ selectedUser ? selectedUser.display_name : 'Messages' }}</span>
+          @if (!selectedUser) {
+            <span class="subtitle">{{ friends.length }} friends</span>
+          } @else if (isFriend(selectedUser.id)) {
+            <span class="subtitle friend-badge"><i class="pi pi-check-circle"></i> Friend</span>
+          } @else {
+            <span class="subtitle stranger-badge"><i class="pi pi-user"></i> Active User</span>
+          }
+        </div>
+      </div>
+      <div class="header-actions">
+        @if (selectedUser) {
+          @if (isFriend(selectedUser.id)) {
+            <button
+              pButton
+              icon="pi pi-user-minus"
+              (click)="unfriendCurrent()"
+              class="p-button-text p-button-danger p-button-sm !w-8 !h-8 opacity-40 hover:opacity-100"
+              title="Unfriend"
+            ></button>
+          }
           <button
             pButton
             icon="pi pi-chevron-left"
             (click)="closeChat()"
-            class="p-button-text p-button-sm w-8 h-8 opacity-40 hover:opacity-100"
+            class="p-button-text p-button-sm !w-8 !h-8 opacity-40 hover:opacity-100"
           ></button>
         }
         <button
           pButton
           icon="pi pi-times"
           (click)="toggleChat()"
-          class="p-button-text p-button-sm w-8 h-8 opacity-40 hover:opacity-100"
+          class="p-button-text p-button-sm !w-8 !h-8 opacity-40 hover:opacity-100"
         ></button>
       </div>
     </div>
 
-    <!-- 1. Discovery / Recent List View -->
-    <div class="recent-list" *ngIf="!selectedUser">
+    <!-- LIST VIEW (no selected user) -->
+    @if (!selectedUser) {
+      <!-- Search Bar -->
       <div class="search-area">
-        <label for="chat-search">Name or Signal ID</label>
         <div class="input-wrapper">
+          <i class="pi pi-search search-icon"></i>
           <input
-            id="chat-search"
             type="text"
-            placeholder="Search for agents..."
+            placeholder="ค้นหาชื่อหรือ ID..."
             [(ngModel)]="searchQuery"
             (input)="onSearchChange()"
             autocomplete="off"
           />
-          <i class="pi pi-search"></i>
+          @if (searchQuery) {
+            <button class="clear-btn" (click)="searchQuery = ''; onSearchChange()">
+              <i class="pi pi-times"></i>
+            </button>
+          }
         </div>
       </div>
 
-      <div class="list-content">
-        <!-- Search Results -->
-        @if (searchQuery && filteredFriends.length > 0) {
-          <div class="section-label">Search Results</div>
-          @for (friend of filteredFriends; track friend.id) {
-            <div class="chat-item animate-in" (click)="startNewChat(friend)">
-              <img
-                [src]="
-                  friend.avatar_url || 'https://ui-avatars.com/api/?name=' + friend.display_name
-                "
-                class="avatar"
-              />
-              <div class="item-info">
-                <span class="name">{{ friend.display_name }}</span>
-                <span class="preview">Operative ID: #{{ friend.id }}</span>
+      <!-- SEARCH RESULTS -->
+      @if (searchQuery) {
+        <div class="list-content">
+          @if (searchResults.length > 0) {
+            <div class="section-label">ผลการค้นหา — {{ searchResults.length }} คน</div>
+            @for (person of searchResults; track person.id) {
+              <div class="chat-item" (click)="startChat(person)">
+                <div class="avatar-wrap">
+                  <img
+                    [src]="
+                      person.avatar_url ||
+                      'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + person.display_name
+                    "
+                    class="avatar"
+                  />
+                  @if (person.is_online) {
+                    <div class="online-dot"></div>
+                  }
+                </div>
+                <div class="item-info">
+                  <span class="name">{{ person.display_name }}</span>
+                  @if (isFriend(person.id)) {
+                    <span class="tag-friend">เพื่อน</span>
+                  } @else {
+                    <span class="tag-active">Active</span>
+                  }
+                </div>
+                <i class="pi pi-chevron-right item-arrow"></i>
               </div>
-              <div class="item-meta">
-                <span class="role-badge">Member</span>
-              </div>
+            }
+          } @else {
+            <div class="empty-state">
+              <i class="pi pi-search-minus"></i>
+              <p>ไม่พบบุคคลนี้</p>
             </div>
           }
-        } @else if (searchQuery) {
-          <div
-            class="p-12 text-center opacity-30 text-[10px] font-black uppercase tracking-widest italic"
+        </div>
+      } @else {
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+          <button
+            class="tab-btn"
+            [class.active]="activeTab === 'recent'"
+            (click)="activeTab = 'recent'"
           >
-            Signal lost. No match found.
+            <i class="pi pi-clock"></i>
+            แชท
+            @if (unreadCount() > 0) {
+              <span class="tab-badge">{{ unreadCount() }}</span>
+            }
+          </button>
+          <button
+            class="tab-btn"
+            [class.active]="activeTab === 'friends'"
+            (click)="activeTab = 'friends'"
+          >
+            <i class="pi pi-heart"></i>
+            เพื่อน
+            <span class="tab-count">{{ friends.length }}</span>
+          </button>
+          <button
+            class="tab-btn"
+            [class.active]="activeTab === 'explore'"
+            (click)="activeTab = 'explore'"
+          >
+            <i class="pi pi-bolt"></i>
+            Online
+            <span class="tab-count">{{ onlineNonFriends.length }}</span>
+          </button>
+        </div>
+
+        <!-- RECENT CHATS TAB -->
+        @if (activeTab === 'recent') {
+          <div class="list-content">
+            @for (chat of recentChats; track chat.id) {
+              <div class="chat-item" (click)="selectChat(chat)">
+                <div class="avatar-wrap">
+                  <img
+                    [src]="
+                      chat.other_avatar ||
+                      'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + chat.other_name
+                    "
+                    class="avatar"
+                  />
+                  @if (chat.is_online) {
+                    <div class="online-dot"></div>
+                  }
+                </div>
+                <div class="item-info">
+                  <span class="name">{{ chat.other_name }}</span>
+                  <span class="last-msg">{{ chat.content }}</span>
+                </div>
+                <div class="item-meta">
+                  <span class="msg-time">{{ chat.created_at | date: 'HH:mm' }}</span>
+                </div>
+              </div>
+            } @empty {
+              <div class="empty-state">
+                <i class="pi pi-comments"></i>
+                <p>ยังไม่มีข้อความ</p>
+                <span>เริ่มแชทกับเพื่อนในแท็บ "เพื่อน"</span>
+              </div>
+            }
           </div>
         }
 
-        <!-- Recent Chats -->
-        @if (!searchQuery) {
-          <div class="section-label">Active Connections</div>
-          @for (chat of recentChats; track chat.id) {
-            <div class="chat-item animate-in" (click)="selectChat(chat)">
-              <img
-                [src]="chat.other_avatar || 'https://ui-avatars.com/api/?name=' + chat.other_name"
-                class="avatar"
-              />
-              <div class="item-info">
-                <span class="name">{{ chat.other_name }}</span>
-                <span class="preview">{{ chat.content }}</span>
+        <!-- FRIENDS TAB -->
+        @if (activeTab === 'friends') {
+          <div class="list-content">
+            <!-- Online friends -->
+            @if (onlineFriends.length > 0) {
+              <div class="section-label">
+                <span class="online-indicator"></span>
+                ออนไลน์ — {{ onlineFriends.length }} คน
               </div>
-              <div class="item-meta">
-                <span class="time">{{ chat.created_at | date: 'HH:mm' }}</span>
+              @for (friend of onlineFriends; track friend.id) {
+                <div class="chat-item" (click)="startChat(friend)">
+                  <div class="avatar-wrap">
+                    <img
+                      [src]="
+                        friend.avatar_url ||
+                        'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
+                          friend.display_name
+                      "
+                      class="avatar"
+                    />
+                    <div class="online-dot"></div>
+                  </div>
+                  <div class="item-info">
+                    <span class="name">{{ friend.display_name }}</span>
+                    <span class="status-online">⚡ Active Now</span>
+                  </div>
+                  <i class="pi pi-send item-arrow"></i>
+                </div>
+              }
+            }
+            <!-- Offline friends -->
+            @if (offlineFriends.length > 0) {
+              <div class="section-label" [class.mt-4]="onlineFriends.length > 0">
+                เพื่อนทั้งหมด — {{ offlineFriends.length }} คน
               </div>
+              @for (friend of offlineFriends; track friend.id) {
+                <div class="chat-item" (click)="startChat(friend)">
+                  <div class="avatar-wrap">
+                    <img
+                      [src]="
+                        friend.avatar_url ||
+                        'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
+                          friend.display_name
+                      "
+                      class="avatar offline"
+                    />
+                  </div>
+                  <div class="item-info">
+                    <span class="name">{{ friend.display_name }}</span>
+                    <span class="status-offline">Offline</span>
+                  </div>
+                  <i class="pi pi-chevron-right item-arrow"></i>
+                </div>
+              }
+            }
+            @if (friends.length === 0) {
+              <div class="empty-state">
+                <i class="pi pi-heart"></i>
+                <p>ยังไม่มีเพื่อน</p>
+                <span>เพิ่มเพื่อนจากหน้า Citizens</span>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- EXPLORE / ONLINE NON-FRIENDS TAB -->
+        @if (activeTab === 'explore') {
+          <div class="list-content">
+            @if (onlineNonFriends.length > 0) {
+              <div class="section-label">
+                <span class="online-indicator"></span>
+                กำลัง Active อยู่ในแอป — {{ onlineNonFriends.length }} คน
+              </div>
+              @for (user of onlineNonFriends; track user.id) {
+                <div class="chat-item" (click)="startChat(user)">
+                  <div class="avatar-wrap">
+                    <img
+                      [src]="
+                        user.avatar_url ||
+                        'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + user.display_name
+                      "
+                      class="avatar"
+                    />
+                    <div class="online-dot"></div>
+                  </div>
+                  <div class="item-info">
+                    <span class="name">{{ user.display_name }}</span>
+                    <span class="status-online">⚡ Active Now</span>
+                  </div>
+                  <i class="pi pi-send item-arrow"></i>
+                </div>
+              }
+            } @else {
+              <div class="empty-state">
+                <i class="pi pi-bolt"></i>
+                <p>ไม่มีใคร Active</p>
+                <span>ตอนนี้ทุกคนออฟไลน์แล้ว</span>
+              </div>
+            }
+          </div>
+        }
+      }
+    }
+
+    <!-- ACTIVE CHAT VIEW -->
+    @if (selectedUser) {
+      <div class="chat-view">
+        <div class="messages-container" #scrollContainer>
+          @for (msg of messages; track msg.id) {
+            <div class="message-group" [class.sent]="msg.sender_id === currentUserId">
+              <div class="bubble">{{ msg.content }}</div>
+              <span class="msg-time">{{ msg.created_at | date: 'HH:mm' }}</span>
             </div>
           } @empty {
-            <div
-              class="p-12 text-center opacity-20 text-[10px] font-black uppercase tracking-[0.2em]"
-            >
-              Secure line idle. No active pulse.
+            <div class="empty-chat-state">
+              <i class="pi pi-lock"></i>
+              <p>เริ่มการสนทนา</p>
+              <span>ข้อความเข้ารหัสผ่าน Vibe Network</span>
             </div>
           }
-        }
-      </div>
-    </div>
+        </div>
 
-    <!-- 2. Active Chat View -->
-    <div class="chat-view" *ngIf="selectedUser">
-      <div class="messages-container" #scrollContainer>
-        @for (msg of messages; track msg.id) {
-          <div class="message-group animate-in" [class.sent]="msg.sender_id === currentUserId">
-            <div class="bubble">
-              {{ msg.content }}
-            </div>
-            <span class="time">{{ msg.created_at | date: 'shortTime' }}</span>
-          </div>
-        } @empty {
-          <div
-            class="h-full flex flex-col items-center justify-center opacity-20 text-center px-10"
-          >
-            <i class="pi pi-shield text-4xl mb-6"></i>
-            <p class="text-[10px] font-black uppercase tracking-[0.3em]">
-              End-to-End Encryption Active
-            </p>
-            <p
-              class="text-[9px] mt-2 font-medium opacity-60 uppercase tracking-widest leading-loose"
-            >
-              Messages are secured through the private Vibe network protocol.
-            </p>
-          </div>
-        }
+        <div class="chat-footer">
+          <input
+            type="text"
+            class="input-box"
+            [(ngModel)]="newMessage"
+            (keyup.enter)="send()"
+            placeholder="พิมพ์ข้อความ..."
+          />
+          <button
+            pButton
+            icon="pi pi-send"
+            [disabled]="!newMessage.trim()"
+            (click)="send()"
+            class="send-btn"
+          ></button>
+        </div>
       </div>
-
-      <div class="chat-footer">
-        <input
-          type="text"
-          class="input-box"
-          [(ngModel)]="newMessage"
-          (keyup.enter)="send()"
-          placeholder="Secure transmit..."
-        />
-        <button
-          pButton
-          icon="pi pi-send"
-          [disabled]="!newMessage.trim()"
-          (click)="send()"
-          class="send-btn"
-        ></button>
-      </div>
-    </div>
+    }
   </div>
+
+  <!-- Toggle Button (always at bottom) -->
+  <button
+    pButton
+    [icon]="isOpened() ? 'pi pi-times' : 'pi pi-comments'"
+    class="main-toggle-btn"
+    (click)="toggleChat()"
+  >
+    @if (unreadCount() > 0) {
+      <span class="unread-badge">
+        <span class="ping-ring"></span>
+        <span class="badge-count">{{ unreadCount() }}</span>
+      </span>
+    }
+  </button>
 </div>

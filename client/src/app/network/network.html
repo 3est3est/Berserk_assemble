@@ -1,170 +1,155 @@
 <div class="network-container">
-  <div class="bg-mesh"></div>
-
-  <div class="godly-hero-network">
-    <!-- NETWORK OS WINDOW -->
-    <main class="os-window flex min-h-[700px]">
-      <!-- GROUPS SIDEBAR -->
-      <aside class="os-sidebar">
-        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
-
-        <div class="flex flex-col gap-1 mb-10">
-          <div class="os-nav-item" [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
-            <i class="pi pi-users"></i>
-            <span>All Contacts</span>
-            <span class="text-[8px] opacity-40">{{ friends().length }}</span>
-          </div>
-          <div
-            class="os-nav-item"
-            [class.active]="activeTab === 'online'"
-            (click)="activeTab = 'online'"
-          >
-            <i class="pi pi-bolt"></i>
-            <span>Online Now</span>
-            <span class="text-[8px] opacity-40">{{ onlineUsers().length }}</span>
-          </div>
-          <div
-            class="os-nav-item"
-            [class.active]="activeTab === 'requests'"
-            (click)="activeTab = 'requests'"
-          >
-            <i class="pi pi-verified"></i>
-            <span>Requests</span>
-            @if (pendingRequests().length > 0) {
-              <div class="w-1.5 h-1.5 rounded-full bg-white"></div>
-            }
-          </div>
+  <div class="page-layout">
+    <!-- SIDEBAR -->
+    <aside class="page-sidebar">
+      <div class="flex flex-col gap-1 mb-8">
+        <div
+          class="os-nav-item"
+          [class.active]="activeTab === 'online'"
+          (click)="activeTab = 'online'"
+        >
+          <i class="pi pi-bolt"></i>
+          <span>Live Now</span>
+          <span class="text-[8px] opacity-40 ml-auto">{{ onlineUsers().length }}</span>
         </div>
+        <div class="os-nav-item" [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
+          <i class="pi pi-users"></i>
+          <span>My Circle</span>
+          <span class="text-[8px] opacity-40 ml-auto">{{ friends().length }}</span>
+        </div>
+        <div
+          class="os-nav-item"
+          [class.active]="activeTab === 'requests'"
+          (click)="activeTab = 'requests'"
+        >
+          <i class="pi pi-verified"></i>
+          <span>Requests</span>
+          @if (pendingRequests().length > 0) {
+            <div class="w-1.5 h-1.5 rounded-full bg-accent ml-auto"></div>
+          }
+        </div>
+      </div>
 
-        <div class="mt-auto pt-8 border-t border-white/5">
-          <span class="os-label">Status</span>
-          <div class="flex items-center gap-3">
-            <div class="presence-dot-os"></div>
-            <span class="text-[9px] font-black text-white uppercase tracking-widest"
-              >Active Scanning</span
+      <div class="mt-auto pt-8 border-t border-white/5">
+        <div class="flex items-center gap-3 px-3">
+          <div
+            class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_10px_rgba(74,222,128,0.4)] animate-pulse"
+          ></div>
+          <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest"
+            >Network Pulse</span
+          >
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <section class="page-main">
+      <div class="page-header flex flex-col mb-10">
+        <h1 class="page-title leading-none">Citizens</h1>
+        <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-2">
+          @if (activeTab === 'all') {
+            Your verified connections
+          } @else if (activeTab === 'online') {
+            Vibing right now in this community
+          } @else {
+            Connection Requests
+          }
+        </p>
+      </div>
+
+      @if (activeTab === 'all' || activeTab === 'online') {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger">
+          @for (user of activeTab === 'all' ? friends() : onlineUsers(); track user.id) {
+            <div
+              class="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 hover:bg-white/[0.05] transition-all group relative cursor-pointer"
+              [routerLink]="['/profile', user.id]"
             >
-          </div>
-        </div>
-      </aside>
-
-      <!-- NETWORK MAIN CONTENT -->
-      <section class="os-main">
-        <div class="os-title-bar mb-8">
-          <div class="flex flex-col">
-            <span class="os-label">Network</span>
-            <h1 class="os-title-large">
-              Friends <span class="opacity-30 italic">& Contacts</span>
-            </h1>
-          </div>
-        </div>
-
-        <!-- ── Fix 3: Compact list rows ── -->
-        @if (activeTab === 'all' || activeTab === 'online') {
-          <div class="flex flex-col gap-1 overflow-y-auto hide-scrollbar pb-20">
-            @for (user of activeTab === 'all' ? friends() : onlineUsers(); track user.id) {
-              <div class="friend-row group" [routerLink]="['/profile', user.id]">
-                <!-- Avatar -->
-                <div class="relative flex-shrink-0">
-                  <img
-                    [src]="
-                      user.avatar_url ||
-                      'https://ui-avatars.com/api/?name=' +
-                        user.display_name +
-                        '&size=80&background=random'
-                    "
-                    class="w-10 h-10 rounded-xl object-cover border border-white/[0.07]"
-                    [alt]="user.display_name"
-                  />
-                  @if (user.is_online || activeTab === 'online') {
-                    <div
-                      class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-[#00E676] border-2 border-black"
-                    ></div>
-                  }
-                </div>
-
-                <!-- Info -->
-                <div class="flex-grow min-w-0">
-                  <p class="text-sm font-semibold text-white truncate">{{ user.display_name }}</p>
-                  <p class="text-xs text-white/40">{{ user.rank || 'Member' }}</p>
-                </div>
-
-                <!-- Status + Actions -->
-                <div
-                  class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <button
-                    (click)="openChat(user); $event.stopPropagation()"
-                    class="w-8 h-8 rounded-lg bg-white/[0.05] border border-white/[0.07] flex items-center justify-center text-zinc-500 hover:text-white hover:bg-white/[0.08] transition-all"
-                  >
-                    <i class="pi pi-comments text-[10px]"></i>
-                  </button>
-                  @if (activeTab === 'all') {
-                    <button
-                      (click)="onRemoveFriend(user); $event.stopPropagation()"
-                      class="w-8 h-8 rounded-lg bg-white/[0.05] border border-white/[0.07] flex items-center justify-center text-zinc-500 hover:text-red-400 hover:bg-red-500/10 transition-all"
-                    >
-                      <i class="pi pi-user-minus text-[10px]"></i>
-                    </button>
-                  }
-                </div>
-
-                <!-- Online indicator (always visible) -->
-                @if (user.is_online || activeTab === 'online') {
-                  <span class="text-[10px] font-medium text-[#00E676] flex-shrink-0">● Online</span>
-                } @else {
-                  <span class="text-[10px] font-medium text-white/20 flex-shrink-0">Offline</span>
-                }
-              </div>
-            } @empty {
-              <div class="py-40 flex flex-col items-center justify-center opacity-10">
-                <i class="pi pi-users text-6xl mb-8"></i>
-                <p class="text-xs font-black uppercase tracking-[0.5em]">No contacts yet</p>
-              </div>
-            }
-          </div>
-        }
-
-        @if (activeTab === 'requests') {
-          <div class="overflow-y-auto hide-scrollbar pb-20">
-            @for (req of pendingRequests(); track req.id) {
-              <div class="friend-row mb-2">
+              <div class="relative flex-shrink-0">
                 <img
                   [src]="
-                    req.requester_avatar ||
-                    'https://ui-avatars.com/api/?name=' +
-                      req.requester_name +
-                      '&size=80&background=random'
+                    user.avatar_url ||
+                    'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + user.display_name
                   "
-                  class="w-10 h-10 rounded-xl object-cover border border-white/[0.07] flex-shrink-0"
+                  class="w-12 h-12 rounded-xl object-cover border border-white/10"
                 />
-                <div class="flex-grow min-w-0">
-                  <p class="text-sm font-semibold text-white truncate">{{ req.requester_name }}</p>
-                  <p class="text-xs text-white/40">Friend Request</p>
-                </div>
-                <div class="flex gap-2 flex-shrink-0">
-                  <button
-                    (click)="onAccept(req.id)"
-                    class="px-4 h-8 rounded-lg bg-white text-black text-[11px] font-semibold hover:bg-zinc-200 transition-colors"
-                  >
-                    Accept
-                  </button>
-                  <button
-                    (click)="onReject(req.id)"
-                    class="px-4 h-8 rounded-lg bg-white/[0.04] border border-white/[0.07] text-zinc-500 text-[11px] font-medium hover:text-red-400 transition-colors"
-                  >
-                    Decline
-                  </button>
-                </div>
+                @if (user.is_online || activeTab === 'online') {
+                  <div
+                    class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-[#4ade80] border-2 border-base"
+                  ></div>
+                }
               </div>
-            } @empty {
-              <div class="py-40 flex flex-col items-center justify-center opacity-10">
-                <i class="pi pi-verified text-6xl mb-8"></i>
-                <p class="text-xs font-black uppercase tracking-[0.5em]">No pending requests</p>
+
+              <div class="flex flex-col flex-grow min-w-0">
+                <span class="text-sm font-bold text-white truncate">{{ user.display_name }}</span>
+                <span class="text-[10px] text-white/40 font-semibold uppercase tracking-wider">{{
+                  user.rank || 'Member'
+                }}</span>
               </div>
-            }
-          </div>
-        }
-      </section>
-    </main>
+
+              <div
+                class="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0"
+              >
+                <button
+                  (click)="openChat(user); $event.stopPropagation()"
+                  class="w-8 h-8 rounded-lg bg-white/5 hover:bg-accent/20 hover:text-accent transition-colors"
+                >
+                  <i class="pi pi-comments text-[10px]"></i>
+                </button>
+                @if (activeTab === 'all') {
+                  <button
+                    (click)="onRemoveFriend(user); $event.stopPropagation()"
+                    class="w-8 h-8 rounded-lg bg-white/5 hover:bg-red-500/20 hover:text-red-400 transition-colors"
+                  >
+                    <i class="pi pi-user-minus text-[10px]"></i>
+                  </button>
+                }
+              </div>
+            </div>
+          } @empty {
+            <div class="col-span-full py-40 flex flex-col items-center justify-center opacity-20">
+              <i class="pi pi-users text-5xl mb-6"></i>
+              <p class="text-xs font-black uppercase tracking-[0.5em]">No contacts yet</p>
+            </div>
+          }
+        </div>
+      }
+
+      @if (activeTab === 'requests') {
+        <div class="max-w-3xl flex flex-col gap-3 stagger">
+          @for (req of pendingRequests(); track req.id) {
+            <div
+              class="flex items-center gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/5"
+            >
+              <img
+                [src]="
+                  req.requester_avatar ||
+                  'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + req.requester_name
+                "
+                class="w-12 h-12 rounded-xl object-cover border border-white/10"
+              />
+              <div class="flex flex-col flex-grow min-w-0">
+                <span class="text-sm font-bold text-white">{{ req.requester_name }}</span>
+                <span class="text-[10px] text-white/40 uppercase font-black tracking-widest mt-0.5"
+                  >Wants to vibe with you</span
+                >
+              </div>
+              <div class="flex gap-2">
+                <button (click)="onAccept(req.id)" class="btn btn-primary btn-sm px-6">
+                  Accept
+                </button>
+                <button (click)="onReject(req.id)" class="btn btn-ghost btn-sm px-4">
+                  Decline
+                </button>
+              </div>
+            </div>
+          } @empty {
+            <div class="py-40 flex flex-col items-center justify-center opacity-20">
+              <i class="pi pi-verified text-5xl mb-6"></i>
+              <p class="text-xs font-black uppercase tracking-[0.5em]">No pending requests</p>
+            </div>
+          }
+        </div>
+      }
+    </section>
   </div>
 </div>

@@ -1,14 +1,16 @@
 import { Brawler } from '../_models/brawler';
 import { Passport } from '../_models/passport';
 
-const _default_avatar = '/assets/avatar-profile.jpg';
+const _default_avatar =
+  'https://raw.githubusercontent.com/primefaces/primevue/master/public/layout/images/avatar/amyelsner.png';
+// Actually user asked for "รูปบแบบบอท" (bot style) from PrimeNG.
+// PrimeNG doesn't have a direct "bot image URL", but we can use a stylized avatar.
+const _bot_avatar = 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=vibe';
 
 export function getAvatarUrl(passport: Passport | undefined): string {
   if (passport && passport.avatar_url) return passport.avatar_url;
-  if (passport && passport.display_name) {
-    return `https://ui-avatars.com/api/?name=${encodeURIComponent(passport.display_name)}&background=random`;
-  }
-  return _default_avatar;
+  const seed = passport?.display_name || 'vibe';
+  return `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(seed)}`;
 }
 
 /**

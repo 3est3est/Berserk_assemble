@@ -4,20 +4,24 @@ import { MissionFilter } from '../_models/mission-filter';
 import { FormsModule } from '@angular/forms';
 import { Mission } from '../_models/mission';
 import { PassportService } from '../_services/passport-service';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription, firstValueFrom } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { CrewService } from '../_services/crew-service';
 import { getUserIdFromToken } from '../_helpers/util';
 import { ToastService } from '../_services/toast-service';
 import { WebsocketService } from '../_services/websocket-service';
+import { ActivatedRoute } from '@angular/router';
 
 // PrimeNG
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
+import { AvatarModule } from 'primeng/avatar';
+import { AvatarGroupModule } from 'primeng/avatargroup';
 
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 
 @Component({
   selector: 'app-missions',
@@ -29,7 +33,9 @@ import { RouterLink, RouterModule } from '@angular/router';
     InputTextModule,
     SelectModule,
     TagModule,
-    RouterLink,
+    DialogModule,
+    AvatarModule,
+    AvatarGroupModule,
     RouterModule,
   ],
   templateUrl: './missions.html',
@@ -41,6 +47,8 @@ export class Missions implements OnDestroy {
   private _passportService = inject(PassportService);
   private _toast = inject(ToastService);
   private _wsService = inject(WebsocketService);
+  private _route = inject(ActivatedRoute);
+  private _router = inject(Router);
 
   private _allMissions: Mission[] = [];
   filteredMissions: Mission[] = [];
@@ -53,6 +61,12 @@ export class Missions implements OnDestroy {
   currentPage: number = 1;
   pageSize: number = 6;
   paginatedMissions: Mission[] = [];
+
+  // Preview
+  showPreview = false;
+  selectedMission: Mission | null = null;
+  previewCrew: any[] = [];
+  loadingPreviewCrew = false;
 
   categories = [
     { name: 'Sports & Active', emoji: '⚽' },
@@ -86,6 +100,11 @@ export class Missions implements OnDestroy {
   }
 
   private async initialLoad() {
+    // Read query params first
+    const params = await firstValueFrom(this._route.queryParams);
+    if (params['category']) {
+      this.selectedCategory = params['category'];
+    }
     await this.onSubmit();
   }
 
@@ -171,9 +190,52 @@ export class Missions implements OnDestroy {
     if (!confirm(`Do you want to join "${mission.name}"?`)) return;
     try {
       await this._crewService.join(mission.id);
-      this.onSubmit();
+      this._toast.success('Joined the room!');
+      this.showPreview = false;
+      this._router.navigate(['/missions', mission.id]);
     } catch (e: any) {
       this._toast.error('Failed to join: ' + (e.error || e.message));
     }
+  }
+
+  async openPreview(mission: Mission) {
+    this.selectedMission = mission;
+    this.showPreview = true;
+    this.previewCrew = [];
+    this.loadingPreviewCrew = true;
+
+    try {
+      this.previewCrew = await this._mission.getCrew(mission.id);
+    } catch (e) {
+      console.error('Failed to load preview crew', e);
+    } finally {
+      this.loadingPreviewCrew = false;
+    }
+  }
+
+  closePreview() {
+    this.showPreview = false;
+    setTimeout(() => {
+      this.selectedMission = null;
+      this.previewCrew = [];
+    }, 300);
+  }
+
+  getCategoryClass(category?: string): string {
+    const map: Record<string, string> = {
+      'Gaming & E-Sports': 'badge-gaming',
+      'Sports & Active': 'badge-sports',
+      'Social & Chill': 'badge-social',
+      'Travel & Trip': 'badge-travel',
+      Entertainment: 'badge-ent',
+      'Lifestyle & Hobby': 'badge-life',
+    };
+    return map[category || ''] ?? 'badge-other';
+  }
+
+  /** Get psychedelic image for category from local assets */
+  getVibeImage(category?: string): string {
+    const catFilename = (category || 'Other').replace(/ /g, '_');
+    return `assets/missionCard_wallpaper/${catFilename}.jpg`;
   }
 }

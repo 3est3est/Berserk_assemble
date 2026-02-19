@@ -8,6 +8,8 @@ module.exports = {
     extend: {
       colors: {
         // Vibe Design Tokens — Light & Dark
+        accent: '#ff4eab',
+        'accent-secondary': '#714eff',
         vibe: {
           green:  '#16a34a',
           'green-light': '#22c55e',

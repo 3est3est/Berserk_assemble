@@ -217,9 +217,9 @@ export class Dashboard implements OnInit, OnDestroy {
   }
 
   getProgressBarColor(successRate: number): string {
-    if (successRate >= 80) return '#22c55e';
-    if (successRate >= 50) return '#eab308';
-    return '#ef4444';
+    if (successRate >= 80) return '#ff4eab'; // Vibrant Pink (Theme Accent)
+    if (successRate >= 50) return '#a855f7'; // Purple
+    return '#ef4444'; // Red for warning
   }
 
   getSuccessRateOffset(): number {

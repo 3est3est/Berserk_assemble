@@ -1,20 +1,18 @@
 <div class="login-container">
-  <div class="bg-mesh"></div>
-
   <div class="os-window os-auth-window">
-    <header class="mb-16 text-center">
-      <div class="os-auth-icon">
-        <i class="pi pi-shield text-black text-3xl"></i>
+    <header class="mb-10">
+      <div class="vibe-auth-icon">
+        <i class="pi pi-sparkles text-accent text-2xl"></i>
       </div>
-      <h2 class="text-4xl font-black uppercase tracking-[-0.04em] mb-4">
-        {{ mode === 'login' ? 'System' : 'Initialize' }}
-        <span class="opacity-30 italic">{{ mode === 'login' ? 'Auth' : 'Vibe' }}</span>
+      <h2 class="text-4xl font-black uppercase tracking-[-0.05em] mb-3">
+        {{ mode === 'login' ? 'Vibe' : 'Join' }}
+        <span class="text-accent italic">{{ mode === 'login' ? 'In' : 'Assemble' }}</span>
       </h2>
-      <p class="os-label opacity-40">
+      <p class="text-[12px] font-medium text-white/30 tracking-wide">
         {{
           mode === 'login'
-            ? 'Authorize signal for network access.'
-            : 'Initialize presence in the vibe sector.'
+            ? 'Welcome back to the vibe. Ready to connect?'
+            : 'Start your journey and vibe with the community.'
         }}
       </p>
     </header>
@@ -22,20 +20,23 @@
     <form (ngSubmit)="onSubmit()" [formGroup]="form">
       <!-- Username -->
       <div class="os-input-group">
-        <label class="os-label text-zinc-500">Operative_ID</label>
+        <label class="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-2 block"
+          >Username</label
+        >
         <div class="relative group">
           <input
             type="text"
             formControlName="username"
             (input)="updateErrorMsg('username')"
-            placeholder="ENTER_ID..."
+            placeholder="Your vibe ID..."
+            class="vibe-input"
           />
           <i
-            class="pi pi-user absolute right-6 top-1/2 -translate-y-1/2 text-zinc-800 group-focus-within:text-white transition-colors"
+            class="pi pi-user absolute right-6 top-1/2 -translate-y-1/2 text-white/10 group-focus-within:text-accent transition-colors text-xs"
           ></i>
         </div>
         @if (form.controls['username'].invalid && form.controls['username'].touched) {
-          <p class="text-[9px] font-black uppercase text-red-500/80 px-1 tracking-widest">
+          <p class="text-[8px] font-black uppercase text-red-500/80 px-1 mt-2 tracking-widest">
             {{ errorMsg.username() }}
           </p>
         }
@@ -43,20 +44,23 @@
 
       <!-- Password -->
       <div class="os-input-group">
-        <label class="os-label text-zinc-500">Access_Key</label>
+        <label class="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-2 block"
+          >Password</label
+        >
         <div class="relative group">
           <input
             type="password"
             formControlName="password"
             (input)="updateErrorMsg('password')"
             placeholder="••••••••"
+            class="vibe-input"
           />
           <i
-            class="pi pi-lock absolute right-6 top-1/2 -translate-y-1/2 text-zinc-800 group-focus-within:text-white transition-colors"
+            class="pi pi-lock absolute right-6 top-1/2 -translate-y-1/2 text-white/10 group-focus-within:text-accent transition-colors text-xs"
           ></i>
         </div>
         @if (form.controls['password'].invalid && form.controls['password'].touched) {
-          <p class="text-[9px] font-black uppercase text-red-500/80 px-1 tracking-widest">
+          <p class="text-[8px] font-black uppercase text-red-500/80 px-1 mt-2 tracking-widest">
             {{ errorMsg.password() }}
           </p>
         }
@@ -65,30 +69,36 @@
       <!-- Register Fields -->
       @if (mode !== 'login') {
         <div class="os-input-group">
-          <label class="os-label text-zinc-500">Confirm_Key</label>
+          <label class="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-2 block"
+            >Confirm Password</label
+          >
           <input
             type="password"
             formControlName="cf_password"
             (input)="updateErrorMsg('cf_password')"
             placeholder="••••••••"
+            class="vibe-input"
           />
           @if (form.controls['cf_password'].invalid && form.controls['cf_password'].touched) {
-            <p class="text-[9px] font-black uppercase text-red-500/80 px-1 tracking-widest">
+            <p class="text-[8px] font-black uppercase text-red-500/80 px-1 mt-2 tracking-widest">
               {{ errorMsg.cf_password() }}
             </p>
           }
         </div>
 
         <div class="os-input-group">
-          <label class="os-label text-zinc-500">Display_Alias</label>
+          <label class="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-2 block"
+            >Display Name</label
+          >
           <input
             type="text"
             formControlName="display_name"
             (input)="updateErrorMsg('display_name')"
-            placeholder="ENTER_ALIAS..."
+            placeholder="How others see you..."
+            class="vibe-input"
           />
           @if (form.controls['display_name'].invalid && form.controls['display_name'].touched) {
-            <p class="text-[9px] font-black uppercase text-red-500/80 px-1 tracking-widest">
+            <p class="text-[8px] font-black uppercase text-red-500/80 px-1 mt-2 tracking-widest">
               {{ errorMsg.display_name() }}
             </p>
           }
@@ -98,9 +108,9 @@
       <button
         type="submit"
         pButton
-        [label]="mode === 'login' ? 'AUTHORIZE_SESSION' : 'INITIALIZE_ACCOUNT'"
+        [label]="mode === 'login' ? 'VIBE_IN' : 'START_VIBING'"
         [disabled]="!form.valid"
-        class="w-full h-16 p-button-primary rounded-2xl text-[11px] font-black tracking-[0.4em] mb-4"
+        class="w-full h-14 p-button-primary !rounded-xl !text-[10px] !font-black !tracking-[0.4em] mb-4 mt-2"
       ></button>
 
       @if (errorMsg.server()) {
@@ -112,11 +122,11 @@
       }
     </form>
 
-    <footer class="os-auth-footer">
-      <p class="os-label !mb-0 text-zinc-600">
-        {{ mode === 'login' ? 'Unauthorized?' : 'Already authorized?' }}
-        <span class="text-white cursor-pointer hover:underline ml-3" (click)="toggleMode()">
-          {{ mode === 'login' ? 'Request Access' : 'Sign In' }}
+    <footer class="mt-12 text-center pt-8 border-t border-white/5">
+      <p class="text-[11px] font-black uppercase tracking-[0.1em] text-white/20">
+        {{ mode === 'login' ? 'New to Vibe Assemble?' : 'Already vibing with us?' }}
+        <span class="text-accent cursor-pointer hover:underline ml-3" (click)="toggleMode()">
+          {{ mode === 'login' ? 'Create Account' : 'Login Instead' }}
         </span>
       </p>
     </footer>

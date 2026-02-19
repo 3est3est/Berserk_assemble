@@ -12,11 +12,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService, PrivateMessage } from '../../_services/chat-service';
 import { FriendshipService } from '../../_services/friendship-service';
+import { WebsocketService } from '../../_services/websocket-service';
 import { getUserIdFromToken } from '../../_helpers/util';
 import { Subscription } from 'rxjs';
 
 // PrimeNG
 import { ButtonModule } from 'primeng/button';
+
+type ChatTab = 'recent' | 'friends' | 'explore';
 
 @Component({
   selector: 'app-private-chat',
@@ -27,6 +30,8 @@ import { ButtonModule } from 'primeng/button';
 })
 export class PrivateChat implements OnInit, OnDestroy {
   private _chatService = inject(ChatService);
+  private _friendshipService = inject(FriendshipService);
+  private _wsService = inject(WebsocketService);
   private _cdr = inject(ChangeDetectorRef);
 
   @ViewChild('scrollContainer') private scrollContainer?: ElementRef;
@@ -36,14 +41,22 @@ export class PrivateChat implements OnInit, OnDestroy {
   currentUserId = 0;
   selectedUser: any = null;
   messages: PrivateMessage[] = [];
-  recentChats: any[] = [];
-  newMessage = '';
 
-  // New features: Searching and starting chats
-  private _friendshipService = inject(FriendshipService);
+  // Tab state
+  activeTab: ChatTab = 'recent';
+
+  // Data
+  recentChats: any[] = [];
   friends: any[] = [];
+  onlineNonFriends: any[] = [];
+  friendIds = new Set<number>();
+  onlineUserIds = signal<number[]>([]);
+
+  // Search
   searchQuery = '';
-  filteredFriends: any[] = [];
+  searchResults: any[] = [];
+
+  newMessage = '';
 
   private subs = new Subscription();
 
@@ -52,11 +65,8 @@ export class PrivateChat implements OnInit, OnDestroy {
     const token = passportJson ? JSON.parse(passportJson).token : '';
     this.currentUserId = getUserIdFromToken(token) || 0;
 
-    // Wrap initial data loading in setTimeout to avoid ExpressionChanged error
     setTimeout(() => {
-      this.loadRecentChats();
-      this.updateUnreadCount();
-      this.loadFriends();
+      this.loadAll();
     });
 
     // Listen for external open chat requests (e.g. from Profile page)
@@ -94,62 +104,50 @@ export class PrivateChat implements OnInit, OnDestroy {
         }
       }),
     );
+
+    // Real-time online status
+    this.subs.add(
+      this._wsService.notifications$.subscribe((msg: any) => {
+        if (msg.type === 'agent_online' || msg.type === 'agent_offline') {
+          this.loadAll();
+        }
+      }),
+    );
   }
 
   ngOnDestroy() {
     this.subs.unsubscribe();
   }
 
-  toggleChat() {
-    this.isOpened.update((val) => !val);
-    this.searchQuery = '';
-    this.filteredFriends = [];
-    if (this.isOpened()) {
-      setTimeout(() => {
-        this.loadFriends();
-        if (this.selectedUser) {
-          this.markAsRead(this.selectedUser.id);
-          this.scrollToBottom();
-        } else {
-          this.loadRecentChats();
-        }
-      });
-    }
+  async loadAll() {
+    await Promise.all([this.loadFriendsAndOnline(), this.loadRecentChats()]);
+    this.updateUnreadCount();
   }
 
-  loadFriends() {
-    this._friendshipService.getFriends().then((friends) => {
-      this.friends = friends;
+  async loadFriendsAndOnline() {
+    try {
+      const [friends, onlineUsers] = await Promise.all([
+        this._friendshipService.getFriends(),
+        this._friendshipService.getOnlineUsers(),
+      ]);
+
+      this.friendIds = new Set(friends.map((f: any) => f.id));
+      const onlineIds = onlineUsers.map((u: any) => u.id);
+      this.onlineUserIds.set(onlineIds);
+
+      this.friends = friends.map((f: any) => ({
+        ...f,
+        is_online: onlineIds.includes(f.id),
+      }));
+
+      // Online users who are NOT friends and NOT self
+      this.onlineNonFriends = onlineUsers.filter(
+        (u: any) => !this.friendIds.has(u.id) && u.id !== this.currentUserId,
+      );
+
       this._cdr.markForCheck();
-    });
-  }
-
-  onSearchChange() {
-    if (!this.searchQuery.trim()) {
-      this.filteredFriends = [];
-      return;
-    }
-    const q = this.searchQuery.toLowerCase();
-    this.filteredFriends = this.friends.filter(
-      (f) => f.display_name.toLowerCase().includes(q) || f.id.toString().includes(q),
-    );
-  }
-
-  startNewChat(friend: any) {
-    this.selectedUser = friend;
-    this.searchQuery = '';
-    this.filteredFriends = [];
-    this.loadMessages(friend.id);
-    this.isOpened.set(true);
-  }
-
-  closeChat() {
-    if (this.selectedUser) {
-      this.selectedUser = null;
-      this.messages = [];
-      this.loadRecentChats();
-    } else {
-      this.isOpened.set(false);
+    } catch (e) {
+      console.error('Failed to load friends/online', e);
     }
   }
 
@@ -157,13 +155,16 @@ export class PrivateChat implements OnInit, OnDestroy {
     this._chatService.getRecentChats().subscribe((chats) => {
       this.recentChats = chats.map((c) => {
         const isMeSender = c.sender_id === this.currentUserId;
+        const otherId = isMeSender ? c.receiver_id : c.sender_id;
         const otherName = isMeSender ? c.receiver_display_name : c.sender_display_name;
         const otherAvatar = isMeSender ? c.receiver_avatar_url : c.sender_avatar_url;
 
         return {
           ...c,
-          other_name: otherName || `User ${isMeSender ? c.receiver_id : c.sender_id}`,
+          other_id: otherId,
+          other_name: otherName || `User ${otherId}`,
           other_avatar: otherAvatar,
+          is_online: this.onlineUserIds().includes(otherId),
         };
       });
       this._cdr.markForCheck();
@@ -176,16 +177,71 @@ export class PrivateChat implements OnInit, OnDestroy {
     });
   }
 
+  // Search across friends + online non-friends
+  onSearchChange() {
+    if (!this.searchQuery.trim()) {
+      this.searchResults = [];
+      return;
+    }
+    const q = this.searchQuery.toLowerCase();
+    const allPeople = [...this.friends, ...this.onlineNonFriends];
+    const seen = new Set<number>();
+    this.searchResults = allPeople.filter((p) => {
+      if (seen.has(p.id)) return false;
+      seen.add(p.id);
+      return p.display_name.toLowerCase().includes(q) || p.id.toString().includes(q);
+    });
+  }
+
+  toggleChat() {
+    this.isOpened.update((val) => !val);
+    if (this.isOpened()) {
+      this.searchQuery = '';
+      this.searchResults = [];
+      if (this.selectedUser) {
+        this.markAsRead(this.selectedUser.id);
+        this.scrollToBottom();
+      }
+      this.loadAll();
+    }
+  }
+
+  startChat(user: any) {
+    this.selectedUser = {
+      id: user.id,
+      display_name: user.display_name,
+      avatar_url: user.avatar_url,
+    };
+    this.searchQuery = '';
+    this.searchResults = [];
+    this.loadMessages(user.id);
+    this.isOpened.set(true);
+  }
+
   selectChat(chat: any) {
     const otherId = chat.sender_id === this.currentUserId ? chat.receiver_id : chat.sender_id;
-    this.selectedUser = { id: otherId, display_name: chat.other_name };
+    this.selectedUser = {
+      id: otherId,
+      display_name: chat.other_name,
+      avatar_url: chat.other_avatar,
+    };
     this.loadMessages(otherId);
+  }
+
+  closeChat() {
+    if (this.selectedUser) {
+      this.selectedUser = null;
+      this.messages = [];
+      this.loadRecentChats();
+    } else {
+      this.isOpened.set(false);
+    }
   }
 
   loadMessages(otherId: number) {
     this._chatService.getConversation(otherId).subscribe((msgs) => {
       this.messages = msgs;
-      this.scrollToBottom(); // Scroll after loading
+      this.scrollToBottom();
       this.markAsRead(otherId);
     });
   }
@@ -193,13 +249,12 @@ export class PrivateChat implements OnInit, OnDestroy {
   send() {
     if (!this.newMessage.trim() || !this.selectedUser) return;
 
-    // Optimistic UI update: Show msg immediately
     const tempMsg: any = {
-      id: -1, // Temp ID
+      id: -1,
       sender_id: this.currentUserId,
       receiver_id: this.selectedUser.id,
       content: this.newMessage,
-      sent_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       is_read: false,
     };
 
@@ -227,22 +282,28 @@ export class PrivateChat implements OnInit, OnDestroy {
   }
 
   async unfriendCurrent() {
-    if (
-      !this.selectedUser ||
-      !confirm(
-        `Unfriend ${this.selectedUser.display_name}? This will remove them from your contacts.`,
-      )
-    )
+    if (!this.selectedUser || !confirm(`ลบ ${this.selectedUser.display_name} ออกจากเพื่อน?`))
       return;
 
     try {
       await this._friendshipService.removeFriend(this.selectedUser.id);
       this.closeChat();
-      this.loadFriends();
-      this.loadRecentChats();
+      this.loadAll();
     } catch (err) {
       console.error('Error removing friend:', err);
     }
+  }
+
+  isFriend(userId: number): boolean {
+    return this.friendIds.has(userId);
+  }
+
+  get onlineFriends(): any[] {
+    return this.friends.filter((f) => f.is_online);
+  }
+
+  get offlineFriends(): any[] {
+    return this.friends.filter((f) => !f.is_online);
   }
 
   private scrollToBottom(): void {

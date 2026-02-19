@@ -1,238 +1,360 @@
 <div class="dashboard-container">
-  <div class="bg-mesh"></div>
+  <div class="tech-grid"></div>
 
-  <div class="godly-hero-dashboard">
-    <!-- DASHBOARD OS WINDOW -->
-    <main class="os-window flex min-h-[700px]">
-      <!-- STATUS SIDEBAR -->
-      <aside class="os-sidebar">
-        <div class="os-dot-controls mb-8"><span></span><span></span><span></span></div>
+  <div class="page-layout">
+    <!-- SIDEBAR -->
+    <aside class="page-sidebar">
+      <div class="flex flex-col gap-1 mb-10">
+        <div class="os-nav-item active">
+          <i class="pi pi-chart-bar"></i>
+          <span>Dashboard</span>
+        </div>
+      </div>
 
-        <div class="flex flex-col gap-1 mb-10">
-          <div class="os-nav-item active">
-            <i class="pi pi-chart-bar"></i>
-            <span>Insights</span>
+      <div class="mt-auto pt-8 border-t border-white/5 flex flex-col gap-6">
+        <div class="sidebar-stat">
+          <span class="label">Activity Status</span>
+          <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+            <div class="h-full bg-accent w-2/3"></div>
           </div>
-          <div class="os-nav-item">
-            <i class="pi pi-database"></i>
-            <span>Archives</span>
+          <div class="flex justify-between items-center mt-2">
+            <span class="text-[8px] font-bold text-white/20 uppercase tracking-widest"
+              >Update Speed</span
+            >
+            <span class="text-[8px] font-bold text-accent">98.4%</span>
           </div>
         </div>
 
-        <div class="mt-auto">
-          <span class="os-label">System Load</span>
-          <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden mb-8">
-            <div class="h-full bg-white w-2/3"></div>
-          </div>
-
-          <span class="os-label">Active Members</span>
-          <div class="flex -space-x-3 mb-4">
+        <div class="sidebar-stat">
+          <span class="label">Friends Online</span>
+          <div class="flex -space-x-2 mt-3 mb-2">
             @for (user of onlineUsers.slice(0, 5); track user.id) {
               <img
-                [src]="user.avatar_url || 'https://ui-avatars.com/api/?name=' + user.display_name"
-                class="w-8 h-8 rounded-full border-2 border-black object-cover"
+                [src]="
+                  user.avatar_url ||
+                  'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + user.display_name
+                "
+                class="w-8 h-8 rounded-full border-2 border-base object-cover"
               />
             }
           </div>
-          <span class="text-[9px] font-black text-zinc-500 uppercase tracking-widest"
-            >{{ onlineUsers.length }} Users Online</span
-          >
-        </div>
-      </aside>
-
-      <!-- MAIN DASHBOARD CONTENT -->
-      <section class="os-main">
-        <div class="os-title-bar mb-10">
-          <div class="flex flex-col">
-            <span class="os-label">Overview</span>
-            <h1 class="os-title-large">
-              Dashboard <span class="opacity-30 italic">Insights</span>
-            </h1>
-          </div>
-        </div>
-
-        @if (isLoading) {
-          <div class="flex-grow flex flex-col items-center justify-center opacity-10">
-            <i class="pi pi-spin pi-spinner text-4xl mb-6"></i>
-            <p class="text-[10px] font-black uppercase tracking-[0.5em]">
-              Synchronizing Archives...
-            </p>
-          </div>
-        } @else {
-          <div class="grid grid-cols-12 gap-10 overflow-y-auto hide-scrollbar pb-20">
-            <!-- Efficiency Ring (Circular Widget) -->
-            <div
-              class="col-span-12 lg:col-span-5 os-glass-card p-12 flex flex-col items-center justify-center group"
+          <div class="flex items-center gap-2">
+            <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
+            <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+              >{{ onlineUsers.length }} Friends Online</span
             >
-              <div class="progress-ring-container">
-                <svg class="w-48 h-48">
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <section class="page-main relative z-10">
+      <!-- HEADER -->
+      <div class="page-header flex justify-between items-end mb-12">
+        <div class="flex flex-col">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent-glow)]"></div>
+            <span class="text-[10px] font-black text-accent uppercase tracking-[0.3em]"
+              >Connection: Stable</span
+            >
+          </div>
+          <h1 class="page-title leading-none">My Dashboard</h1>
+          <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-2">
+            Recent Activity Summary • Revision 2.0.4
+          </p>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="xp-badge">
+            <span class="label !mb-0 !text-[9px] opacity-40">VIBE POINTS</span>
+            <span class="text-2xl font-black text-white italic tracking-tighter">{{
+              stats.totalExp
+            }}</span>
+          </div>
+          <div class="badge badge-gaming !rounded-lg !py-2 !px-4 border-accent-border/30">
+            PREMIUM MEMBER
+          </div>
+        </div>
+      </div>
+
+      @if (isLoading) {
+        <div class="flex-grow flex flex-col items-center justify-center py-40 opacity-20">
+          <i class="pi pi-spin pi-spinner text-4xl mb-6 text-accent"></i>
+          <p class="text-[10px] font-black uppercase tracking-[0.5em]">Syncing Archives...</p>
+        </div>
+      } @else {
+        <div class="stagger">
+          <!-- QUICK METRICS -->
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-white/[0.04]">
+              <div
+                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/20 group-hover:text-accent transition-colors"
+              >
+                <i class="pi pi-box"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+                  >Activities</span
+                >
+                <span class="text-xl font-black text-white">{{ stats.total }}</span>
+              </div>
+            </div>
+            <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-white/[0.04]">
+              <div
+                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/20 group-hover:text-[#4ade80] transition-colors"
+              >
+                <i class="pi pi-check-circle"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+                  >Success</span
+                >
+                <span class="text-xl font-black text-white">{{ stats.completed }}</span>
+              </div>
+            </div>
+            <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-white/[0.04]">
+              <div
+                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/20 group-hover:text-blue-400 transition-colors"
+              >
+                <i class="pi pi-users"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+                  >Avg Group</span
+                >
+                <span class="text-xl font-black text-white">{{ stats.avgCrewSize }}</span>
+              </div>
+            </div>
+            <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-white/[0.04]">
+              <div
+                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/20 group-hover:text-red-400 transition-colors"
+              >
+                <i class="pi pi-bolt"></i>
+              </div>
+              <div class="flex flex-col">
+                <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+                  >Exp Power</span
+                >
+                <span class="text-xl font-black text-white">{{ stats.totalExp }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ANALYTICS RADIUS -->
+          <div class="grid grid-cols-12 gap-6 mb-12">
+            <!-- Central Gauge -->
+            <div
+              class="col-span-12 lg:col-span-6 glass-card p-12 flex flex-col items-center justify-center relative group"
+            >
+              <div class="absolute top-4 left-6 flex items-center gap-2">
+                <div class="w-1.5 h-1.5 rounded-full bg-accent"></div>
+                <span class="text-[9px] font-black text-white/20 uppercase tracking-widest"
+                  >Core Efficiency</span
+                >
+              </div>
+
+              <div class="progress-ring-container mb-8">
+                <svg class="w-56 h-56">
                   <circle
-                    cx="96"
-                    cy="96"
-                    r="80"
+                    cx="112"
+                    cy="112"
+                    r="90"
                     stroke="currentColor"
                     stroke-width="2"
                     fill="transparent"
                     class="text-white/5"
                   ></circle>
                   <circle
-                    cx="96"
-                    cy="96"
-                    r="80"
+                    cx="112"
+                    cy="112"
+                    r="90"
                     [attr.stroke]="getProgressBarColor(stats.successRate)"
-                    stroke-width="10"
+                    stroke-width="12"
                     fill="transparent"
-                    stroke-dasharray="502.6"
-                    [attr.stroke-dashoffset]="502.6 * (1 - stats.successRate / 100)"
+                    stroke-dasharray="565.5"
+                    [attr.stroke-dashoffset]="565.5 * (1 - stats.successRate / 100)"
                     stroke-linecap="round"
-                    class="group-hover:opacity-80 transition-opacity"
+                    class="transition-all duration-1000 ease-out-expo"
                   ></circle>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span class="text-5xl font-black text-white italic tracking-tighter"
+                  <span class="text-7xl font-black text-white italic tracking-tighter"
                     >{{ stats.successRate }}%</span
                   >
-                  <span class="os-label !mb-0 opacity-40">Success Rate</span>
+                  <span class="label opacity-40">Success Rate</span>
                 </div>
               </div>
-              <div class="text-center">
-                <span class="os-label !mb-2">Total Activities</span>
-                <div class="text-3xl font-black text-white uppercase tracking-tighter">
-                  {{ stats.total }}
-                </div>
+
+              <div class="text-center max-w-sm">
+                <p
+                  class="text-[11px] text-white/30 font-medium leading-relaxed uppercase tracking-widest"
+                >
+                  Analysis of your joined activities and group performance across the community.
+                </p>
               </div>
             </div>
 
-            <!-- Summary Cards -->
-            <div class="col-span-12 lg:col-span-7 grid grid-cols-2 gap-6">
-              <div class="os-glass-card p-8 group">
-                <span class="os-label opacity-40">Completed</span>
-                <div class="text-6xl font-black text-white italic mb-4">{{ stats.completed }}</div>
+            <!-- Side Monitor -->
+            <div class="col-span-12 lg:col-span-6 flex flex-col gap-6">
+              <div class="grid grid-cols-2 gap-6 flex-grow">
                 <div
-                  class="h-0.5 w-12 bg-white/10 group-hover:w-full transition-all duration-700"
-                ></div>
-              </div>
-              <div class="os-glass-card p-8 group">
-                <span class="os-label opacity-40">Avg Crew</span>
-                <div class="text-6xl font-black text-white italic mb-4">
-                  {{ stats.avgCrewSize }}
+                  class="glass-card p-8 flex flex-col justify-between group relative overflow-hidden"
+                >
+                  <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/20 transition-all"
+                  ></div>
+                  <div>
+                    <span class="label !text-accent">Live Rooms</span>
+                    <div class="text-6xl font-black text-white mt-4 italic tracking-tighter">
+                      {{ stats.open }}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 mt-4">
+                    <div class="h-1 flex-grow bg-white/5 rounded-full overflow-hidden">
+                      <div class="h-full bg-accent w-1/3"></div>
+                    </div>
+                    <span class="text-[8px] font-black text-white/20">LIVE</span>
+                  </div>
                 </div>
+
                 <div
-                  class="h-0.5 w-12 bg-white/10 group-hover:w-full transition-all duration-700"
-                ></div>
+                  class="glass-card p-8 flex flex-col justify-between group relative overflow-hidden"
+                >
+                  <div
+                    class="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"
+                  ></div>
+                  <div>
+                    <span class="label !text-blue-400">Joined Rooms</span>
+                    <div class="text-6xl font-black text-white mt-4 italic tracking-tighter">
+                      {{ stats.inProgress }}
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-2 mt-4">
+                    <div class="h-1 flex-grow bg-white/5 rounded-full overflow-hidden">
+                      <div class="h-full bg-blue-400 w-1/2"></div>
+                    </div>
+                    <span class="text-[8px] font-black text-white/20">PROC</span>
+                  </div>
+                </div>
               </div>
 
-              <!-- Network CTA -->
+              <!-- Quick Action Hub -->
               <div
-                class="col-span-2 os-glass-card p-8 flex items-center justify-between group cursor-pointer"
+                class="glass-card p-6 flex items-center justify-between group cursor-pointer hover:bg-white/[0.04] transition-all"
                 routerLink="/network"
               >
-                <div class="flex flex-col">
-                  <span class="os-label">Social Network</span>
-                  <span
-                    class="text-sm font-black text-zinc-500 uppercase tracking-widest group-hover:text-white transition-colors"
-                    >Manage Members & Friend List</span
+                <div class="flex items-center gap-5">
+                  <div
+                    class="w-12 h-12 rounded-xl bg-accent-subtle flex items-center justify-center text-accent ring-1 ring-accent/20"
                   >
-                </div>
-                <i
-                  class="pi pi-arrow-right text-zinc-800 group-hover:text-white group-hover:translate-x-2 transition-all"
-                ></i>
-              </div>
-            </div>
-
-            <!-- Timeline -->
-            <div class="col-span-12">
-              <span class="os-label mb-8 block">Recent Activity</span>
-              <div class="space-y-2">
-                @for (mission of recentMissions; track mission.id) {
-                  <a [routerLink]="['/missions', mission.id]" class="timeline-item-os group">
-                    <!-- Fix 5: Category color dot -->
-                    <div
-                      class="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5"
-                      [ngClass]="{
-                        'bg-purple-500': mission.category === 'Gaming & E-Sports',
-                        'bg-orange-500': mission.category === 'Sports & Active',
-                        'bg-pink-500': mission.category === 'Social & Chill',
-                        'bg-cyan-500': mission.category === 'Travel & Trip',
-                        'bg-yellow-500': mission.category === 'Entertainment',
-                        'bg-lime-500': mission.category === 'Lifestyle & Hobby',
-                        'bg-zinc-600': !mission.category,
-                      }"
-                    ></div>
-                    <div class="flex-grow">
-                      <div class="flex justify-between mb-1">
-                        <span
-                          class="text-xs font-black text-white uppercase tracking-widest truncate max-w-md"
-                          >{{ mission.name }}</span
-                        >
-                        <span
-                          class="text-[9px] font-black text-zinc-700 uppercase tracking-[0.2em]"
-                          >{{ mission.updated_at | date: 'MMM dd, HH:mm' }}</span
-                        >
-                      </div>
-                      <p
-                        class="text-[10px] text-zinc-600 font-bold tracking-tight uppercase line-clamp-1"
-                      >
-                        {{ mission.description || 'System Protocol Initiated.' }}
-                      </p>
-                    </div>
-                  </a>
-                }
-                @if (recentMissions.length === 0) {
-                  <div class="py-20 flex flex-col items-center justify-center opacity-10">
-                    <p class="text-[10px] font-black uppercase tracking-[0.4em]">
-                      Historical records missing
-                    </p>
+                    <i class="pi pi-users text-lg"></i>
                   </div>
-                }
-              </div>
-            </div>
-
-            <!-- Pending Requests -->
-            @if (pendingRequests().length > 0) {
-              <div class="col-span-12">
-                <span class="os-label mb-8 block">Friend Requests</span>
-                <div class="grid grid-cols-2 gap-6">
-                  @for (req of pendingRequests(); track req.id) {
-                    <div class="os-glass-card clearance-request-os">
-                      <img
-                        [src]="
-                          req.requester_avatar ||
-                          'https://ui-avatars.com/api/?name=' + req.requester_name
-                        "
-                        class="avatar-box"
-                      />
-                      <div class="flex-grow">
-                        <span
-                          class="text-[10px] font-black text-white uppercase tracking-widest mb-1 block"
-                          >{{ req.requester_name }}</span
-                        >
-                        <span class="text-[8px] font-black text-zinc-700 uppercase tracking-widest"
-                          >Protocol: Pending</span
-                        >
-                      </div>
-                      <div class="flex gap-2">
-                        <button
-                          (click)="onAccept(req.id)"
-                          class="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center hover:bg-zinc-200 transition-colors"
-                        >
-                          <i class="pi pi-check text-[10px]"></i>
-                        </button>
-                        <button
-                          (click)="onReject(req.id)"
-                          class="w-8 h-8 rounded-lg bg-white/[0.03] border border-white/5 flex items-center justify-center text-zinc-600 hover:text-red-500 transition-colors"
-                        >
-                          <i class="pi pi-times text-[10px]"></i>
-                        </button>
-                      </div>
-                    </div>
-                  }
+                  <div class="flex flex-col">
+                    <span
+                      class="text-sm font-bold text-white group-hover:text-accent transition-colors"
+                      >Social Hub</span
+                    >
+                    <span class="text-[10px] text-white/30 font-bold uppercase tracking-widest"
+                      >Connect with your community friends</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="w-8 h-8 rounded-lg border border-white/5 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-all"
+                >
+                  <i class="pi pi-chevron-right text-[10px]"></i>
                 </div>
               </div>
-            }
+            </div>
           </div>
-        }
-      </section>
-    </main>
+
+          <!-- TEMPORAL FOOTPRINT -->
+          <div class="mb-20">
+            <div class="flex items-center gap-6 mb-8">
+              <div class="flex items-center gap-2">
+                <i class="pi pi-history text-accent"></i>
+                <h2 class="label !mb-0 !text-white/80">Past Hangouts</h2>
+              </div>
+              <div class="h-px flex-grow bg-white/5"></div>
+              <span class="text-[8px] font-black text-white/10 uppercase tracking-[0.4em]"
+                >Activity Log</span
+              >
+            </div>
+
+            <div class="grid grid-cols-1 gap-4">
+              @for (mission of recentMissions; track mission.id) {
+                <div
+                  class="flex items-center gap-6 p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-accent/30 hover:bg-white/[0.05] transition-all group cursor-pointer"
+                  [routerLink]="['/missions', mission.id]"
+                >
+                  <div
+                    class="w-12 h-12 rounded-xl bg-white/5 flex flex-col items-center justify-center text-[10px] font-black group-hover:bg-accent/10 transition-colors"
+                  >
+                    <span class="text-white/20 group-hover:text-accent">{{
+                      mission.updated_at | date: 'MMM' | uppercase
+                    }}</span>
+                    <span class="text-white group-hover:text-white">{{
+                      mission.updated_at | date: 'dd'
+                    }}</span>
+                  </div>
+
+                  <div class="flex flex-col flex-grow min-w-0">
+                    <div class="flex items-center gap-3 mb-1.5">
+                      <span
+                        class="text-sm font-bold text-white truncate group-hover:text-accent transition-colors tracking-tight"
+                        >{{ mission.name }}</span
+                      >
+                      <div
+                        class="status-tag !py-0.5 !px-2 !text-[8px] !rounded-md"
+                        [ngClass]="
+                          'status-' + (mission.status.toLowerCase().replace(' ', '-') || 'open')
+                        "
+                      >
+                        {{ mission.status }}
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">{{
+                        mission.category || 'General Vibe'
+                      }}</span>
+                      <div class="w-1 h-1 rounded-full bg-white/10"></div>
+                      <span class="text-[10px] font-medium text-white/20 italic">{{
+                        mission.description || 'No meta-data provided.'
+                      }}</span>
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-6">
+                    <div class="hidden md:flex flex-col items-end">
+                      <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest"
+                        >ROOM_ID</span
+                      >
+                      <span class="text-[9px] font-medium text-white/10"
+                        >#{{ mission.id.toString().padStart(4, '0') }}</span
+                      >
+                    </div>
+                    <div
+                      class="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0"
+                    >
+                      <i class="pi pi-arrow-right text-[10px]"></i>
+                    </div>
+                  </div>
+                </div>
+              } @empty {
+                <div
+                  class="py-24 glass-card flex flex-col items-center justify-center gap-4 opacity-20"
+                >
+                  <i class="pi pi-folder-open text-4xl"></i>
+                  <p class="text-[10px] font-black uppercase tracking-[0.4em]">
+                    Historical records not found
+                  </p>
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+    </section>
   </div>
 </div>

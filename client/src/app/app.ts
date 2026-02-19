@@ -6,8 +6,10 @@ import { WebsocketService } from './_services/websocket-service';
 import { ToastService } from './_services/toast-service';
 import { NotificationService } from './_services/notification-service';
 
-import { CommonModule } from '@angular/common';
+import { CommonModule, ViewportScroller } from '@angular/common';
 import { PrivateChat } from './_components/private-chat/private-chat';
+import { NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
@@ -15,7 +17,7 @@ import { ToastModule } from 'primeng/toast';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, CommonModule, ToastModule, ConfirmDialogModule],
+  imports: [RouterOutlet, Navbar, CommonModule, ToastModule, ConfirmDialogModule, PrivateChat],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
@@ -27,6 +29,7 @@ export class App {
   private _toast = inject(ToastService);
   public _router = inject(Router);
   private _notifService = inject(NotificationService);
+  private _viewportScroller = inject(ViewportScroller);
 
   constructor() {
     // Auto-connect/disconnect notifications based on login state
@@ -42,6 +45,11 @@ export class App {
     // Listen to global notifications
     this._ws.notifications$.subscribe((msg) => {
       this.handleNotification(msg);
+    });
+
+    // Scroll to top on every navigation
+    this._router.events.pipe(filter((event) => event instanceof NavigationEnd)).subscribe(() => {
+      this._viewportScroller.scrollToPosition([0, 0]);
     });
   }
 

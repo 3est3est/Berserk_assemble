@@ -40,10 +40,7 @@ export class Profile implements OnInit {
     if (this.isOwnProfile()) return this._passport.avatar();
     const user = this.targetUser();
     if (user?.avatar_url) return user.avatar_url;
-    if (user?.display_name) {
-      return `https://ui-avatars.com/api/?name=${encodeURIComponent(user.display_name)}&background=random&size=128`;
-    }
-    return 'assets/default-avatar.png';
+    return 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=vibe';
   });
 
   display_name = computed(() => {

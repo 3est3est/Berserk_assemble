@@ -1,32 +1,14 @@
-/* ═══════════════════════════════════════════════════════
-   MY CREW PAGE — Vibe Design System
-   ═══════════════════════════════════════════════════════ */
-
 .my-crew-container {
   min-height: 100vh;
-  padding-top: 1.5rem;
   padding-bottom: 6rem;
+  position: relative;
+  overflow: hidden;
 }
 
-.godly-hero-my-crew {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-/* ── Crew Grid specific overrides if any ── */
 .crew-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
 }
 
-.presence-dot-os {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 6px var(--accent-glow);
-  animation: pulseDot 2s ease-in-out infinite;
-  flex-shrink: 0;
-}
+/* My Crew specific styles can go here */

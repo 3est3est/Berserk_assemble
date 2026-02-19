@@ -26,7 +26,7 @@ export class Network implements OnInit {
   pendingRequests = signal<any[]>([]);
   onlineUsers = signal<any[]>([]);
 
-  activeTab: 'all' | 'requests' | 'online' = 'all';
+  activeTab: 'online' | 'all' | 'requests' = 'online';
 
   async ngOnInit() {
     this.refreshAll();

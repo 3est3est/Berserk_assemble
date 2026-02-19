@@ -1,13 +1,14 @@
-<!-- Global Decorative Illustrations (Status.app Style) -->
 <img
   src="/assets/wallpaper background/hero-1.webp"
   class="decorative-illustration decorative-left"
   [class.not-home]="_router.url !== '/' && _router.url !== ''"
+  [class.auth-mode]="_router.url.startsWith('/login')"
 />
 <img
   src="/assets/wallpaper background/hero-2.webp"
   class="decorative-illustration decorative-right"
   [class.not-home]="_router.url !== '/' && _router.url !== ''"
+  [class.auth-mode]="_router.url.startsWith('/login')"
 />
 
 <div class="app-shell relative z-10 w-full min-h-screen">
@@ -15,6 +16,10 @@
   <main class="w-full">
     <router-outlet></router-outlet>
   </main>
+
+  @if (_passport.data()) {
+    <app-private-chat></app-private-chat>
+  }
 </div>
 
 <p-toast position="top-right"></p-toast>

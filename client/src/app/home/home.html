@@ -1,220 +1,413 @@
-<div class="home">
-  <!-- ══════════════════════════════════════════════════
-       HERO
-       ══════════════════════════════════════════════════ -->
-  <section class="hero">
-    <div class="hero-inner">
-      <!-- Status pill -->
-      <div class="hero-pill" style="animation: fadeUp 0.5s 0s cubic-bezier(0.16, 1, 0.3, 1) both">
-        <span class="live-dot"></span>
-        <span>{{ onlineUsers().length }} people online now</span>
-      </div>
+<div class="home selection:bg-accent selection:text-white">
+  <div class="tech-grid"></div>
 
+  <!-- ══════════════════════════════════════════════════
+       HERO: CLEAN & DIRECT
+       ══════════════════════════════════════════════════ -->
+  <section class="hero relative overflow-hidden">
+    <div class="bg-mesh"></div>
+    <div class="hero-inner relative z-10">
+      <!-- Status pill -->
+      <div class="hero-pill mb-6" style="animation: fadeUp 0.6s 0s var(--ease-out-expo) both">
+        <div class="live-dot"></div>
+        <span>{{ onlineUsers().length }} People Active</span>
+      </div>
       <!-- Headline -->
-      <h1 class="hero-h1" style="animation: fadeUp 0.5s 0.07s cubic-bezier(0.16, 1, 0.3, 1) both">
-        Find your vibe,<br />
-        <span class="hero-h1-accent">build your crew.</span>
+      <h1 class="hero-h1 mb-8" style="animation: fadeUp 0.6s 0.1s var(--ease-out-expo) both">
+        Connect. Share.<br />
+        <span class="hero-h1-accent italic">Vibe together.</span>
       </h1>
 
       <!-- Sub -->
-      <p class="hero-sub" style="animation: fadeUp 0.5s 0.14s cubic-bezier(0.16, 1, 0.3, 1) both">
-        Host or join activities with people who share your energy. Gaming, sports, social — whatever
-        moves you.
+      <p class="hero-sub mb-12" style="animation: fadeUp 0.6s 0.2s var(--ease-out-expo) both">
+        The community-driven space to create hangout rooms, join exciting activities, and
+        synchronize with people who share your vibe.
       </p>
 
-      <!-- CTAs -->
+      <!-- Main Actions -->
       <div
-        class="hero-actions"
-        style="animation: fadeUp 0.5s 0.21s cubic-bezier(0.16, 1, 0.3, 1) both"
+        class="flex flex-col md:flex-row items-center justify-center gap-6"
+        style="animation: fadeUp 0.6s 0.3s var(--ease-out-expo) both"
       >
-        <a routerLink="/missions" class="btn btn-primary btn-lg">
-          <i class="pi pi-compass"></i>
-          Explore Sessions
-        </a>
-        <a routerLink="/chief" class="btn btn-ghost btn-lg"> Host an Event </a>
-      </div>
-
-      <!-- Social proof -->
-      @if (onlineUsers().length > 0) {
-        <div
-          class="hero-proof"
-          style="animation: fadeUp 0.5s 0.28s cubic-bezier(0.16, 1, 0.3, 1) both"
+        <button
+          routerLink="/missions"
+          class="btn btn-primary btn-xl !px-12 !rounded-2xl !font-black !tracking-widest shadow-xl hover:scale-105 transition-transform"
         >
-          <div class="avatar-stack">
-            @for (user of onlineUsers().slice(0, 4); track user.id) {
-              <img
-                [src]="
-                  'https://ui-avatars.com/api/?name=' +
-                  user.display_name +
-                  '&background=random&size=48'
-                "
-                [alt]="user.display_name"
-              />
-            }
-          </div>
-          <span class="hero-proof-text">
-            Join <strong>{{ onlineUsers().length }}</strong> members already vibing
-          </span>
-        </div>
-      }
-    </div>
-
-    <!-- Category pills row -->
-    <div class="hero-cats" style="animation: fadeUp 0.5s 0.32s cubic-bezier(0.16, 1, 0.3, 1) both">
-      <span class="cat-chip cat-gaming">🎮 Gaming</span>
-      <span class="cat-chip cat-sports">🏀 Sports</span>
-      <span class="cat-chip cat-social">🍕 Social</span>
-      <span class="cat-chip cat-travel">✈️ Travel</span>
-      <span class="cat-chip cat-ent">🎵 Entertainment</span>
-      <span class="cat-chip cat-life">🌿 Lifestyle</span>
+          GET STARTED
+        </button>
+        <button
+          routerLink="/dashboard"
+          class="btn btn-ghost btn-xl !px-12 !rounded-2xl !border-white/10 hover:bg-white/5 !font-black !tracking-widest shadow-xl"
+        >
+          DASHBOARD
+        </button>
+      </div>
     </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════
-       LIVE SESSIONS PREVIEW
+       ABOUT SECTION: THE EXPERIENCE
+       ══════════════════════════════════════════════════ -->
+  <section class="section" vibeReveal id="about">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+      <div class="relative order-2 lg:order-1">
+        <div class="absolute -inset-10 bg-accent/10 blur-[120px] rounded-full opacity-50"></div>
+        <img
+          src="assets/vibe_community_art.png"
+          class="relative z-10 rounded-[48px] border border-white/5 shadow-2xl hover:translate-y-[-10px] transition-transform duration-1000"
+          alt="Community Vibrant Art"
+        />
+        <div
+          class="absolute -bottom-6 -right-6 w-32 h-32 bg-primary-gradient rounded-3xl -z-0 rotate-12 blur-3xl opacity-20"
+        ></div>
+      </div>
+      <div class="order-1 lg:order-2">
+        <span class="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-6 block"
+          >Our Story</span
+        >
+        <h2 class="text-5xl font-black mb-8 italic tracking-tighter leading-tight">
+          A space where<br />
+          <span class="text-white/20">Everyone belongs.</span>
+        </h2>
+        <p class="text-lg text-white/50 leading-relaxed mb-10">
+          <strong>Vibe Assemble</strong> is a modern community platform designed for real-time
+          connection. It's a place where you can <strong>create your own activity rooms</strong> or
+          join others to hang out, share interests, and meet new people instantly. No matter if you
+          are into <strong>Gaming, Study, Music, or Art</strong>, we provide the perfect digital
+          space to sync your energy.
+        </p>
+        <div class="flex flex-wrap gap-10">
+          <div class="group">
+            <h4
+              class="font-black text-white text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"
+            >
+              <i class="pi pi-bolt text-accent"></i> Instant Sync
+            </h4>
+            <p class="text-xs text-white/20 max-w-[180px] leading-relaxed">
+              Jump into active rooms and start vibing immediately.
+            </p>
+          </div>
+          <div class="group">
+            <h4
+              class="font-black text-white text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"
+            >
+              <i class="pi pi-users text-purple-400"></i> Local Crew
+            </h4>
+            <p class="text-xs text-white/20 max-w-[180px] leading-relaxed">
+              Built by users, for users. No bots, just real people.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       HOW IT STARTS (Steps)
+       ══════════════════════════════════════════════════ -->
+  <section class="section py-32" vibeReveal>
+    <div class="text-center mb-20">
+      <span class="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-4 block"
+        >Process</span
+      >
+      <h2 class="text-5xl font-black italic tracking-tighter">How it starts.</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+      <div class="absolute top-1/2 left-0 w-full h-px bg-white/5 -z-10 hidden md:block"></div>
+
+      <div class="step-card group">
+        <div class="step-num">01</div>
+        <div class="step-icon">
+          <i class="pi pi-plus"></i>
+          <div class="step-glow"></div>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-4 italic uppercase tracking-tight">
+          Create a Room
+        </h3>
+        <p class="text-sm text-white/30 leading-relaxed px-6">
+          Start a new activity, set your vibe, and define your space for others to discover.
+        </p>
+      </div>
+
+      <div class="step-card group">
+        <div class="step-num">02</div>
+        <div class="step-icon">
+          <i class="pi pi-share-alt"></i>
+          <div class="step-glow !bg-purple-500/20"></div>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-4 italic uppercase tracking-tight">
+          Sync Energy
+        </h3>
+        <p class="text-sm text-white/30 leading-relaxed px-6">
+          Real people join your room. Connect instantly through encrypted chat and shared interests.
+        </p>
+      </div>
+
+      <div class="step-card group">
+        <div class="step-num">03</div>
+        <div class="step-icon">
+          <i class="pi pi-heart"></i>
+          <div class="step-glow !bg-green-500/20"></div>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-4 italic uppercase tracking-tight">
+          Vibe Together
+        </h3>
+        <p class="text-sm text-white/30 leading-relaxed px-6">
+          Experience the community. Hangout, collaborate, or just relax with your new crew.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       VIBE CATEGORIES: EXPLORE THE WORLD
        ══════════════════════════════════════════════════ -->
   <section class="section" vibeReveal>
-    <div class="section-head">
-      <div class="flex items-center gap-2">
-        <span class="live-dot"></span>
-        <span class="section-title">Live Now</span>
+    <div class="section-head mb-16">
+      <div class="flex flex-col gap-3 text-center md:text-left">
+        <div class="flex items-center justify-center md:justify-start gap-4">
+          <div class="w-2 h-2 rounded-full bg-accent pulse"></div>
+          <span class="text-[10px] font-black uppercase tracking-[0.4em] text-accent"
+            >The Collective</span
+          >
+        </div>
+        <h2 class="text-5xl font-black italic tracking-tighter">Vibe Realms.</h2>
       </div>
-      <a routerLink="/missions" class="section-link">
-        View all <i class="pi pi-arrow-right text-[10px]"></i>
+      <a
+        routerLink="/missions"
+        class="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white transition-colors items-center gap-2 group hidden md:flex"
+      >
+        View all realms
+        <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
       </a>
     </div>
 
-    <div class="sessions-grid stagger">
-      @for (mission of liveMissions(); track mission.id; let i = $index) {
-        <div [routerLink]="['/missions', mission.id]" class="session-card">
-          <!-- Top row -->
-          <div class="session-card-top">
-            <span class="badge" [ngClass]="getCategoryClass(mission.category ?? '')">
-              {{ mission.category || 'Event' }}
-            </span>
-            <span class="session-live-badge">
-              <span class="live-dot" style="width: 5px; height: 5px"></span>
-              Live
-            </span>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 stagger">
+      <!-- Gaming -->
+      <div
+        routerLink="/missions"
+        [queryParams]="{ category: 'Gaming & E-Sports' }"
+        class="category-card group"
+      >
+        <div class="cat-glow" style="--cat-color: var(--cat-gaming)"></div>
+        <i class="pi pi-discord cat-icon"></i>
+        <span class="cat-label">Hyper-Active</span>
+        <h3 class="cat-title">Gaming & E-Sports</h3>
+      </div>
+
+      <!-- Entertainment -->
+      <div
+        routerLink="/missions"
+        [queryParams]="{ category: 'Entertainment' }"
+        class="category-card group"
+      >
+        <div class="cat-glow" style="--cat-color: var(--cat-social)"></div>
+        <i class="pi pi-ticket cat-icon"></i>
+        <span class="cat-label">Global Events</span>
+        <h3 class="cat-title">Entertainment</h3>
+      </div>
+
+      <!-- Sports -->
+      <div
+        routerLink="/missions"
+        [queryParams]="{ category: 'Sports & Active' }"
+        class="category-card group"
+      >
+        <div class="cat-glow" style="--cat-color: var(--cat-sports)"></div>
+        <i class="pi pi-bolt cat-icon"></i>
+        <span class="cat-label">Stay Fit</span>
+        <h3 class="cat-title">Sports & Active</h3>
+      </div>
+
+      <!-- Social -->
+      <div
+        routerLink="/missions"
+        [queryParams]="{ category: 'Social & Chill' }"
+        class="category-card group"
+      >
+        <div class="cat-glow" style="--cat-color: var(--cat-social)"></div>
+        <i class="pi pi-comments cat-icon"></i>
+        <span class="cat-label">Connections</span>
+        <h3 class="cat-title">Social & Chill Out</h3>
+      </div>
+
+      <!-- Travel -->
+      <div
+        routerLink="/missions"
+        [queryParams]="{ category: 'Travel & Trip' }"
+        class="category-card group"
+      >
+        <div class="cat-glow" style="--cat-color: var(--cat-travel)"></div>
+        <i class="pi pi-map-marker cat-icon"></i>
+        <span class="cat-label">Adventures</span>
+        <h3 class="cat-title">Travel & Trip</h3>
+      </div>
+
+      <!-- Lifestyle -->
+      <div
+        routerLink="/missions"
+        [queryParams]="{ category: 'Lifestyle & Hobby' }"
+        class="category-card group"
+      >
+        <div class="cat-glow" style="--cat-color: var(--cat-life)"></div>
+        <i class="pi pi-palette cat-icon"></i>
+        <span class="cat-label">Creative Minds</span>
+        <h3 class="cat-title">Lifestyle & Hobby</h3>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════
+       TECH STACK: PREMIUM DESIGN
+       ══════════════════════════════════════════════════ -->
+  <section class="section py-40 border-t border-white/5" vibeReveal>
+    <div class="text-center">
+      <span class="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-8 block"
+        >Our Technology</span
+      >
+      <h2 class="text-5xl md:text-6xl font-black mb-20 italic tracking-tighter leading-none">
+        Modern Stack. <br /><span class="text-white/5 uppercase">High Speed Experience.</span>
+      </h2>
+
+      <div class="flex flex-wrap justify-center gap-x-20 gap-y-16">
+        <div class="tech-item-vertical group">
+          <div class="icon-box">
+            <img src="assets/icons_techstack/Angular.svg" alt="Angular" class="tech-img" />
           </div>
-
-          <!-- Title -->
-          <h3 class="session-title">{{ mission.name }}</h3>
-
-          <!-- Footer -->
-          <div class="session-footer">
-            <div class="flex items-center gap-2">
-              <img
-                [src]="
-                  'https://ui-avatars.com/api/?name=' +
-                  mission.chief_display_name +
-                  '&size=28&background=random'
-                "
-                class="w-6 h-6 rounded-full border"
-                style="border-color: var(--border-subtle)"
-                [alt]="mission.chief_display_name"
-              />
-              <span class="session-host">{{ mission.chief_display_name }}</span>
-            </div>
-            <span class="session-count">
-              {{ mission.crew_count }}/{{ mission.max_crew }}
-              <i class="pi pi-users" style="font-size: 10px"></i>
-            </span>
+          <span class="label">Angular 21</span>
+        </div>
+        <div class="tech-item-vertical group">
+          <div class="icon-box">
+            <img src="assets/icons_techstack/Rust.svg" alt="Rust" class="tech-img" />
           </div>
+          <span class="label">Rust / Axum</span>
         </div>
-      }
-
-      @if (liveMissions().length === 0) {
-        <div class="sessions-empty">
-          <i class="pi pi-calendar" style="font-size: 28px; color: var(--text-muted)"></i>
-          <p>No active sessions right now</p>
-          <a routerLink="/chief" class="btn btn-subtle btn-sm">Host one →</a>
+        <div class="tech-item-vertical group">
+          <div class="icon-box">
+            <img src="assets/icons_techstack/Prostgresql.png" alt="PostgreSQL" class="tech-img" />
+          </div>
+          <span class="label">PostgreSQL</span>
         </div>
-      }
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════════════════════════
-       HOW IT WORKS
-       ══════════════════════════════════════════════════ -->
-  <section class="section" vibeReveal>
-    <div class="section-head">
-      <span class="section-title">How it works</span>
-    </div>
-
-    <div class="how-grid stagger">
-      <div class="how-card">
-        <div class="how-icon" style="background: var(--accent-subtle); color: var(--accent)">
-          <i class="pi pi-plus-circle" style="font-size: 18px"></i>
+        <div class="tech-item-vertical group">
+          <div class="icon-box">
+            <img src="assets/icons_techstack/Tailwind.svg" alt="Tailwind CSS" class="tech-img" />
+          </div>
+          <span class="label">Tailwind</span>
         </div>
-        <div>
-          <h3 class="how-title">Host</h3>
-          <p class="how-desc">
-            Create a session, set the time, open it up. Your event, your rules.
-          </p>
-        </div>
-      </div>
-
-      <div class="how-card">
-        <div class="how-icon" style="background: rgba(168, 85, 247, 0.1); color: var(--cat-gaming)">
-          <i class="pi pi-search" style="font-size: 18px"></i>
-        </div>
-        <div>
-          <h3 class="how-title">Discover</h3>
-          <p class="how-desc">
-            Browse sessions by category. Find something that matches your vibe.
-          </p>
-        </div>
-      </div>
-
-      <div class="how-card">
-        <div class="how-icon" style="background: rgba(249, 115, 22, 0.1); color: var(--cat-sports)">
-          <i class="pi pi-users" style="font-size: 18px"></i>
-        </div>
-        <div>
-          <h3 class="how-title">Show Up</h3>
-          <p class="how-desc">Meet real people, do things together, build lasting connections.</p>
+        <div class="tech-item-vertical group">
+          <div class="icon-box">
+            <img src="assets/icons_techstack/PrimeNG.png" alt="PrimeNG" class="tech-img" />
+          </div>
+          <span class="label">PrimeNG</span>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════
-       STATS
+       FINAL CTA: SUBTLE & SLEEK
        ══════════════════════════════════════════════════ -->
-  <section class="section" vibeReveal>
-    <div class="stats-row stagger">
-      <div class="stat-item">
-        <span class="stat-num">128+</span>
-        <span class="stat-label">Sessions this week</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-num">500+</span>
-        <span class="stat-label">Members joined</span>
-      </div>
-      <div class="stat-divider"></div>
-      <div class="stat-item">
-        <span class="stat-num">7</span>
-        <span class="stat-label">Activity categories</span>
+  <section class="section pb-40" vibeReveal>
+    <div class="cta-container relative text-center">
+      <div
+        class="absolute -top-24 -right-24 w-96 h-96 bg-accent/10 blur-[120px] rounded-full"
+      ></div>
+      <div
+        class="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-500/10 blur-[120px] rounded-full"
+      ></div>
+
+      <div class="relative z-10">
+        <span class="text-[10px] font-black uppercase tracking-[0.6em] text-accent/50 mb-10 block"
+          >Ready to start?</span
+        >
+        <h2 class="text-5xl md:text-7xl font-black italic tracking-tighter mb-12 leading-none">
+          Build your tribe.<br />
+          <span class="text-white/10">Sync your vibe.</span>
+        </h2>
+        <p class="text-white/30 text-lg max-w-lg mx-auto mb-16 leading-relaxed">
+          Join a community where real connections happen. Create your room or join a global network
+          of friends in seconds.
+        </p>
+
+        <div class="flex flex-col md:flex-row items-center justify-center gap-8">
+          <button
+            routerLink="/missions"
+            class="btn btn-primary btn-xl !px-16 !rounded-3xl shadow-2xl hover:scale-105 transition-transform"
+          >
+            GET STARTED NOW
+          </button>
+          <a
+            routerLink="/network"
+            class="text-[11px] font-black uppercase tracking-[0.2em] text-white/20 hover:text-white transition-all flex items-center gap-2"
+          >
+            Meet the community <i class="pi pi-arrow-right"></i>
+          </a>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- ══════════════════════════════════════════════════
-       CLOSING CTA
+       FOOTER
        ══════════════════════════════════════════════════ -->
-  <section class="section cta-section" vibeReveal>
-    <div class="cta-box">
-      <h2 class="cta-title">Ready to find your vibe?</h2>
-      <p class="cta-sub">Join hundreds of people already doing things together.</p>
-      <div class="flex items-center justify-center gap-3 flex-wrap">
-        <a routerLink="/missions" class="btn btn-primary btn-lg">
-          <i class="pi pi-compass"></i>
-          Get Started
-        </a>
-        <a routerLink="/missions" class="btn btn-ghost btn-lg">Browse Sessions</a>
+  <footer class="mt-40 pt-20 border-t border-white/5 pb-20">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
+      <div class="col-span-1 md:col-span-2">
+        <div class="flex items-center gap-3 mb-6">
+          <div
+            class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-white/10"
+          >
+            <i class="pi pi-bolt text-black text-sm"></i>
+          </div>
+          <span class="text-xl font-black tracking-tighter uppercase italic">Vibe Assemble</span>
+        </div>
+        <p class="text-sm text-white/30 leading-relaxed max-w-sm mb-10">
+          The next-generation community platform for real connections, shared vibes, and meaningful
+          hangout rooms.
+        </p>
+        <div class="flex gap-4">
+          <a href="#" class="social-circle"><i class="pi pi-discord"></i></a>
+          <a href="#" class="social-circle"><i class="pi pi-instagram"></i></a>
+          <a href="#" class="social-circle"><i class="pi pi-github"></i></a>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-5">
+        <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-white/20 mb-2">
+          Explore
+        </h4>
+        <a routerLink="/missions" class="footer-link">Find Rooms</a>
+        <a routerLink="/chief" class="footer-link">Create Room</a>
+        <a routerLink="/dashboard" class="footer-link">Dashboard</a>
+      </div>
+
+      <div class="flex flex-col gap-5">
+        <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-white/20 mb-2">
+          My Account
+        </h4>
+        <a routerLink="/profile" class="footer-link">Profile</a>
+        <a routerLink="/network" class="footer-link">Friends</a>
       </div>
     </div>
-  </section>
+
+    <div
+      class="flex flex-col md:flex-row justify-between items-center gap-8 pt-12 border-t border-white/5"
+    >
+      <span class="text-[10px] font-black uppercase tracking-widest text-white/5"
+        >© 2026 VIBE ASSEMBLE COMMUNITY SYSTEM</span
+      >
+      <div class="flex gap-12">
+        <div class="flex items-center gap-2">
+          <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
+          <span class="text-[10px] font-black uppercase tracking-widest text-white/20"
+            >Operational</span
+          >
+        </div>
+        <span class="text-[10px] font-black uppercase tracking-widest text-white/5 italic"
+          >Bangkok, Thailand</span
+        >
+      </div>
+    </div>
+  </footer>
 </div>

@@ -1,95 +1,191 @@
 <div class="my-crew-container">
-  <div class="godly-hero-my-crew">
-    <div class="page-layout">
-      <!-- SIDEBAR -->
-      <aside class="page-sidebar">
-        <div class="os-dot-controls"><span></span><span></span><span></span></div>
-        <div class="flex flex-col gap-1">
-          <div class="os-nav-item active">
-            <i class="pi pi-users"></i>
-            <span>Active Groups</span>
-          </div>
-          <div class="os-nav-item" routerLink="/missions">
-            <i class="pi pi-search"></i>
-            <span>Discover More</span>
+  <div class="tech-grid"></div>
+
+  <div class="page-layout">
+    <!-- SIDEBAR -->
+    <aside class="page-sidebar">
+      <div class="flex flex-col gap-1 mb-10">
+        <div class="os-nav-item active">
+          <i class="pi pi-users"></i>
+          <span>Active Groups</span>
+        </div>
+        <div class="os-nav-item" routerLink="/missions">
+          <i class="pi pi-search"></i>
+          <span>Discover Rooms</span>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-8 border-t border-white/5">
+        <div class="sidebar-stat">
+          <span class="label">Live Updates</span>
+          <div class="flex items-center gap-3 mt-4">
+            <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
+            <span class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em]"
+              >Rooms Updated</span
+            >
           </div>
         </div>
-      </aside>
+      </div>
+    </aside>
 
-      <!-- MAIN -->
-      <section class="page-main">
-        <div class="page-header">
-          <h1 class="page-title">My Groups</h1>
+    <!-- MAIN -->
+    <section class="page-main relative z-10">
+      <div class="page-header flex justify-between items-end mb-12">
+        <div class="flex flex-col">
+          <div class="flex items-center gap-3 mb-2">
+            <div
+              class="w-2 h-2 rounded-full bg-blue-400 shadow-[0_0_10px_rgba(96,165,250,0.5)]"
+            ></div>
+            <span class="text-[10px] font-black text-blue-400 uppercase tracking-[0.3em]"
+              >Connection: Stable</span
+            >
+          </div>
+          <h1 class="page-title leading-none">My Groups</h1>
+          <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-2">
+            Keep track of all the activity rooms you have joined
+          </p>
         </div>
+      </div>
 
-        <div class="crew-grid hide-scrollbar overflow-y-auto">
-          @for (mission of myJoinedMissions$ | async; track mission.id; let i = $index) {
-            <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
-              <div class="card-content">
-                <div class="flex justify-between items-start mb-2">
-                  <span class="label" style="margin: 0">{{ mission.category || 'Event' }}</span>
-                  <span class="label opacity-20">#{{ mission.id }}</span>
-                </div>
+      <div class="crew-grid stagger">
+        @for (mission of myJoinedMissions$ | async; track mission.id; let i = $index) {
+          <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
+            <div class="card-cover-wrap">
+              <img
+                [src]="getVibeImage(mission.category)"
+                class="card-cover"
+                [alt]="mission.name"
+                loading="lazy"
+              />
 
-                <h3 class="mission-title">{{ mission.name }}</h3>
+              <div class="card-category-pill">
+                <span
+                  class="status-tag"
+                  [ngClass]="'status-' + (mission.status.toLowerCase().replace(' ', '-') || 'open')"
+                >
+                  {{ mission.status }}
+                </span>
+              </div>
 
-                <div class="flex items-center gap-2 mb-4">
-                  <img
-                    [src]="
-                      'https://ui-avatars.com/api/?name=' +
-                      mission.chief_display_name +
-                      '&background=random'
-                    "
-                    class="w-5 h-5 rounded-full"
-                  />
-                  <span style="font-size: 11px; color: var(--text-muted)">{{
-                    mission.chief_display_name
-                  }}</span>
-                </div>
-
-                <div class="flex gap-2 mt-auto">
-                  <button class="btn btn-primary flex-grow" style="height: 36px">ENTER</button>
+              <!-- Joined Actions Overlay -->
+              <div
+                class="absolute inset-0 z-20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all bg-black/20 backdrop-blur-[2px]"
+              >
+                <div
+                  class="flex flex-col gap-3 px-8 w-full transform translate-y-4 group-hover:translate-y-0 transition-transform"
+                >
+                  <button
+                    class="btn btn-primary btn-md !w-full !rounded-xl !font-black !tracking-widest !shadow-2xl"
+                  >
+                    ENTER ROOM
+                  </button>
                   <button
                     (click)="onLeave(mission, $event); $event.stopPropagation()"
-                    class="btn btn-subtle"
-                    style="width: 36px; height: 36px; padding: 0"
-                    title="Leave Group"
+                    class="btn btn-danger btn-md !w-full !rounded-xl !font-black !tracking-widest !bg-red-500/20 !border-red-500/30 hover:!bg-red-500 hover:!text-white"
                   >
-                    <i class="pi pi-sign-out" style="font-size: 12px"></i>
+                    LEAVE ROOM
                   </button>
                 </div>
               </div>
             </div>
-          } @empty {
+
+            <div class="card-body">
+              <span class="badge mb-2" [ngClass]="getCategoryClass(mission.category)">{{
+                mission.category || 'Vibe Room'
+              }}</span>
+              <h2 class="card-title">{{ mission.name }}</h2>
+              <p class="card-desc">
+                {{
+                  mission.description ||
+                    'Welcome to the mission room. Join our crew and start the activity.'
+                }}
+              </p>
+            </div>
+
+            <div class="card-footer">
+              <div class="card-host">
+                <img
+                  [src]="
+                    mission.chief_avatar_url ||
+                    'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
+                      mission.chief_display_name
+                  "
+                  class="w-7 h-7 rounded-lg object-cover"
+                />
+                <div class="flex flex-col">
+                  <span class="text-[8px] font-black text-white/20 uppercase tracking-widest"
+                    >Host</span
+                  >
+                  <span class="text-[11px] font-bold text-white/60 uppercase tracking-tight">{{
+                    mission.chief_display_name
+                  }}</span>
+                </div>
+              </div>
+              <div class="card-stats">
+                {{ mission.crew_count }}/{{ mission.max_crew }} <i class="pi pi-users"></i>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div
+            class="col-span-full py-48 flex flex-col items-center justify-center gap-8 opacity-20 text-center"
+          >
             <div
-              class="col-span-full py-32 flex flex-col items-center justify-center gap-3"
-              style="color: var(--text-muted)"
+              class="w-24 h-24 rounded-3xl bg-white/5 flex items-center justify-center ring-1 ring-white/10"
             >
-              <i class="pi pi-folder-open" style="font-size: 32px"></i>
-              <p style="font-size: 13px">No active groups found</p>
-              <button routerLink="/missions" class="btn btn-ghost btn-sm mt-2">
-                Discover Sessions
+              <i class="pi pi-inbox text-4xl text-white/40"></i>
+            </div>
+            <div class="max-w-sm">
+              <h3 class="font-black uppercase tracking-[0.4em] text-xs text-white mb-3">
+                No Active Groups
+              </h3>
+              <p
+                class="text-[11px] text-white/60 font-medium leading-relaxed uppercase tracking-widest mb-8"
+              >
+                You have not joined any active groups. Discover some rooms to join the community.
+              </p>
+              <button
+                routerLink="/missions"
+                class="btn btn-ghost !rounded-xl !px-10 !text-[11px] !font-black !tracking-widest"
+              >
+                BROWSE_ROOMS
               </button>
             </div>
-          }
+          </div>
+        }
 
-          <!-- Discover Link Card -->
-          <div
-            routerLink="/missions"
-            class="col-span-full mt-4 p-8 rounded-2xl border border-dashed border-white/10 flex items-center justify-between cursor-pointer hover:bg-white/5 transition-all group"
-          >
-            <div>
-              <p style="font-size: 14px; font-weight: 600; color: var(--text-primary)">
-                + Discover more groups
-              </p>
-              <p style="font-size: 12px; color: var(--text-muted)">
-                Find activities that match your vibe
-              </p>
+        <!-- Discover Vibe Card -->
+        <div
+          routerLink="/missions"
+          class="col-span-full mt-12 overflow-hidden joined-card-elite !p-0"
+        >
+          <div class="p-10 flex items-center justify-between group relative">
+            <div class="absolute inset-0 bg-gradient-to-r from-accent/5 to-transparent"></div>
+            <div class="flex items-center gap-8 relative z-10">
+              <div
+                class="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center text-accent ring-1 ring-accent/20 group-hover:scale-110 transition-transform"
+              >
+                <i class="pi pi-sparkles text-2xl"></i>
+              </div>
+              <div class="flex flex-col">
+                <h3
+                  class="text-2xl font-black text-white group-hover:text-accent transition-colors italic tracking-tighter"
+                >
+                  Find more vibes
+                </h3>
+                <p class="text-[11px] text-white/30 font-black uppercase tracking-[0.2em] mt-1">
+                  Found {{ 12 }} sessions matching your energy right now
+                </p>
+              </div>
             </div>
-            <i class="pi pi-arrow-right" style="color: var(--text-muted)"></i>
+            <div
+              class="w-14 h-14 rounded-full border border-white/5 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-all relative z-10"
+            >
+              <i class="pi pi-arrow-right text-sm"></i>
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </div>
 </div>

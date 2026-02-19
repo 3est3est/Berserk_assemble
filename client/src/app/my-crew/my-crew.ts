@@ -1,23 +1,24 @@
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { ButtonModule } from 'primeng/button';
 import { CommonModule } from '@angular/common';
-import { CrewService } from '../_services/crew-service';
-import { FriendshipService } from '../_services/friendship-service';
+import { Component, inject, OnDestroy } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { Mission } from '../_models/mission';
+import { CrewService } from '../_services/crew-service';
+import { MissionService } from '../_services/mission-service';
 import { BehaviorSubject, Subscription } from 'rxjs';
-import { RouterModule, Router } from '@angular/router';
 import { ToastService } from '../_services/toast-service';
 import { WebsocketService } from '../_services/websocket-service';
 
 @Component({
   selector: 'app-my-crew',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ButtonModule],
   templateUrl: './my-crew.html',
   styleUrl: './my-crew.scss',
 })
 export class MyCrew implements OnDestroy {
   private _crewService = inject(CrewService);
-  private _friendshipService = inject(FriendshipService);
+  private _missionService = inject(MissionService);
   private _router = inject(Router);
   private _toast = inject(ToastService);
   private _wsService = inject(WebsocketService);
@@ -38,14 +39,17 @@ export class MyCrew implements OnDestroy {
 
   private setupRealtimeUpdates() {
     this._wsSubscription = this._wsService.notifications$.subscribe((msg) => {
-      const missionTypes = [
+      if (!msg) return;
+      const reloadTypes = [
+        'new_crew_joined',
+        'crew_left',
         'mission_started',
         'mission_completed',
         'mission_failed',
         'mission_deleted',
         'kicked_from_mission',
       ];
-      if (missionTypes.includes(msg.type)) {
+      if (reloadTypes.includes(msg.type)) {
         console.log('[MyCrew] Real-time mission update received, reloading...');
         this.loadMyJoinedMissions();
       }
@@ -66,7 +70,7 @@ export class MyCrew implements OnDestroy {
   }
 
   async onLeave(mission: Mission, event: MouseEvent) {
-    event.stopPropagation();
+    if (event) event.stopPropagation();
     if (!confirm(`Do you want to leave mission "${mission.name}"?`)) return;
 
     try {
@@ -80,11 +84,21 @@ export class MyCrew implements OnDestroy {
     }
   }
 
-  getZone(category?: string): string {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('sport') || cat.includes('gaming')) return 'zone-action';
-    if (cat.includes('social') || cat.includes('entertainment')) return 'zone-sunset';
-    if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
-    return 'zone-tech';
+  getCategoryClass(category?: string): string {
+    const map: Record<string, string> = {
+      'Gaming & E-Sports': 'badge-gaming',
+      'Sports & Active': 'badge-sports',
+      'Social & Chill': 'badge-social',
+      'Travel & Trip': 'badge-travel',
+      Entertainment: 'badge-ent',
+      'Lifestyle & Hobby': 'badge-life',
+    };
+    return map[category || ''] ?? 'badge-other';
+  }
+
+  /** Get psychedelic image for category from local assets */
+  getVibeImage(category?: string): string {
+    const catFilename = (category || 'Other').replace(/ /g, '_');
+    return `assets/missionCard_wallpaper/${catFilename}.jpg`;
   }
 }

@@ -1,26 +1,44 @@
 .login-container {
-    @apply min-h-screen flex items-center justify-center p-6 selection:bg-white selection:text-black;
+    @apply min-h-screen flex items-center justify-center p-6 selection:bg-accent selection:text-white bg-transparent;
 }
 
 .os-auth-window {
-    @apply max-w-md w-full !p-12;
-    animation: fadeUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    @apply max-w-[400px] w-full p-8 md:p-12 rounded-[32px] text-center relative z-10;
+    background: rgba(10, 10, 12, 0.45);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 20px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: fadeUp 0.8s var(--ease-out-expo) both;
 }
 
-.os-auth-icon {
-    @apply w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-10 shadow-[0_0_30px_rgba(255,255,255,0.2)];
+.vibe-auth-icon {
+    @apply w-14 h-14 rounded-2xl flex items-center justify-center mb-6 mx-auto;
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-border);
 }
 
-.os-input-group {
-    @apply space-y-3 mb-8;
+.vibe-input {
+    @apply w-full h-14 bg-white/[0.03] border border-white/10 rounded-xl px-6 text-sm font-bold transition-all outline-none text-white;
     
-    label { @apply px-1; }
-    
-    input {
-        @apply w-full h-14 bg-white/5 border border-white/5 rounded-xl px-6 text-sm font-bold transition-all outline-none text-white focus:bg-white/10 focus:border-white/20;
+    &:focus {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--accent);
+        box-shadow: 0 0 0 4px var(--accent-subtle);
+    }
+
+    &::placeholder {
+        @apply text-white/10 font-black uppercase tracking-widest text-[10px];
     }
 }
 
-.os-auth-footer {
-    @apply mt-16 text-center border-t border-white/5 pt-10;
+.os-input-group {
+    @apply mb-10;
+}
+
+@keyframes fadeRight {
+    from { opacity: 0; transform: translateX(-40px); filter: blur(10px); }
+    to { opacity: 1; transform: translateX(0); filter: blur(0); }
 }

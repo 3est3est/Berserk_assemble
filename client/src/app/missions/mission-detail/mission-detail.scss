@@ -1,24 +1,116 @@
-/* Mission Detail - Shuttle theme; scrollbar and layout only */
 :host {
   display: block;
 }
 
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #3f3f46 var(--bg-main);
-  &::-webkit-scrollbar { width: 6px; }
-  &::-webkit-scrollbar-track { background: var(--bg-main); }
-  &::-webkit-scrollbar-thumb {
-    background: #27272a;
-    border-radius: 10px;
-    &:hover { background: #3f3f46; }
+.mission-detail-container {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 6rem;
+}
+
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-color: #000;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(255, 78, 171, 0.1) 0px, transparent 50%),
+    radial-gradient(at 100% 0%, rgba(113, 78, 255, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(113, 78, 255, 0.03) 0px, transparent 50%);
+  animation: mesh-drift 20s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-drift {
+  0% { transform: scale(1) translate(0, 0); }
+  100% { transform: scale(1.1) translate(20px, -20px); }
+}
+
+.shuttle-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: 32px;
+  transition: var(--transition-smooth);
+  
+  &:hover {
+    border-color: var(--glass-border-hover);
+    box-shadow: var(--shadow-xl);
   }
 }
 
-.spinner {
-  animation: spin 1s linear infinite;
+.glass-pill {
+  padding: 6px 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
 }
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+
+/* ── Chat bubbles refinement ── */
+.chat-bubble-elite {
+  padding: 1rem 1.25rem;
+  border-radius: 20px;
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 100%;
+  position: relative;
+  
+  &.sent {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(255, 78, 171, 0.2);
+    border-bottom-right-radius: 4px;
+    font-weight: 500;
+  }
+  
+  &.received {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    border-bottom-left-radius: 4px;
+  }
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 10px;
+    &:hover { background: var(--text-muted); }
+  }
+}
+
+.tech-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--accent), transparent);
+  opacity: 0.1;
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes scanline {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+.neural-pulse {
+  animation: neural-pulse 2s ease-in-out infinite;
+}
+
+@keyframes neural-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.2); opacity: 0.6; }
 }

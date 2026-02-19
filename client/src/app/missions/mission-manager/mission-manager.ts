@@ -135,11 +135,21 @@ export class MissionManager implements OnDestroy {
     this._router.navigate(['/missions', mission.id]);
   }
 
-  getZone(category?: string): string {
-    const cat = (category || '').toLowerCase();
-    if (cat.includes('sport') || cat.includes('gaming')) return 'zone-action';
-    if (cat.includes('social') || cat.includes('entertainment')) return 'zone-sunset';
-    if (cat.includes('trip') || cat.includes('lifestyle')) return 'zone-ocean';
-    return 'zone-tech';
+  getCategoryClass(category?: string): string {
+    const map: Record<string, string> = {
+      'Gaming & E-Sports': 'badge-gaming',
+      'Sports & Active': 'badge-sports',
+      'Social & Chill': 'badge-social',
+      'Travel & Trip': 'badge-travel',
+      Entertainment: 'badge-ent',
+      'Lifestyle & Hobby': 'badge-life',
+    };
+    return map[category || ''] ?? 'badge-other';
+  }
+
+  /** Get psychedelic image for category from local assets */
+  getVibeImage(category?: string): string {
+    const catFilename = (category || 'Other').replace(/ /g, '_');
+    return `assets/missionCard_wallpaper/${catFilename}.jpg`;
   }
 }

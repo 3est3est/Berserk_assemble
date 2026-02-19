@@ -1,117 +1,157 @@
 <div class="mission-manager-container">
-  <div class="godly-hero-manager">
-    <div class="page-layout">
-      <!-- SIDEBAR -->
-      <aside class="page-sidebar">
-        <div class="flex flex-col gap-1">
-          <div class="os-nav-item active">
-            <i class="pi pi-th-large"></i>
-            <span>My Hosting</span>
-          </div>
-          <div class="os-nav-item" (click)="onCreate()">
-            <i class="pi pi-plus-circle"></i>
-            <span>Create Activity</span>
+  <div class="tech-grid"></div>
+
+  <div class="page-layout">
+    <!-- SIDEBAR -->
+    <aside class="page-sidebar">
+      <div class="flex flex-col gap-1 mb-10">
+        <div class="os-nav-item active">
+          <i class="pi pi-th-large"></i>
+          <span>My Rooms</span>
+        </div>
+        <div class="os-nav-item" (click)="onCreate()">
+          <i class="pi pi-plus-circle"></i>
+          <span>Create New Room</span>
+        </div>
+      </div>
+
+      <div class="mt-auto pt-8 border-t border-white/5">
+        <div class="sidebar-stat">
+          <span class="label">Hosting Capacity</span>
+          <div class="flex items-baseline gap-2 mt-4">
+            <span class="text-4xl font-black text-white italic tracking-tighter">{{
+              myMissions().length
+            }}</span>
+            <span class="text-[9px] font-black text-white/20 uppercase tracking-[0.2em]"
+              >Active Rooms</span
+            >
           </div>
         </div>
+      </div>
+    </aside>
 
-        <div class="mt-auto pt-6 border-t border-white/5">
-          <span class="label">Activity Stats</span>
-          <div class="flex items-center gap-3 px-3 mt-3">
-            <div class="flex flex-col">
-              <span class="text-[20px] font-bold text-white">{{ myMissions().length }}</span>
-              <span class="text-[10px] text-white/40 uppercase font-bold tracking-widest"
-                >Active Rooms</span
-              >
-            </div>
+    <!-- MAIN CONTENT -->
+    <section class="page-main relative z-10">
+      <div class="page-header flex justify-between items-end mb-12">
+        <div class="flex flex-col">
+          <div class="flex items-center gap-3 mb-2">
+            <div class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent-glow)]"></div>
+            <span class="text-[10px] font-black text-accent uppercase tracking-[0.3em]"
+              >Hosting System: Online</span
+            >
           </div>
-        </div>
-      </aside>
-
-      <!-- MAIN CONTENT -->
-      <section class="page-main">
-        <div class="page-header">
-          <h1 class="page-title">Room Manager</h1>
-          <button
-            pButton
-            label="Host a Vibe"
-            icon="pi pi-plus"
-            (click)="onCreate()"
-            class="shuttle-action-btn bg-accent text-white border-none py-3 px-6 rounded-xl"
-            style="background-color: var(--accent) !important"
-          ></button>
+          <h1 class="page-title leading-none">Room Manager</h1>
+          <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-2">
+            Configure and manage your created hangout rooms
+          </p>
         </div>
 
-        <div class="missions-grid hide-scrollbar overflow-y-auto">
-          @for (mission of myMissions(); track mission.id; let i = $index) {
-            <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
-              <!-- Simple header for management -->
-              <div class="bg-accent/10 h-2 w-full"></div>
+        <button (click)="onCreate()" class="btn btn-primary btn-sm !px-8 !rounded-xl">
+          <i class="pi pi-plus mr-2"></i> CREATE ROOM
+        </button>
+      </div>
 
-              <div class="card-body">
-                <div class="flex justify-between items-start">
-                  <div class="flex flex-col gap-1">
-                    <span class="text-[10px] font-black text-white/30 uppercase tracking-widest"
-                      >#ROOM {{ mission.id }} • {{ mission.category }}</span
-                    >
-                    <h3 class="room-title">{{ mission.name }}</h3>
-                  </div>
-                  <div class="flex gap-2">
-                    <button
-                      (click)="onEdit(mission); $event.stopPropagation()"
-                      class="w-8 h-8 rounded-lg bg-white/5 border border-white/5 flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all"
-                    >
-                      <i class="pi pi-pencil" style="font-size: 12px"></i>
-                    </button>
-                  </div>
-                </div>
+      <div class="missions-grid stagger">
+        @for (mission of myMissions(); track mission.id; let i = $index) {
+          <div class="mission-card-os group" [routerLink]="['/missions', mission.id]">
+            <div class="card-cover-wrap">
+              <img
+                [src]="getVibeImage(mission.category)"
+                class="card-cover"
+                [alt]="mission.name"
+                loading="lazy"
+              />
 
-                <p class="text-[13px] text-white/50 line-clamp-2">
-                  {{
-                    mission.description ||
-                      'Manage your activity parameters and connect with participants.'
-                  }}
-                </p>
-
-                <div class="room-metadata">
-                  <div
-                    class="status-tag"
-                    [ngClass]="
-                      'status-' + (mission.status?.toLowerCase()?.replace(' ', '-') || 'open')
-                    "
-                  >
-                    {{ mission.status }}
-                  </div>
-                  <div class="meta-item">
-                    <i class="pi pi-users"></i>
-                    <span>{{ mission.crew_count }} / {{ mission.max_crew }} joined</span>
-                  </div>
-                </div>
+              <div class="card-category-pill">
+                <span
+                  class="status-tag"
+                  [ngClass]="'status-' + (mission.status.toLowerCase().replace(' ', '-') || 'open')"
+                >
+                  {{ mission.status }}
+                </span>
               </div>
 
-              <div class="card-footer px-6 pb-6">
+              <!-- Management Overlay Actions -->
+              <div
+                class="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0"
+              >
+                <button
+                  (click)="onEdit(mission); $event.stopPropagation()"
+                  class="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-black flex items-center justify-center text-white transition-all shadow-xl"
+                  title="Modify Room"
+                >
+                  <i class="pi pi-pencil text-xs"></i>
+                </button>
                 <button
                   (click)="onDelete(mission); $event.stopPropagation()"
-                  class="btn btn-ghost btn-sm w-full text-red-500/50 hover:text-red-500 hover:bg-red-500/10 rounded-xl"
+                  class="w-10 h-10 rounded-xl bg-red-500/10 backdrop-blur-md border border-red-500/20 hover:bg-red-500 hover:text-white flex items-center justify-center text-red-500 transition-all shadow-xl"
+                  title="Terminate Room"
                 >
-                  <i class="pi pi-trash mr-2"></i> Close Room
+                  <i class="pi pi-trash text-xs"></i>
                 </button>
               </div>
             </div>
-          } @empty {
-            <div
-              class="col-span-full py-40 flex flex-col items-center justify-center gap-4 opacity-20"
-            >
-              <i class="pi pi-calendar-plus text-5xl"></i>
-              <p class="font-bold uppercase tracking-widest text-xs">
-                You're not hosting anything yet
+
+            <div class="card-body">
+              <span class="badge mb-2" [ngClass]="getCategoryClass(mission.category)">{{
+                mission.category || 'Vibe Room'
+              }}</span>
+              <h2 class="card-title">{{ mission.name }}</h2>
+              <p class="card-desc">
+                {{
+                  mission.description ||
+                    'Welcome to the mission room. Join our crew and start the activity.'
+                }}
               </p>
-              <button class="btn btn-ghost btn-sm" (click)="onCreate()">
-                Start your first room
+            </div>
+
+            <div class="card-footer">
+              <div class="card-host">
+                <img
+                  [src]="
+                    mission.chief_avatar_url ||
+                    'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
+                      mission.chief_display_name
+                  "
+                  class="w-7 h-7 rounded-lg object-cover"
+                />
+                <span class="font-bold text-white/40 uppercase tracking-widest text-[9px]"
+                  >YOUR ROOM</span
+                >
+              </div>
+              <div class="card-stats">
+                {{ mission.crew_count }}/{{ mission.max_crew }} <i class="pi pi-users"></i>
+              </div>
+            </div>
+          </div>
+        } @empty {
+          <div
+            class="col-span-full py-48 flex flex-col items-center justify-center gap-8 opacity-20"
+          >
+            <div
+              class="w-24 h-24 rounded-3xl bg-white/5 flex items-center justify-center ring-1 ring-white/10"
+            >
+              <i class="pi pi-bolt text-4xl"></i>
+            </div>
+            <div class="text-center max-w-sm">
+              <h3 class="font-black uppercase tracking-[0.4em] text-xs text-white mb-3">
+                No Rooms Created
+              </h3>
+              <p
+                class="text-[11px] text-white/60 font-medium leading-relaxed uppercase tracking-widest"
+              >
+                Your activity list is empty. Create a new room to start building your community.
+              </p>
+              <button
+                class="mt-8 text-accent text-[11px] font-black uppercase tracking-[0.3em] hover:tracking-[0.4em] transition-all"
+                (click)="onCreate()"
+              >
+                // CREATE_YOUR_FIRST_ROOM
               </button>
             </div>
-          }
-        </div>
-      </section>
-    </div>
+          </div>
+        }
+      </div>
+    </section>
   </div>
 </div>

@@ -95,7 +95,7 @@ export class Home implements OnInit, OnDestroy {
   }
 
   /** Map category string → badge CSS class */
-  getCategoryClass(category: string): string {
+  getCategoryClass(category?: string): string {
     const map: Record<string, string> = {
       'Gaming & E-Sports': 'badge-gaming',
       'Sports & Active': 'badge-sports',
@@ -104,6 +104,12 @@ export class Home implements OnInit, OnDestroy {
       Entertainment: 'badge-ent',
       'Lifestyle & Hobby': 'badge-life',
     };
-    return map[category] ?? 'badge-other';
+    return map[category || ''] ?? 'badge-other';
+  }
+
+  /** Get psychedelic image for category from local assets */
+  getVibeImage(category?: string): string {
+    const catFilename = (category || 'Other').replace(/ /g, '_');
+    return `assets/missionCard_wallpaper/${catFilename}.jpg`;
   }
 }
