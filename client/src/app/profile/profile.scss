@@ -49,7 +49,7 @@
     width: 36px;
     height: 36px;
     background: var(--primary-gradient);
-    border: 3px solid #000;
+    border: 3px solid var(--bg-base);
     border-radius: 12px;
     display: flex;
     align-items: center;
@@ -86,10 +86,9 @@
     .stat-value {
         font-size: 2.5rem;
         font-weight: 950;
-        italic: true;
         font-style: italic;
         line-height: 1;
-        color: white;
+        color: var(--text-primary);
         letter-spacing: -0.05em;
     }
 
@@ -117,7 +116,7 @@
     align-items: center;
     gap: 1.25rem;
     padding: 1.25rem 1.5rem;
-    background: rgba(255, 255, 255, 0.02);
+    background: var(--glass-bg);
     border: 1px solid var(--border-subtle);
     border-radius: 20px;
     transition: var(--transition-fast);
@@ -126,8 +125,8 @@
         width: 42px;
         height: 42px;
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--glass-bg);
+        border: 1px solid var(--border-subtle);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -148,12 +147,12 @@
     .value {
         font-size: 13px;
         font-weight: 700;
-        color: white;
+        color: var(--text-primary);
         letter-spacing: -0.01em;
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.04);
+        background: var(--glass-bg-hover);
         border-color: var(--accent-border);
         transform: translateY(-2px);
 

@@ -2,12 +2,12 @@
   <button
     pButton
     icon="pi pi-bell"
-    class="p-button-text p-button-rounded w-10 h-10 relative !text-zinc-500 hover:!text-white"
+    class="p-button-text p-button-rounded w-10 h-10 relative !text-v-text-muted hover:!text-v-text-primary"
     (click)="op.toggle($event)"
   >
     @if (notificationService.unreadCount() > 0) {
       <span
-        class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-white border border-black shadow-[0_0_8px_rgba(255,255,255,0.4)]"
+        class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent border border-v-bg-base shadow-[0_0_8px_var(--accent-glow)]"
       ></span>
     }
   </button>
@@ -16,15 +16,15 @@
     <div class="flex flex-col">
       <!-- Header -->
       <div
-        class="px-4 py-3 border-b border-zinc-800 flex items-center justify-between bg-zinc-900/40"
+        class="px-4 py-3 border-b border-v-border flex items-center justify-between bg-v-bg-subtle"
       >
-        <h3 class="text-[10px] font-black uppercase tracking-widest text-zinc-500">
+        <h3 class="text-[10px] font-black uppercase tracking-widest text-v-text-muted">
           Notifications
         </h3>
         @if (notificationService.unreadCount() > 0) {
           <button
             (click)="notificationService.markAllAsRead()"
-            class="text-[9px] font-black text-white uppercase hover:underline"
+            class="text-[9px] font-black text-v-text-primary uppercase hover:underline"
           >
             Mark all read
           </button>
@@ -35,28 +35,28 @@
       <div class="max-h-[380px] overflow-y-auto custom-scrollbar">
         @for (notif of notificationService.notifications(); track notif.id) {
           <div
-            class="px-4 py-3 hover:bg-zinc-800/40 transition-colors cursor-pointer border-b border-zinc-800/50 group relative"
-            [class.bg-zinc-800/20]="!notif.is_read"
+            class="px-4 py-3 hover:bg-v-glass-hover transition-colors cursor-pointer border-b border-v-border group relative"
+            [class.bg-v-accent-subtle]="!notif.is_read"
             (click)="onNotificationClick(notif); op.hide()"
           >
             <div class="flex gap-3">
               <div
-                class="w-8 h-8 rounded-lg bg-zinc-900/50 border border-zinc-800 flex items-center justify-center text-[10px]"
+                class="w-8 h-8 rounded-lg bg-v-bg-surface border border-v-border flex items-center justify-center text-[10px]"
               >
-                <i [class]="getNotificationIcon(notif.type) + ' text-zinc-500'"></i>
+                <i [class]="getNotificationIcon(notif.type) + ' text-v-text-muted'"></i>
               </div>
               <div class="flex-grow min-w-0">
                 <div class="flex items-center justify-between mb-0.5">
                   <span
-                    class="text-[9px] font-black uppercase tracking-tight text-white opacity-40"
+                    class="text-[9px] font-black uppercase tracking-tight text-v-text-primary opacity-40"
                     >{{ notif.type.split('_').join(' ') }}</span
                   >
-                  <span class="text-[8px] text-zinc-600 font-bold uppercase">{{
+                  <span class="text-[8px] text-v-text-muted font-bold uppercase">{{
                     notif.created_at + 'Z' | date: 'shortTime'
                   }}</span>
                 </div>
                 <p
-                  class="text-[11px] leading-snug font-medium text-zinc-400 group-hover:text-white transition-colors truncate"
+                  class="text-[11px] leading-snug font-medium text-v-text-secondary group-hover:text-v-text-primary transition-colors truncate"
                 >
                   {{ notif.content }}
                 </p>
@@ -73,7 +73,7 @@
             </div>
             @if (!notif.is_read) {
               <div
-                class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-white rounded-full"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-accent rounded-full"
               ></div>
             }
           </div>

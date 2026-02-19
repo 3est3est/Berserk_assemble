@@ -37,7 +37,7 @@
         </button>
         <button
           routerLink="/dashboard"
-          class="btn btn-ghost btn-xl !px-12 !rounded-2xl !border-white/10 hover:bg-white/5 !font-black !tracking-widest shadow-xl"
+          class="btn btn-ghost btn-xl !px-12 !rounded-2xl !border-v-border hover:bg-v-glass-hover !font-black !tracking-widest shadow-xl"
         >
           DASHBOARD
         </button>
@@ -65,11 +65,13 @@
         <span class="text-[10px] font-black uppercase tracking-[0.5em] text-accent mb-6 block"
           >Our Story</span
         >
-        <h2 class="text-5xl font-black mb-8 italic tracking-tighter leading-tight">
+        <h2
+          class="text-5xl font-black mb-8 italic tracking-tighter leading-tight text-v-text-primary"
+        >
           A space where<br />
-          <span class="text-white/20">Everyone belongs.</span>
+          <span class="text-v-text-muted">Everyone belongs.</span>
         </h2>
-        <p class="text-lg text-white/50 leading-relaxed mb-10">
+        <p class="text-lg text-v-text-secondary leading-relaxed mb-10">
           <strong>Vibe Assemble</strong> is a modern community platform designed for real-time
           connection. It's a place where you can <strong>create your own activity rooms</strong> or
           join others to hang out, share interests, and meet new people instantly. No matter if you
@@ -79,21 +81,21 @@
         <div class="flex flex-wrap gap-10">
           <div class="group">
             <h4
-              class="font-black text-white text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"
+              class="font-black text-v-text-primary text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"
             >
               <i class="pi pi-bolt text-accent"></i> Instant Sync
             </h4>
-            <p class="text-xs text-white/20 max-w-[180px] leading-relaxed">
+            <p class="text-xs text-v-text-muted max-w-[180px] leading-relaxed">
               Jump into active rooms and start vibing immediately.
             </p>
           </div>
           <div class="group">
             <h4
-              class="font-black text-white text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"
+              class="font-black text-v-text-primary text-[11px] uppercase tracking-widest mb-3 flex items-center gap-2"
             >
               <i class="pi pi-users text-purple-400"></i> Local Crew
             </h4>
-            <p class="text-xs text-white/20 max-w-[180px] leading-relaxed">
+            <p class="text-xs text-v-text-muted max-w-[180px] leading-relaxed">
               Built by users, for users. No bots, just real people.
             </p>
           </div>
@@ -114,7 +116,7 @@
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
-      <div class="absolute top-1/2 left-0 w-full h-px bg-white/5 -z-10 hidden md:block"></div>
+      <div class="absolute top-1/2 left-0 w-full h-px bg-v-glass -z-10 hidden md:block"></div>
 
       <div class="step-card group">
         <div class="step-num">01</div>
@@ -122,10 +124,10 @@
           <i class="pi pi-plus"></i>
           <div class="step-glow"></div>
         </div>
-        <h3 class="text-xl font-bold text-white mb-4 italic uppercase tracking-tight">
+        <h3 class="text-xl font-bold text-v-text-primary mb-4 italic uppercase tracking-tight">
           Create a Room
         </h3>
-        <p class="text-sm text-white/30 leading-relaxed px-6">
+        <p class="text-sm text-v-text-primary/30 leading-relaxed px-6">
           Start a new activity, set your vibe, and define your space for others to discover.
         </p>
       </div>
@@ -136,10 +138,10 @@
           <i class="pi pi-share-alt"></i>
           <div class="step-glow !bg-purple-500/20"></div>
         </div>
-        <h3 class="text-xl font-bold text-white mb-4 italic uppercase tracking-tight">
+        <h3 class="text-xl font-bold text-v-text-primary mb-4 italic uppercase tracking-tight">
           Sync Energy
         </h3>
-        <p class="text-sm text-white/30 leading-relaxed px-6">
+        <p class="text-sm text-v-text-primary/30 leading-relaxed px-6">
           Real people join your room. Connect instantly through encrypted chat and shared interests.
         </p>
       </div>
@@ -150,10 +152,10 @@
           <i class="pi pi-heart"></i>
           <div class="step-glow !bg-green-500/20"></div>
         </div>
-        <h3 class="text-xl font-bold text-white mb-4 italic uppercase tracking-tight">
+        <h3 class="text-xl font-bold text-v-text-primary mb-4 italic uppercase tracking-tight">
           Vibe Together
         </h3>
-        <p class="text-sm text-white/30 leading-relaxed px-6">
+        <p class="text-sm text-v-text-primary/30 leading-relaxed px-6">
           Experience the community. Hangout, collaborate, or just relax with your new crew.
         </p>
       </div>
@@ -176,7 +178,7 @@
       </div>
       <a
         routerLink="/missions"
-        class="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white transition-colors items-center gap-2 group hidden md:flex"
+        class="text-[10px] font-black uppercase tracking-widest text-v-text-muted hover:text-v-text-primary transition-colors items-center gap-2 group hidden md:flex"
       >
         View all realms
         <i class="pi pi-arrow-right group-hover:translate-x-1 transition-transform"></i>
@@ -261,13 +263,16 @@
   <!-- ══════════════════════════════════════════════════
        TECH STACK: PREMIUM DESIGN
        ══════════════════════════════════════════════════ -->
-  <section class="section py-40 border-t border-white/5" vibeReveal>
+  <section class="section py-40 border-t border-v-border" vibeReveal>
     <div class="text-center">
-      <span class="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-8 block"
+      <span
+        class="text-[10px] font-black uppercase tracking-[0.5em] text-v-text-primary/20 mb-8 block"
         >Our Technology</span
       >
       <h2 class="text-5xl md:text-6xl font-black mb-20 italic tracking-tighter leading-none">
-        Modern Stack. <br /><span class="text-white/5 uppercase">High Speed Experience.</span>
+        Modern Stack. <br /><span class="text-v-text-primary/5 uppercase"
+          >High Speed Experience.</span
+        >
       </h2>
 
       <div class="flex flex-wrap justify-center gap-x-20 gap-y-16">
@@ -323,9 +328,9 @@
         >
         <h2 class="text-5xl md:text-7xl font-black italic tracking-tighter mb-12 leading-none">
           Build your tribe.<br />
-          <span class="text-white/10">Sync your vibe.</span>
+          <span class="text-v-text-primary/10">Sync your vibe.</span>
         </h2>
-        <p class="text-white/30 text-lg max-w-lg mx-auto mb-16 leading-relaxed">
+        <p class="text-v-text-primary/30 text-lg max-w-lg mx-auto mb-16 leading-relaxed">
           Join a community where real connections happen. Create your room or join a global network
           of friends in seconds.
         </p>
@@ -339,7 +344,7 @@
           </button>
           <a
             routerLink="/network"
-            class="text-[11px] font-black uppercase tracking-[0.2em] text-white/20 hover:text-white transition-all flex items-center gap-2"
+            class="text-[11px] font-black uppercase tracking-[0.2em] text-v-text-primary/20 hover:text-v-text-primary transition-all flex items-center gap-2"
           >
             Meet the community <i class="pi pi-arrow-right"></i>
           </a>
@@ -351,18 +356,18 @@
   <!-- ══════════════════════════════════════════════════
        FOOTER
        ══════════════════════════════════════════════════ -->
-  <footer class="mt-40 pt-20 border-t border-white/5 pb-20">
+  <footer class="mt-40 pt-20 border-t border-v-border pb-20">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
       <div class="col-span-1 md:col-span-2">
         <div class="flex items-center gap-3 mb-6">
           <div
-            class="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-white/10"
+            class="w-10 h-10 bg-v-text-primary rounded-2xl flex items-center justify-center shadow-lg shadow-v-text-primary/10"
           >
             <i class="pi pi-bolt text-black text-sm"></i>
           </div>
           <span class="text-xl font-black tracking-tighter uppercase italic">Vibe Assemble</span>
         </div>
-        <p class="text-sm text-white/30 leading-relaxed max-w-sm mb-10">
+        <p class="text-sm text-v-text-primary/30 leading-relaxed max-w-sm mb-10">
           The next-generation community platform for real connections, shared vibes, and meaningful
           hangout rooms.
         </p>
@@ -374,7 +379,7 @@
       </div>
 
       <div class="flex flex-col gap-5">
-        <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-white/20 mb-2">
+        <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-v-text-primary/20 mb-2">
           Explore
         </h4>
         <a routerLink="/missions" class="footer-link">Find Rooms</a>
@@ -383,7 +388,7 @@
       </div>
 
       <div class="flex flex-col gap-5">
-        <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-white/20 mb-2">
+        <h4 class="text-[11px] font-black uppercase tracking-[0.4em] text-v-text-primary/20 mb-2">
           My Account
         </h4>
         <a routerLink="/profile" class="footer-link">Profile</a>
@@ -392,19 +397,19 @@
     </div>
 
     <div
-      class="flex flex-col md:flex-row justify-between items-center gap-8 pt-12 border-t border-white/5"
+      class="flex flex-col md:flex-row justify-between items-center gap-8 pt-12 border-t border-v-border"
     >
-      <span class="text-[10px] font-black uppercase tracking-widest text-white/5"
+      <span class="text-[10px] font-black uppercase tracking-widest text-v-text-primary/5"
         >© 2026 VIBE ASSEMBLE COMMUNITY SYSTEM</span
       >
       <div class="flex gap-12">
         <div class="flex items-center gap-2">
           <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
-          <span class="text-[10px] font-black uppercase tracking-widest text-white/20"
+          <span class="text-[10px] font-black uppercase tracking-widest text-v-text-primary/20"
             >Operational</span
           >
         </div>
-        <span class="text-[10px] font-black uppercase tracking-widest text-white/5 italic"
+        <span class="text-[10px] font-black uppercase tracking-widest text-v-text-primary/5 italic"
           >Bangkok, Thailand</span
         >
       </div>

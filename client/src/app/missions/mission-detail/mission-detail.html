@@ -54,8 +54,8 @@
               [class]="
                 'glass-pill !border-none px-4 ' +
                 (mission.status === 'Open'
-                  ? '!bg-white !text-black'
-                  : '!bg-zinc-800 !text-zinc-400')
+                  ? '!bg-v-text-primary !text-v-bg-base'
+                  : '!bg-v-glass !text-v-text-muted')
               "
             >
               {{ mission.status }}
@@ -68,7 +68,7 @@
           </h1>
           <div class="flex flex-col gap-4">
             <p
-              class="text-white/40 font-medium tracking-wide uppercase text-[11px] max-w-2xl leading-relaxed italic border-l-2 border-accent/30 pl-6"
+              class="text-v-text-muted font-medium tracking-wide uppercase text-[11px] max-w-2xl leading-relaxed italic border-l-2 border-accent/30 pl-6"
             >
               {{
                 mission.description ||
@@ -81,20 +81,20 @@
         <div class="flex flex-wrap gap-4 mb-2 lg:justify-end">
           @if (mission.location) {
             <div
-              class="glass-pill flex items-center gap-3 bg-white/5 !border-white/10 hover:bg-white/10 transition-colors"
+              class="glass-pill flex items-center gap-3 bg-v-glass !border-v-border hover:bg-v-glass-hover transition-colors"
             >
               <i class="pi pi-map-marker text-accent text-[12px]"></i>
-              <span class="text-[11px] font-bold tracking-widest text-white/60 uppercase">{{
+              <span class="text-[11px] font-bold tracking-widest text-v-text-muted uppercase">{{
                 mission.location
               }}</span>
             </div>
           }
           @if (mission.scheduled_at) {
             <div
-              class="glass-pill flex items-center gap-3 bg-white/5 !border-white/10 hover:bg-white/10 transition-colors"
+              class="glass-pill flex items-center gap-3 bg-v-glass !border-v-border hover:bg-v-glass-hover transition-colors"
             >
               <i class="pi pi-clock text-accent text-[12px]"></i>
-              <span class="text-[11px] font-bold tracking-widest text-white/60 uppercase"
+              <span class="text-[11px] font-bold tracking-widest text-v-text-muted uppercase"
                 >{{ mission.scheduled_at | date: 'HH:mm' }} UTC</span
               >
             </div>
@@ -115,9 +115,9 @@
           class="col-span-12 lg:col-span-3 shuttle-card flex flex-col !p-0 overflow-hidden group"
         >
           <div class="tech-scanline"></div>
-          <div class="p-8 border-b border-white/5 bg-white/[0.02]">
+          <div class="p-8 border-b border-v-border bg-v-bg-subtle">
             <h3
-              class="text-[11px] font-black uppercase tracking-[0.3em] flex justify-between items-center text-white/30"
+              class="text-[11px] font-black uppercase tracking-[0.3em] flex justify-between items-center text-v-text-muted"
             >
               Member List
               <span
@@ -132,7 +132,7 @@
             <!-- Chief Section -->
             <div>
               <div
-                class="section-label !text-[9px] !font-black !uppercase !tracking-[0.2em] !text-white/20 mb-5"
+                class="section-label !text-[9px] !font-black !uppercase !tracking-[0.2em] !text-v-text-muted mb-5"
               >
                 Room Host
               </div>
@@ -151,7 +151,7 @@
                 />
                 <div class="flex-grow relative z-10">
                   <div
-                    class="text-[13px] font-black uppercase tracking-tight text-white m-0 leading-none group-hover/chief:text-accent transition-colors"
+                    class="text-[13px] font-black uppercase tracking-tight text-v-text-primary m-0 leading-none group-hover/chief:text-accent transition-colors"
                   >
                     {{ mission.chief_display_name }}
                   </div>
@@ -167,7 +167,7 @@
             <!-- Crew Section -->
             <div>
               <div
-                class="section-label !text-[9px] !font-black !uppercase !tracking-[0.2em] !text-white/20 mb-5"
+                class="section-label !text-[9px] !font-black !uppercase !tracking-[0.2em] !text-v-text-muted mb-5"
               >
                 Active Members
               </div>
@@ -184,11 +184,11 @@
                           'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' +
                             member.display_name
                         "
-                        class="w-10 h-10 rounded-lg border border-white/5 opacity-60 group-hover/member:opacity-100 transition-opacity"
+                        class="w-10 h-10 rounded-lg border border-v-border opacity-60 group-hover/member:opacity-100 transition-opacity"
                       />
                       <div class="flex-grow">
                         <div
-                          class="text-[12px] font-bold uppercase tracking-tight text-white/40 group-hover/member:text-white transition-colors"
+                          class="text-[12px] font-bold uppercase tracking-tight text-v-text-muted group-hover/member:text-v-text-primary transition-colors"
                         >
                           {{ member.display_name }}
                         </div>
@@ -226,14 +226,14 @@
           ></div>
 
           <div
-            class="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.01] relative z-10"
+            class="p-8 border-b border-v-border flex justify-between items-center bg-v-glass relative z-10"
           >
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-3">
               <div
-                class="w-2 h-2 rounded-full bg-accent shadow-[0_0_10px_var(--accent-glow)]"
+                class="w-1.5 h-1.5 rounded-full bg-accent shadow-[0_0_10px_var(--accent-glow)]"
               ></div>
-              <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-white/30">
-                Discussion Channel / Public
+              <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-v-text-muted">
+                Discussion / Public
               </h3>
             </div>
             @if (isChief && comments.length > 0) {
@@ -253,7 +253,7 @@
           >
             @for (comment of comments; track comment.id) {
               <div
-                class="flex gap-6 group animate-shuttle"
+                class="flex gap-4 group animate-shuttle"
                 [class.flex-row-reverse]="comment.brawler_id === currentUserId"
               >
                 <img
@@ -270,10 +270,10 @@
                   [class.items-end]="comment.brawler_id === currentUserId"
                 >
                   <div
-                    class="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-white/20"
+                    class="flex items-center gap-4 text-[9px] font-black uppercase tracking-widest text-v-text-muted"
                   >
                     <span
-                      class="text-white/40 group-hover:text-accent transition-colors cursor-pointer"
+                      class="text-v-text-secondary group-hover:text-accent transition-colors cursor-pointer"
                       [routerLink]="['/profile', comment.brawler_id]"
                       >{{ comment.brawler_display_name }}</span
                     >
@@ -298,13 +298,13 @@
                   <div
                     class="absolute inset-0 rounded-3xl border border-accent/20 neural-pulse"
                   ></div>
-                  <i class="pi pi-lock text-white/30 text-3xl"></i>
+                  <i class="pi pi-lock text-v-text-muted text-3xl"></i>
                 </div>
                 <h3 class="text-2xl font-black uppercase tracking-widest mb-4 italic">
                   Room Discussion
                 </h3>
                 <p
-                  class="text-[10px] font-black uppercase tracking-[0.4em] text-white/40 max-w-xs leading-loose"
+                  class="text-[10px] font-black uppercase tracking-[0.4em] text-v-text-muted max-w-xs leading-loose"
                 >
                   Connected to room chat. Type a message below to start hanging out.
                 </p>
@@ -313,12 +313,12 @@
           </div>
 
           <div
-            class="p-8 border-t border-white/5 flex items-center gap-4 bg-white/[0.01] relative z-10"
+            class="p-8 border-t border-v-border flex items-center gap-4 bg-v-glass relative z-10"
           >
             <div class="flex-grow relative group">
               <input
                 type="text"
-                class="w-full h-16 bg-white/[0.03] rounded-2xl px-8 text-[14px] border border-white/10 group-hover:border-white/20 focus:border-accent/50 focus:bg-white/[0.05] outline-none transition-all placeholder:text-white/20 text-white font-medium"
+                class="w-full h-16 bg-v-glass rounded-2xl px-8 text-[14px] border border-v-border group-hover:bg-v-glass-hover focus:border-accent/50 outline-none transition-all placeholder:text-v-text-muted text-v-text-primary font-medium"
                 [(ngModel)]="newCommentContent"
                 (keyup.enter)="sendComment()"
                 [disabled]="sendingComment || isMissionDeleted || isKicked"
@@ -340,15 +340,15 @@
         <!-- Right: Command Center -->
         <aside class="col-span-12 lg:col-span-3 flex flex-col gap-8">
           <div class="shuttle-card !p-0 overflow-hidden relative">
-            <div class="p-8 border-b border-white/5 bg-white/[0.02]">
-              <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-white/30">
+            <div class="p-8 border-b border-v-border bg-v-bg-subtle">
+              <h3 class="text-[11px] font-black uppercase tracking-[0.3em] text-v-text-muted">
                 Room Controls
               </h3>
             </div>
 
             <div class="p-8 space-y-8 relative z-10">
               <div
-                class="p-8 rounded-3xl bg-white/[0.03] border border-white/5 relative group/integrity"
+                class="p-8 rounded-3xl bg-v-glass border border-v-border relative group/integrity"
               >
                 <div class="absolute top-4 right-4 animate-pulse">
                   <div
@@ -356,13 +356,13 @@
                   ></div>
                 </div>
                 <div
-                  class="text-[10px] font-black uppercase tracking-[0.3em] text-white/20 mb-6 group-hover/integrity:text-accent transition-colors"
+                  class="text-[10px] font-black uppercase tracking-[0.3em] text-v-text-muted mb-6 group-hover/integrity:text-accent transition-colors"
                 >
                   Room Capacity
                 </div>
                 <div class="flex flex-col gap-4">
                   <div class="flex items-end justify-between">
-                    <span class="text-5xl font-black italic tracking-tighter">
+                    <span class="text-5xl font-black italic tracking-tighter text-v-text-primary">
                       {{
                         mission.crew_count >= mission.max_crew
                           ? '100'
@@ -371,7 +371,7 @@
                     </span>
                     <i class="pi pi-shield text-accent/40 text-2xl"></i>
                   </div>
-                  <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
+                  <div class="w-full h-1.5 bg-v-border rounded-full overflow-hidden">
                     <div
                       class="h-full bg-primary-gradient transition-all duration-1000"
                       [style.width.%]="(mission.crew_count / mission.max_crew) * 100"
@@ -383,7 +383,7 @@
               @if (isChief) {
                 <div class="pt-8 border-t border-white/5 space-y-4">
                   <label
-                    class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 px-2 block mb-4"
+                    class="text-[9px] font-black uppercase tracking-[0.4em] text-v-text-muted px-2 block mb-4"
                     >Activity Controls</label
                   >
 
@@ -413,13 +413,15 @@
                     ></button>
                   } @else {
                     <div
-                      class="p-10 text-center bg-white/[0.02] rounded-3xl border border-white/5 border-dashed"
+                      class="p-10 text-center bg-v-bg-subtle rounded-3xl border border-v-border border-dashed"
                     >
-                      <i class="pi pi-box text-3xl text-white/10 mb-4 block"></i>
-                      <div class="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">
+                      <i class="pi pi-box text-3xl text-v-text-muted mb-4 block"></i>
+                      <div
+                        class="text-[10px] font-black uppercase tracking-[0.4em] text-v-text-muted"
+                      >
                         Archive Status
                       </div>
-                      <div class="text-[12px] font-bold text-white mt-2 uppercase">
+                      <div class="text-[12px] font-bold text-v-text-primary mt-2 uppercase">
                         Activity Closed
                       </div>
                     </div>
@@ -431,7 +433,7 @@
                 >
                   <i class="pi pi-spin pi-spinner text-3xl text-accent/40 mb-6 block"></i>
                   <p
-                    class="text-[10px] font-black uppercase tracking-[0.3em] text-white/30 leading-loose"
+                    class="text-[10px] font-black uppercase tracking-[0.3em] text-v-text-muted leading-loose"
                   >
                     Waiting for the host to start.
                   </p>
@@ -459,7 +461,7 @@
             >
               <i class="pi pi-lock"></i> Room Encryption
             </h4>
-            <p class="text-[11px] text-white/40 leading-relaxed font-bold italic relative z-10">
+            <p class="text-[11px] text-v-text-muted leading-relaxed font-bold italic relative z-10">
               All messages in this room are end-to-end encrypted and kept secure within the Vibe
               network. Your privacy is our priority.
             </p>

@@ -80,7 +80,6 @@ export class MissionManager implements OnDestroy {
   onCreate() {
     const ref = (this._dialog as any).open(NewMission, {
       header: 'Initialize Mission',
-      width: '500px',
       modal: true,
       showHeader: false,
       styleClass: 'void-dialog',
@@ -102,7 +101,6 @@ export class MissionManager implements OnDestroy {
     const ref = (this._dialog as any).open(NewMission, {
       data: { ...mission },
       header: 'Modify Mission',
-      width: '500px',
       modal: true,
       showHeader: false,
       styleClass: 'void-dialog',

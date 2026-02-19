@@ -7,9 +7,11 @@
   >
     @if (onlineUsers().length > 0) {
       <span
-        class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-accent border border-black shadow-[0_0_8px_var(--accent-glow)]"
-        title="Online"
-      ></span>
+        class="online-count-badge absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-accent text-white text-[9px] font-black shadow-[0_0_8px_var(--accent-glow)]"
+        title="Active Signals"
+      >
+        {{ onlineUsers().length }}
+      </span>
     }
     @if (pendingCount() > 0) {
       <span
@@ -25,7 +27,9 @@
     <div class="flex flex-col">
       <!-- Header -->
       <div class="px-4 py-3 border-b border-white/5 flex items-center justify-between bg-white/5">
-        <h3 class="text-[10px] font-black uppercase tracking-widest opacity-60">Active Network</h3>
+        <h3 class="text-[10px] font-black uppercase tracking-[0.2em] opacity-40">
+          Active Member
+        </h3>
         <span class="text-[10px] font-black text-green-400 uppercase tracking-tighter"
           >{{ onlineUsers().length }} Active</span
         >
@@ -69,9 +73,9 @@
       </div>
 
       <!-- Footer -->
-      <div class="px-4 py-2 bg-white/5 opacity-40">
-        <p class="text-[8px] font-black uppercase tracking-[0.2em] text-center">
-          Encrypted Mesh Protocol Active
+      <div class="px-4 py-2 bg-white/5 border-t border-white/5">
+        <p class="text-[8px] font-black uppercase tracking-[0.3em] text-center text-white/20">
+          Member Online
         </p>
       </div>
     </div>

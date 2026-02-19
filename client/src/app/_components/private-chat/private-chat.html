@@ -61,7 +61,7 @@
           <i class="pi pi-search search-icon"></i>
           <input
             type="text"
-            placeholder="ค้นหาชื่อหรือ ID..."
+            placeholder="Search name or ID..."
             [(ngModel)]="searchQuery"
             (input)="onSearchChange()"
             autocomplete="off"
@@ -78,7 +78,7 @@
       @if (searchQuery) {
         <div class="list-content">
           @if (searchResults.length > 0) {
-            <div class="section-label">ผลการค้นหา — {{ searchResults.length }} คน</div>
+            <div class="section-label">Search Results — {{ searchResults.length }} people</div>
             @for (person of searchResults; track person.id) {
               <div class="chat-item" (click)="startChat(person)">
                 <div class="avatar-wrap">
@@ -96,7 +96,7 @@
                 <div class="item-info">
                   <span class="name">{{ person.display_name }}</span>
                   @if (isFriend(person.id)) {
-                    <span class="tag-friend">เพื่อน</span>
+                    <span class="tag-friend">Friend</span>
                   } @else {
                     <span class="tag-active">Active</span>
                   }
@@ -107,7 +107,7 @@
           } @else {
             <div class="empty-state">
               <i class="pi pi-search-minus"></i>
-              <p>ไม่พบบุคคลนี้</p>
+              <p>User not found</p>
             </div>
           }
         </div>
@@ -120,7 +120,7 @@
             (click)="activeTab = 'recent'"
           >
             <i class="pi pi-clock"></i>
-            แชท
+            Chat
             @if (unreadCount() > 0) {
               <span class="tab-badge">{{ unreadCount() }}</span>
             }
@@ -131,7 +131,7 @@
             (click)="activeTab = 'friends'"
           >
             <i class="pi pi-heart"></i>
-            เพื่อน
+            Friends
             <span class="tab-count">{{ friends.length }}</span>
           </button>
           <button
@@ -173,8 +173,8 @@
             } @empty {
               <div class="empty-state">
                 <i class="pi pi-comments"></i>
-                <p>ยังไม่มีข้อความ</p>
-                <span>เริ่มแชทกับเพื่อนในแท็บ "เพื่อน"</span>
+                <p>No messages yet</p>
+                <span>Start chatting with friends in the "Friends" tab</span>
               </div>
             }
           </div>
@@ -187,7 +187,7 @@
             @if (onlineFriends.length > 0) {
               <div class="section-label">
                 <span class="online-indicator"></span>
-                ออนไลน์ — {{ onlineFriends.length }} คน
+                Online — {{ onlineFriends.length }} people
               </div>
               @for (friend of onlineFriends; track friend.id) {
                 <div class="chat-item" (click)="startChat(friend)">
@@ -213,7 +213,7 @@
             <!-- Offline friends -->
             @if (offlineFriends.length > 0) {
               <div class="section-label" [class.mt-4]="onlineFriends.length > 0">
-                เพื่อนทั้งหมด — {{ offlineFriends.length }} คน
+                All Friends — {{ offlineFriends.length }} people
               </div>
               @for (friend of offlineFriends; track friend.id) {
                 <div class="chat-item" (click)="startChat(friend)">
@@ -238,8 +238,8 @@
             @if (friends.length === 0) {
               <div class="empty-state">
                 <i class="pi pi-heart"></i>
-                <p>ยังไม่มีเพื่อน</p>
-                <span>เพิ่มเพื่อนจากหน้า Citizens</span>
+                <p>No friends yet</p>
+                <span>Add friends from Citizens page</span>
               </div>
             }
           </div>
@@ -251,7 +251,7 @@
             @if (onlineNonFriends.length > 0) {
               <div class="section-label">
                 <span class="online-indicator"></span>
-                กำลัง Active อยู่ในแอป — {{ onlineNonFriends.length }} คน
+                Active in App — {{ onlineNonFriends.length }} people
               </div>
               @for (user of onlineNonFriends; track user.id) {
                 <div class="chat-item" (click)="startChat(user)">
@@ -275,8 +275,8 @@
             } @else {
               <div class="empty-state">
                 <i class="pi pi-bolt"></i>
-                <p>ไม่มีใคร Active</p>
-                <span>ตอนนี้ทุกคนออฟไลน์แล้ว</span>
+                <p>No one is active</p>
+                <span>Everyone is offline right now</span>
               </div>
             }
           </div>
@@ -296,8 +296,8 @@
           } @empty {
             <div class="empty-chat-state">
               <i class="pi pi-lock"></i>
-              <p>เริ่มการสนทนา</p>
-              <span>ข้อความเข้ารหัสผ่าน Vibe Network</span>
+              <p>Start conversation</p>
+              <span>Messages are encrypted via Vibe Network</span>
             </div>
           }
         </div>
@@ -308,7 +308,7 @@
             class="input-box"
             [(ngModel)]="newMessage"
             (keyup.enter)="send()"
-            placeholder="พิมพ์ข้อความ..."
+            placeholder="Type a message..."
           />
           <button
             pButton

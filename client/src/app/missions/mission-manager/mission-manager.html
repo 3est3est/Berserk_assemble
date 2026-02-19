@@ -97,6 +97,23 @@
                 mission.category || 'Vibe Room'
               }}</span>
               <h2 class="card-title">{{ mission.name }}</h2>
+
+              <!-- NEW: Location & Time -->
+              <div class="flex items-center gap-3 text-xs text-white/60 mt-1 mb-2">
+                @if (mission.location) {
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-map-marker text-accent text-[10px]"></i>
+                    <span class="truncate max-w-[100px]">{{ mission.location }}</span>
+                  </div>
+                }
+                @if (mission.scheduled_at) {
+                  <div class="flex items-center gap-1">
+                    <i class="pi pi-calendar text-accent text-[10px]"></i>
+                    <span>{{ mission.scheduled_at | date: 'shortTime' }}</span>
+                  </div>
+                }
+              </div>
+
               <p class="card-desc">
                 {{
                   mission.description ||

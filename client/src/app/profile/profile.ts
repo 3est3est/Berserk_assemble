@@ -165,7 +165,6 @@ export class Profile implements OnInit {
   openAvatarDialog() {
     const ref = (this._dialog as any).open(UploadImg, {
       header: 'Upload Avatar',
-      width: '400px',
       modal: true,
       showHeader: false,
       styleClass: 'void-dialog',
@@ -190,7 +189,6 @@ export class Profile implements OnInit {
         facebook: this.facebook(),
         contactEmail: this.contact_email(),
       },
-      width: '460px',
       modal: true,
       showHeader: false,
       styleClass: 'void-dialog',

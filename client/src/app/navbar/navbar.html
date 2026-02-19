@@ -5,14 +5,16 @@
     <!-- Branding -->
     <a
       routerLink="/"
-      class="flex items-center pl-3 pr-4 h-11 hover:bg-zinc-800/40 rounded-2xl transition-all group"
+      class="flex items-center pl-3 pr-4 h-11 hover:bg-v-glass-hover rounded-2xl transition-all group"
     >
       <div
-        class="w-8 h-8 bg-white rounded-xl flex items-center justify-center mr-3 group-hover:scale-105 transition-transform"
+        class="w-8 h-8 bg-v-text-primary rounded-xl flex items-center justify-center mr-3 group-hover:scale-105 transition-transform"
       >
-        <i class="pi pi-bolt text-black text-[14px]"></i>
+        <i class="pi pi-bolt text-v-bg-base text-[14px]"></i>
       </div>
-      <span class="text-[12px] font-black uppercase tracking-[-0.02em] text-white">Vibe</span>
+      <span class="text-[12px] font-black uppercase tracking-[-0.02em] text-v-text-primary"
+        >Vibe</span
+      >
     </a>
 
     <!-- Divider -->
@@ -39,18 +41,18 @@
         pButton
         [icon]="isDarkMode() ? 'pi pi-sun' : 'pi pi-moon'"
         (click)="toggleTheme()"
-        class="p-button-text p-button-sm !w-10 !h-10 !p-0 text-zinc-500 hover:text-white"
+        class="p-button-text p-button-sm !w-10 !h-10 !p-0 text-v-text-muted hover:text-v-text-primary"
       ></button>
 
       @if (display_name()) {
         <!-- Profile Link -->
         <a
           [routerLink]="['/profile']"
-          class="flex items-center ml-1 px-1.5 py-1 rounded-full hover:bg-zinc-800/40 transition-all group"
+          class="flex items-center ml-1 px-1.5 py-1 rounded-full hover:bg-v-glass-hover transition-all group"
         >
           <img
             [src]="avatar_url()"
-            class="w-8 h-8 rounded-lg object-cover border border-zinc-800 group-hover:border-zinc-500 transition-all"
+            class="w-8 h-8 rounded-lg object-cover border border-v-border group-hover:border-v-text-muted transition-all"
           />
         </a>
 
@@ -58,7 +60,7 @@
           pButton
           icon="pi pi-sign-out"
           (click)="logout()"
-          class="p-button-text p-button-danger p-button-sm !w-10 !h-10 text-zinc-600 hover:text-red-500"
+          class="p-button-text p-button-danger p-button-sm !w-10 !h-10 text-v-text-muted hover:text-red-500"
         ></button>
       } @else {
         <button

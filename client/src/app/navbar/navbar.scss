@@ -9,10 +9,10 @@
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
   transition: var(--transition-smooth);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-lg);
 
   &:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--glass-bg-hover);
     border-color: var(--glass-border-hover);
     transform: scale(1.01);
   }
@@ -32,7 +32,7 @@
 
   &:hover {
     color: var(--text-primary);
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg-hover);
   }
 
   &.active {

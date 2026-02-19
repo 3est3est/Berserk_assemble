@@ -11,14 +11,14 @@
         </div>
       </div>
 
-      <div class="mt-auto pt-8 border-t border-white/5 flex flex-col gap-6">
+      <div class="mt-auto pt-8 border-t border-v-border flex flex-col gap-6">
         <div class="sidebar-stat">
           <span class="label">Activity Status</span>
-          <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-2">
+          <div class="h-1 w-full bg-v-border rounded-full overflow-hidden mt-2">
             <div class="h-full bg-accent w-2/3"></div>
           </div>
           <div class="flex justify-between items-center mt-2">
-            <span class="text-[8px] font-bold text-white/20 uppercase tracking-widest"
+            <span class="text-[8px] font-bold text-v-text-muted uppercase tracking-widest"
               >Update Speed</span
             >
             <span class="text-[8px] font-bold text-accent">98.4%</span>
@@ -34,13 +34,13 @@
                   user.avatar_url ||
                   'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + user.display_name
                 "
-                class="w-8 h-8 rounded-full border-2 border-base object-cover"
+                class="w-8 h-8 rounded-full border-2 border-v-bg-base object-cover"
               />
             }
           </div>
           <div class="flex items-center gap-2">
             <div class="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
-            <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+            <span class="text-[9px] font-bold text-v-text-muted uppercase tracking-widest"
               >{{ onlineUsers.length }} Friends Online</span
             >
           </div>
@@ -60,15 +60,15 @@
             >
           </div>
           <h1 class="page-title leading-none">My Dashboard</h1>
-          <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-2">
+          <p class="text-[12px] text-v-text-muted font-bold uppercase tracking-widest mt-2">
             Recent Activity Summary • Revision 2.0.4
           </p>
         </div>
 
         <div class="flex items-center gap-4">
           <div class="xp-badge">
-            <span class="label !mb-0 !text-[9px] opacity-40">VIBE POINTS</span>
-            <span class="text-2xl font-black text-white italic tracking-tighter">{{
+            <span class="label !mb-0 !text-[9px] text-v-text-muted">VIBE POINTS</span>
+            <span class="text-2xl font-black text-v-text-primary italic tracking-tighter">{{
               stats.totalExp
             }}</span>
           </div>
@@ -87,17 +87,17 @@
         <div class="stagger">
           <!-- QUICK METRICS -->
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-            <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-white/[0.04]">
+            <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-v-glass-hover">
               <div
-                class="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center text-white/20 group-hover:text-accent transition-colors"
+                class="w-10 h-10 rounded-lg bg-v-glass flex items-center justify-center text-v-text-muted group-hover:text-accent transition-colors"
               >
                 <i class="pi pi-box"></i>
               </div>
               <div class="flex flex-col">
-                <span class="text-[9px] font-bold text-white/30 uppercase tracking-widest"
+                <span class="text-[9px] font-bold text-v-text-muted uppercase tracking-widest"
                   >Activities</span
                 >
-                <span class="text-xl font-black text-white">{{ stats.total }}</span>
+                <span class="text-xl font-black text-v-text-primary">{{ stats.total }}</span>
               </div>
             </div>
             <div class="glass-card !p-5 flex items-center gap-4 group hover:bg-white/[0.04]">
@@ -163,7 +163,7 @@
                     stroke="currentColor"
                     stroke-width="2"
                     fill="transparent"
-                    class="text-white/5"
+                    class="text-v-border"
                   ></circle>
                   <circle
                     cx="112"
@@ -179,10 +179,10 @@
                   ></circle>
                 </svg>
                 <div class="absolute inset-0 flex flex-col items-center justify-center">
-                  <span class="text-7xl font-black text-white italic tracking-tighter"
+                  <span class="text-7xl font-black text-v-text-primary italic tracking-tighter"
                     >{{ stats.successRate }}%</span
                   >
-                  <span class="label opacity-40">Success Rate</span>
+                  <span class="label text-v-text-muted">Success Rate</span>
                 </div>
               </div>
 
@@ -206,15 +206,17 @@
                   ></div>
                   <div>
                     <span class="label !text-accent">Live Rooms</span>
-                    <div class="text-6xl font-black text-white mt-4 italic tracking-tighter">
+                    <div
+                      class="text-6xl font-black text-v-text-primary mt-4 italic tracking-tighter"
+                    >
                       {{ stats.open }}
                     </div>
                   </div>
                   <div class="flex items-center gap-2 mt-4">
-                    <div class="h-1 flex-grow bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-1 flex-grow bg-v-border rounded-full overflow-hidden">
                       <div class="h-full bg-accent w-1/3"></div>
                     </div>
-                    <span class="text-[8px] font-black text-white/20">LIVE</span>
+                    <span class="text-[8px] font-black text-v-text-muted">LIVE</span>
                   </div>
                 </div>
 
@@ -226,15 +228,17 @@
                   ></div>
                   <div>
                     <span class="label !text-blue-400">Joined Rooms</span>
-                    <div class="text-6xl font-black text-white mt-4 italic tracking-tighter">
+                    <div
+                      class="text-6xl font-black text-v-text-primary mt-4 italic tracking-tighter"
+                    >
                       {{ stats.inProgress }}
                     </div>
                   </div>
                   <div class="flex items-center gap-2 mt-4">
-                    <div class="h-1 flex-grow bg-white/5 rounded-full overflow-hidden">
+                    <div class="h-1 flex-grow bg-v-border rounded-full overflow-hidden">
                       <div class="h-full bg-blue-400 w-1/2"></div>
                     </div>
-                    <span class="text-[8px] font-black text-white/20">PROC</span>
+                    <span class="text-[8px] font-black text-v-text-muted">PROC</span>
                   </div>
                 </div>
               </div>
@@ -252,10 +256,10 @@
                   </div>
                   <div class="flex flex-col">
                     <span
-                      class="text-sm font-bold text-white group-hover:text-accent transition-colors"
+                      class="text-sm font-bold text-v-text-primary group-hover:text-accent transition-colors"
                       >Social Hub</span
                     >
-                    <span class="text-[10px] text-white/30 font-bold uppercase tracking-widest"
+                    <span class="text-[10px] text-v-text-muted font-bold uppercase tracking-widest"
                       >Connect with your community friends</span
                     >
                   </div>
@@ -276,8 +280,8 @@
                 <i class="pi pi-history text-accent"></i>
                 <h2 class="label !mb-0 !text-white/80">Past Hangouts</h2>
               </div>
-              <div class="h-px flex-grow bg-white/5"></div>
-              <span class="text-[8px] font-black text-white/10 uppercase tracking-[0.4em]"
+              <div class="h-px flex-grow bg-v-border"></div>
+              <span class="text-[8px] font-black text-v-text-muted uppercase tracking-[0.4em]"
                 >Activity Log</span
               >
             </div>
@@ -285,7 +289,7 @@
             <div class="grid grid-cols-1 gap-4">
               @for (mission of recentMissions; track mission.id) {
                 <div
-                  class="flex items-center gap-6 p-5 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-accent/30 hover:bg-white/[0.05] transition-all group cursor-pointer"
+                  class="flex items-center gap-6 p-5 rounded-2xl bg-v-glass border border-v-border hover:border-accent/30 hover:bg-v-glass-hover transition-all group cursor-pointer"
                   [routerLink]="['/missions', mission.id]"
                 >
                   <div
@@ -302,7 +306,7 @@
                   <div class="flex flex-col flex-grow min-w-0">
                     <div class="flex items-center gap-3 mb-1.5">
                       <span
-                        class="text-sm font-bold text-white truncate group-hover:text-accent transition-colors tracking-tight"
+                        class="text-sm font-bold text-v-text-primary truncate group-hover:text-accent transition-colors tracking-tight"
                         >{{ mission.name }}</span
                       >
                       <div
@@ -315,11 +319,12 @@
                       </div>
                     </div>
                     <div class="flex items-center gap-3">
-                      <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest">{{
-                        mission.category || 'General Vibe'
-                      }}</span>
-                      <div class="w-1 h-1 rounded-full bg-white/10"></div>
-                      <span class="text-[10px] font-medium text-white/20 italic">{{
+                      <span
+                        class="text-[10px] font-bold text-v-text-muted uppercase tracking-widest"
+                        >{{ mission.category || 'General Vibe' }}</span
+                      >
+                      <div class="w-1 h-1 rounded-full bg-v-border"></div>
+                      <span class="text-[10px] font-medium text-v-text-muted italic">{{
                         mission.description || 'No meta-data provided.'
                       }}</span>
                     </div>
@@ -327,10 +332,11 @@
 
                   <div class="flex items-center gap-6">
                     <div class="hidden md:flex flex-col items-end">
-                      <span class="text-[10px] font-bold text-white/40 uppercase tracking-widest"
+                      <span
+                        class="text-[10px] font-bold text-v-text-muted uppercase tracking-widest"
                         >ROOM_ID</span
                       >
-                      <span class="text-[9px] font-medium text-white/10"
+                      <span class="text-[9px] font-medium text-v-text-muted"
                         >#{{ mission.id.toString().padStart(4, '0') }}</span
                       >
                     </div>

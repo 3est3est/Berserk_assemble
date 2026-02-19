@@ -1,116 +1,105 @@
-<div class="os-dialog-container" style="min-width: 500px">
+<div class="mission-dialog">
   <!-- Header -->
-  <div class="os-dialog-header">
-    <div class="flex items-center gap-5">
-      <div
-        class="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center text-white shadow-[0_8px_20px_rgba(var(--accent-rgb),0.3)]"
-      >
-        <i class="pi pi-plus text-xl"></i>
-      </div>
-      <div>
-        <h2 class="text-2xl font-bold tracking-tight m-0">Create New Room</h2>
-        <p style="font-size: 13px; color: var(--text-muted); margin: 0; opacity: 0.7">
-          Initialize your vibe and coordinate with friends
-        </p>
-      </div>
+  <div class="dialog-header">
+    <div class="header-icon">
+      <i [class]="'pi ' + (addMission.name ? 'pi-pencil' : 'pi-plus')"></i>
+    </div>
+    <div>
+      <h2 class="dialog-title">{{ _config.data?.id ? 'Edit Room' : 'Create New Room' }}</h2>
+      <p class="dialog-subtitle">
+        {{ _config.data?.id ? 'Update your room details' : 'Set up your activity room' }}
+      </p>
     </div>
   </div>
 
   <!-- Body -->
-  <div class="os-dialog-body hide-scrollbar" style="padding: 40px">
+  <div class="dialog-body">
     <!-- Room Name -->
-    <div class="os-input-field">
-      <label>Activity Name</label>
+    <div class="field-group">
+      <label class="field-label">Activity Name</label>
       <input
         pInputText
         [(ngModel)]="addMission.name"
         placeholder="What are we doing today?..."
-        class="w-full h-12"
+        class="field-input"
       />
     </div>
 
     <!-- Category -->
-    <div class="os-input-field">
-      <label>Activity Category</label>
+    <div class="field-group">
+      <label class="field-label">Category</label>
       <p-select
         [(ngModel)]="addMission.category"
         [options]="categories"
         optionLabel="label"
         optionValue="value"
-        placeholder="Select vibe type..."
-        styleClass="w-full h-12"
+        placeholder="Select Vibe type..."
+        styleClass="field-select"
       ></p-select>
     </div>
 
     <!-- Description -->
-    <div class="os-input-field">
-      <label>Activity Briefing (Description)</label>
+    <div class="field-group">
+      <label class="field-label">Description</label>
       <textarea
         pTextarea
         [(ngModel)]="addMission.description"
         [autoResize]="true"
-        rows="4"
-        placeholder="Tell potential participants about this event..."
-        class="w-full p-4"
+        rows="3"
+        placeholder="Provide details for participants..."
+        class="field-textarea"
       ></textarea>
     </div>
 
     <!-- Stats & Time -->
-    <div class="grid grid-cols-2 gap-6">
-      <div class="os-input-field">
-        <label>Participant Limit</label>
+    <div class="two-col">
+      <div class="field-group">
+        <label class="field-label">Max Participants</label>
         <p-inputNumber
           [(ngModel)]="addMission.max_crew"
           [min]="1"
           [max]="50"
           [showButtons]="true"
-          styleClass="w-full h-12"
+          styleClass="field-number"
           inputClass="text-center font-bold"
         ></p-inputNumber>
       </div>
-      <div class="os-input-field">
-        <label>Activity Schedule</label>
+      <div class="field-group">
+        <label class="field-label">Date & Time</label>
         <p-datepicker
           [(ngModel)]="addMission.scheduled_at"
           [showTime]="true"
           appendTo="body"
-          styleClass="w-full h-12"
+          styleClass="field-date"
         ></p-datepicker>
       </div>
     </div>
 
     <!-- Location -->
-    <div class="os-input-field">
-      <label>Activity Location</label>
-      <div class="relative">
+    <div class="field-group">
+      <label class="field-label">Location</label>
+      <div class="input-with-icon">
+        <i class="pi pi-map-marker input-icon"></i>
         <input
           pInputText
           [(ngModel)]="addMission.location"
-          placeholder="Where is this happening?..."
-          class="w-full h-12"
-          style="padding-left: 44px !important"
+          placeholder="Where are we going?..."
+          class="field-input"
         />
-        <i class="pi pi-map-marker absolute left-4 top-1/2 -translate-y-1/2 opacity-30"></i>
       </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <div class="os-dialog-footer">
+  <div class="dialog-footer">
+    <button pButton label="Cancel" (click)="_ref.close()" class="btn-cancel"></button>
     <button
       pButton
-      label="GO BACK"
-      (click)="_ref.close()"
-      class="p-button-text p-button-sm !text-muted font-bold tracking-widest"
-    ></button>
-    <button
-      pButton
-      label="CREATE ROOM"
+      [label]="_config.data?.id ? 'Update Room' : 'Create Room'"
       icon="pi pi-check"
       [disabled]="!addMission.name"
       (click)="onSubmit()"
-      class="h-12 px-10 font-bold bg-accent"
-      style="background: var(--accent) !important; border: none; border-radius: 12px"
+      class="btn-submit"
     ></button>
   </div>
 </div>

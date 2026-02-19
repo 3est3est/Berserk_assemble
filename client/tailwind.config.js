@@ -20,6 +20,18 @@ module.exports = {
           yellow: '#ca8a04',
           lime:   '#65a30d',
         },
+        // Semantic Tokens linked to CSS Variables
+        'v-bg': 'var(--bg-base)',
+        'v-bg-base': 'var(--bg-base)',
+        'v-bg-subtle': 'var(--bg-subtle)',
+        'v-text-primary': 'var(--text-primary)',
+        'v-text-secondary': 'var(--text-secondary)',
+        'v-text-muted': 'var(--text-muted)',
+        'v-border': 'var(--border-subtle)',
+        'v-glass': 'var(--glass-bg)',
+        'v-glass-border': 'var(--glass-border)',
+        'v-glass-hover': 'var(--glass-bg-hover)',
+        'v-accent-subtle': 'var(--accent-subtle)',
       },
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],

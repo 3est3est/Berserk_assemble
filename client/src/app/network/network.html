@@ -14,7 +14,7 @@
         </div>
         <div class="os-nav-item" [class.active]="activeTab === 'all'" (click)="activeTab = 'all'">
           <i class="pi pi-users"></i>
-          <span>My Circle</span>
+          <span>My Friends</span>
           <span class="text-[8px] opacity-40 ml-auto">{{ friends().length }}</span>
         </div>
         <div
@@ -30,12 +30,12 @@
         </div>
       </div>
 
-      <div class="mt-auto pt-8 border-t border-white/5">
+      <div class="mt-auto pt-8 border-t border-v-border">
         <div class="flex items-center gap-3 px-3">
           <div
             class="w-2 h-2 rounded-full bg-[#4ade80] shadow-[0_0_10px_rgba(74,222,128,0.4)] animate-pulse"
           ></div>
-          <span class="text-[10px] font-bold text-white/30 uppercase tracking-widest"
+          <span class="text-[10px] font-bold text-v-text-muted uppercase tracking-widest"
             >Network Pulse</span
           >
         </div>
@@ -46,7 +46,7 @@
     <section class="page-main">
       <div class="page-header flex flex-col mb-10">
         <h1 class="page-title leading-none">Citizens</h1>
-        <p class="text-[12px] text-white/30 font-bold uppercase tracking-widest mt-2">
+        <p class="text-[12px] text-v-text-muted font-bold uppercase tracking-widest mt-2">
           @if (activeTab === 'all') {
             Your verified connections
           } @else if (activeTab === 'online') {
@@ -61,7 +61,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 stagger">
           @for (user of activeTab === 'all' ? friends() : onlineUsers(); track user.id) {
             <div
-              class="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.03] border border-white/5 hover:border-white/10 hover:bg-white/[0.05] transition-all group relative cursor-pointer"
+              class="flex items-center gap-4 p-4 rounded-2xl bg-v-glass border border-v-border hover:border-accent/30 hover:bg-v-glass-hover transition-all group relative cursor-pointer"
               [routerLink]="['/profile', user.id]"
             >
               <div class="relative flex-shrink-0">
@@ -70,20 +70,23 @@
                     user.avatar_url ||
                     'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + user.display_name
                   "
-                  class="w-12 h-12 rounded-xl object-cover border border-white/10"
+                  class="w-12 h-12 rounded-xl object-cover border border-v-border"
                 />
                 @if (user.is_online || activeTab === 'online') {
                   <div
-                    class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-[#4ade80] border-2 border-base"
+                    class="absolute -bottom-1 -right-1 w-3 h-3 rounded-full bg-[#4ade80] border-2 border-v-bg"
                   ></div>
                 }
               </div>
 
               <div class="flex flex-col flex-grow min-w-0">
-                <span class="text-sm font-bold text-white truncate">{{ user.display_name }}</span>
-                <span class="text-[10px] text-white/40 font-semibold uppercase tracking-wider">{{
-                  user.rank || 'Member'
+                <span class="text-sm font-bold text-v-text-primary truncate">{{
+                  user.display_name
                 }}</span>
+                <span
+                  class="text-[10px] text-v-text-muted font-semibold uppercase tracking-wider"
+                  >{{ user.rank || 'Member' }}</span
+                >
               </div>
 
               <div
@@ -91,14 +94,14 @@
               >
                 <button
                   (click)="openChat(user); $event.stopPropagation()"
-                  class="w-8 h-8 rounded-lg bg-white/5 hover:bg-accent/20 hover:text-accent transition-colors"
+                  class="w-8 h-8 rounded-lg bg-v-glass hover:bg-accent/20 hover:text-accent transition-colors"
                 >
                   <i class="pi pi-comments text-[10px]"></i>
                 </button>
                 @if (activeTab === 'all') {
                   <button
                     (click)="onRemoveFriend(user); $event.stopPropagation()"
-                    class="w-8 h-8 rounded-lg bg-white/5 hover:bg-red-500/20 hover:text-red-400 transition-colors"
+                    class="w-8 h-8 rounded-lg bg-v-glass hover:bg-red-500/20 hover:text-red-400 transition-colors"
                   >
                     <i class="pi pi-user-minus text-[10px]"></i>
                   </button>
@@ -117,19 +120,18 @@
       @if (activeTab === 'requests') {
         <div class="max-w-3xl flex flex-col gap-3 stagger">
           @for (req of pendingRequests(); track req.id) {
-            <div
-              class="flex items-center gap-4 p-5 rounded-2xl bg-white/[0.03] border border-white/5"
-            >
+            <div class="flex items-center gap-4 p-5 rounded-2xl bg-v-glass border border-v-border">
               <img
                 [src]="
                   req.requester_avatar ||
                   'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=' + req.requester_name
                 "
-                class="w-12 h-12 rounded-xl object-cover border border-white/10"
+                class="w-12 h-12 rounded-xl object-cover border border-v-border"
               />
               <div class="flex flex-col flex-grow min-w-0">
-                <span class="text-sm font-bold text-white">{{ req.requester_name }}</span>
-                <span class="text-[10px] text-white/40 uppercase font-black tracking-widest mt-0.5"
+                <span class="text-sm font-bold text-v-text-primary">{{ req.requester_name }}</span>
+                <span
+                  class="text-[10px] text-v-text-muted uppercase font-black tracking-widest mt-0.5"
                   >Wants to vibe with you</span
                 >
               </div>

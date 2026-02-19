@@ -36,7 +36,7 @@
   font-weight: 950;
   letter-spacing: -0.06em;
   line-height: 0.9;
-  color: white;
+  color: var(--text-primary);
   
   .hero-h1-accent {
     background: var(--primary-gradient);
@@ -50,7 +50,7 @@
   font-size: clamp(16px, 2vw, 19px);
   font-weight: 500;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-secondary);
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
@@ -58,8 +58,8 @@
 
 /* ── Room Cards Compact ── */
 .room-card-compact {
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 32px;
     overflow: hidden;
     transition: var(--transition-smooth);
@@ -101,7 +101,7 @@
         .room-title {
             font-size: 1.25rem;
             font-weight: 900;
-            color: white;
+            color: var(--text-primary);
             margin-bottom: 0.5rem;
             font-style: italic;
             letter-spacing: -0.02em;
@@ -110,8 +110,8 @@
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.04);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: var(--glass-bg-hover);
+        border-color: var(--accent-border);
         transform: translateY(-8px);
         box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
     }
@@ -121,8 +121,8 @@
 .category-card {
     position: relative;
     height: 320px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 40px;
     overflow: hidden;
     cursor: pointer;
@@ -153,7 +153,7 @@
         opacity: 0.1;
         transform: rotate(15deg);
         transition: all 0.5s var(--transition-bounce);
-        color: white;
+        color: var(--text-primary);
     }
 
     .cat-label {
@@ -163,7 +163,7 @@
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 0.4em;
-        color: rgba(255, 255, 255, 0.2);
+        color: var(--text-muted);
         margin-bottom: 0.75rem;
         display: block;
         transition: color 0.3s ease;
@@ -174,7 +174,7 @@
         z-index: 1;
         font-size: 1.75rem;
         font-weight: 950;
-        color: white;
+        color: var(--text-primary);
         font-style: italic;
         letter-spacing: -0.02em;
         line-height: 1.1;
@@ -182,8 +182,8 @@
     }
 
     &:hover {
-        background: rgba(255, 255, 255, 0.05);
-        border-color: rgba(255, 255, 255, 0.1);
+        background: var(--glass-bg-hover);
+        border-color: var(--accent-border);
         transform: translateY(-12px) scale(1.02);
         box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.5);
 
@@ -194,6 +194,7 @@
             color: var(--cat-color, var(--accent));
         }
         .cat-label { color: var(--cat-color, var(--accent)); }
+        .cat-title { color: var(--text-primary); }
     }
 }
 
@@ -210,7 +211,7 @@
         transform: translateX(-50%);
         font-size: 8rem;
         font-weight: 950;
-        color: rgba(255, 255, 255, 0.02);
+        color: var(--glass-border);
         line-height: 1;
         z-index: 0;
         pointer-events: none;
@@ -219,8 +220,8 @@
     .step-icon {
         width: 80px;
         height: 80px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
         border-radius: 24px;
         display: flex;
         align-items: center;
@@ -247,7 +248,7 @@
         .step-icon {
             transform: translateY(-10px) scale(1.1);
             border-color: var(--accent-border);
-            color: white;
+            color: #fff;
             background: var(--accent);
 
             .step-glow { opacity: 0.5; }
@@ -266,8 +267,8 @@
     .icon-box {
         width: 80px;
         height: 80px;
-        background: rgba(255, 255, 255, 0.03);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
         border-radius: 24px;
         display: flex;
         align-items: center;
@@ -290,7 +291,7 @@
         font-weight: 900;
         text-transform: uppercase;
         letter-spacing: 0.2em;
-        color: rgba(255, 255, 255, 0.2);
+        color: var(--text-muted);
         transition: var(--transition-fast);
     }
 
@@ -307,7 +308,7 @@
             }
         }
         .label {
-            color: white;
+            color: var(--text-primary);
             letter-spacing: 0.25em;
         }
     }
@@ -318,13 +319,13 @@
     width: 44px;
     height: 44px;
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: var(--transition-smooth);
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-muted);
 
     &:hover {
         background: var(--accent-subtle);
@@ -337,7 +338,7 @@
 .footer-link {
     font-size: 13px;
     font-weight: 600;
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--text-muted);
     transition: var(--transition-fast);
     
     &:hover {
@@ -371,9 +372,9 @@
 /* ── CTA Container (Subtle & Sleek) ── */
 .cta-container {
     padding: 120px 40px;
-    background: radial-gradient(circle at center, rgba(113, 78, 255, 0.04), transparent 75%);
+    background: radial-gradient(circle at center, var(--accent-subtle), transparent 75%);
     border-radius: 80px;
-    border: 1px solid rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-subtle);
     position: relative;
     overflow: hidden;
     
@@ -391,16 +392,16 @@
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 1.25rem;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 99px;
     font-size: 10px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 0.15em;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--text-muted);
 
-    .count { color: white; }
+    .count { color: var(--text-primary); }
     .live-dot {
         width: 6px;
         height: 6px;

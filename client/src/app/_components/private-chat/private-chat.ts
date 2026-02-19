@@ -282,7 +282,7 @@ export class PrivateChat implements OnInit, OnDestroy {
   }
 
   async unfriendCurrent() {
-    if (!this.selectedUser || !confirm(`ลบ ${this.selectedUser.display_name} ออกจากเพื่อน?`))
+    if (!this.selectedUser || !confirm(`Remove ${this.selectedUser.display_name} from friends?`))
       return;
 
     try {
