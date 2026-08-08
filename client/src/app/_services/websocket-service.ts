@@ -1,5 +1,6 @@
 import { Injectable, inject, NgZone } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -12,12 +13,19 @@ export class WebsocketService {
   private messageSubject = new Subject<any>();
   private notificationSubject = new Subject<any>();
 
+  private get host(): string {
+    if (environment.baseUrl) {
+      return environment.baseUrl.replace(/^https?:\/\//, '');
+    }
+    return window.location.host;
+  }
+
   public messages$: Observable<any> = this.messageSubject.asObservable();
   public notifications$: Observable<any> = this.notificationSubject.asObservable();
 
   connect(missionId: number): void {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const url = `${protocol}//localhost:8000/api/ws/mission/${missionId}`;
+    const url = `${protocol}//${this.host}/api/ws/mission/${missionId}`;
 
     console.log('[WebSocket] Connecting to mission:', url);
     this.socket = new WebSocket(url);
@@ -52,7 +60,7 @@ export class WebsocketService {
     if (!token) return;
 
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const url = `${protocol}//localhost:8000/api/ws/global?token=${token}`;
+    const url = `${protocol}//${this.host}/api/ws/global?token=${token}`;
 
     if (this.notificationSocket) {
       this.notificationSocket.close();

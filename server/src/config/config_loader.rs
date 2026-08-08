@@ -10,10 +10,13 @@ use crate::config::{
 pub fn load() -> Result<DotEnvyConfig> {
     dotenvy::dotenv().ok();
 
+    let port = match std::env::var("PORT") {
+        Ok(port) => port,
+        Err(_) => std::env::var("SERVER_PORT").expect("SERVER_PORT is valid"),
+    };
+
     let server = Server {
-        port: std::env::var("SERVER_PORT")
-            .expect("SERVER_PORT is valid")
-            .parse()?,
+        port: port.parse()?,
         body_limit: std::env::var("SERVER_BODY_LIMIT")
             .expect("SERVER_BODY_LIMIT is valid")
             .parse()?,

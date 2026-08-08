@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, filter, map } from 'rxjs';
 import { WebsocketService } from './websocket-service';
+import { environment } from '../../environments/environment';
 
 export interface PrivateMessage {
   id: number;
@@ -22,7 +23,7 @@ export interface PrivateMessage {
 export class ChatService {
   private _http = inject(HttpClient);
   private _ws = inject(WebsocketService);
-  private _apiUrl = 'http://localhost:8000/api/messages';
+  private _apiUrl = environment.baseUrl + '/api/messages';
 
   // Observable to trigger opening a chat with a specific user
   private _openChatSubject = new Subject<{ id: number; display_name: string }>();

@@ -1,0 +1,42 @@
+services:
+  db:
+    image: docker.io/library/postgres:16
+    container_name: berserk_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ***REMOVED***
+      POSTGRES_DB: Berserk_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - berserk_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d Berserk_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  server:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    container_name: berserk_server
+    ports:
+      - "8000:8000"
+    environment:
+      SERVER_PORT: "8000"
+      SERVER_BODY_LIMIT: "10"
+      SERVER_TIMEOUT: "90"
+      DATABASE_URL: postgres://postgres:***REMOVED***@db:5432/Berserk_db
+      JWT_USER_SECRET: ***REMOVED***
+      JWT_TTL: "60"
+      CLOUDINARY_CLOUD_NAME: kanompang
+      CLOUDINARY_API_KEY: "***REMOVED***"
+      CLOUDINARY_API_SECRET: ***REMOVED***
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  berserk_db_data:
+
